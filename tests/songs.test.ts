@@ -130,7 +130,7 @@ describe("POST /api/songs", () => {
     expect(res.status).toBe(400);
   });
 
-  it("409 on duplicate spotifyId", async () => {
+  it("returns existing song (200) on duplicate spotifyId — find-then-create dedup", async () => {
     const u = await makeUser();
     await setUserSession(u.id);
     const first = await createPOST(
@@ -141,6 +141,8 @@ describe("POST /api/songs", () => {
       }),
     );
     expect(first.status).toBe(201);
+    const firstBody = await first.json();
+
     const second = await createPOST(
       jsonRequest("http://x/api/songs", {
         title: "t2",
@@ -148,6 +150,26 @@ describe("POST /api/songs", () => {
         spotifyId: "dup",
       }),
     );
-    expect(second.status).toBe(409);
+    expect(second.status).toBe(200);
+    const secondBody = await second.json();
+    // Same row returned — local fields preserved (not overwritten with t2/a2).
+    expect(secondBody.song.id).toBe(firstBody.song.id);
+    expect(secondBody.song.title).toBe("t");
+    expect(secondBody.song.artist).toBe("a");
+    expect(await prisma.song.count()).toBe(1);
+  });
+
+  it("creates a new row each time when spotifyId is absent (no dedup key)", async () => {
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const r1 = await createPOST(
+      jsonRequest("http://x/api/songs", { title: "same", artist: "same" }),
+    );
+    const r2 = await createPOST(
+      jsonRequest("http://x/api/songs", { title: "same", artist: "same" }),
+    );
+    expect(r1.status).toBe(201);
+    expect(r2.status).toBe(201);
+    expect(await prisma.song.count()).toBe(2);
   });
 });

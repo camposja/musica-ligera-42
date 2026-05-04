@@ -57,6 +57,16 @@ export async function POST(request: Request) {
     youtubeAltIds = b.youtubeAltIds as string[];
   }
 
+  // Dedupe by spotifyId when provided: if a Song with that spotifyId already
+  // exists, return it (200) instead of creating a duplicate. find-then-create
+  // is intentional — no prisma.upsert, no createdAt heuristic.
+  if (spotifyId) {
+    const existing = await prisma.song.findUnique({ where: { spotifyId } });
+    if (existing) {
+      return Response.json({ song: existing }, { status: 200 });
+    }
+  }
+
   try {
     const song = await prisma.song.create({
       data: {
@@ -70,16 +80,19 @@ export async function POST(request: Request) {
     });
     return Response.json({ song }, { status: 201 });
   } catch (err) {
+    // Race-condition fallback: two concurrent POSTs with the same spotifyId
+    // can both miss the findUnique above; the loser gets P2002 here.
     if (
+      spotifyId &&
       typeof err === "object" &&
       err !== null &&
       "code" in err &&
       (err as { code?: string }).code === "P2002"
     ) {
-      return Response.json(
-        { error: "Song with that spotifyId already exists" },
-        { status: 409 },
-      );
+      const existing = await prisma.song.findUnique({ where: { spotifyId } });
+      if (existing) {
+        return Response.json({ song: existing }, { status: 200 });
+      }
     }
     throw err;
   }

@@ -78,7 +78,7 @@ All playlist endpoints require an **effective user** — either a USER session O
 | POST | `/api/playlists/:id/add-song` | session + effective user + ownership | body `{songId}` (existing song id only) |
 | POST | `/api/playlists/:id/remove-song` | session + effective user + ownership | body `{songId}` |
 | GET | `/api/songs` | session | global library |
-| POST | `/api/songs` | session | body `{title, artist, album?, spotifyId?, youtubeId?, youtubeAltIds?}`; 409 on duplicate `spotifyId` |
+| POST | `/api/songs` | session | body `{title, artist, album?, spotifyId?, youtubeId?, youtubeAltIds?}`. **Idempotent on `spotifyId`**: if a Song already exists with that `spotifyId`, the existing row is returned (200) and local fields are preserved. New rows return 201. Without `spotifyId` every call creates a new row. |
 
 ### Adding a manual song to a playlist (two-step flow)
 
@@ -88,6 +88,45 @@ All playlist endpoints require an **effective user** — either a USER session O
 2. `POST /api/playlists/:id/add-song` with `{songId: <id from step 1>}`
 
 This keeps song creation single-source and lets later tickets (Spotify import) reuse `POST /api/songs` cleanly.
+
+## Spotify integration
+
+Search the Spotify catalog and import public Spotify playlists. Uses the [Client Credentials Flow](https://developer.spotify.com/documentation/web-api/tutorials/client-credentials-flow) — no user-OAuth, so private playlists are out of scope.
+
+**Required env** (already in `.env.example`):
+- `SPOTIFY_CLIENT_ID` — from your app at https://developer.spotify.com/dashboard
+- `SPOTIFY_CLIENT_SECRET`
+
+| Method | Path | Auth | Behavior |
+|---|---|---|---|
+| GET | `/api/spotify/search?q=...` | session | normalized track results; **does not persist** |
+| POST | `/api/spotify/import-playlist` | session + effective user | body `{url}` (open.spotify.com URL, `spotify:playlist:` URI, or 22-char id); creates a Playlist for the effective user, upserts each Song by `spotifyId`, links them in Spotify order. Returns `{playlist, songsImported, songsReused}`. |
+
+Search results are returned in this shape: `{spotifyId, title, artist, album, durationMs, albumImageUrl}`. Multiple artists are joined with `, `. The endpoint returns 502 for upstream Spotify errors and 503 (with `Retry-After` header passed through) on rate limiting.
+
+### Save-a-search-result flow (two steps)
+
+```sh
+# 1. Search
+curl -b cookies.txt 'http://localhost:3000/api/spotify/search?q=hello%20adele'
+# → { tracks: [{ spotifyId: "...", title: "Hello", artist: "Adele", ... }] }
+
+# 2. Save the one you want — POST /api/songs is idempotent on spotifyId
+curl -b cookies.txt -H 'Content-Type: application/json' \
+  -d '{"title":"Hello","artist":"Adele","spotifyId":"...","album":"25"}' \
+  http://localhost:3000/api/songs
+```
+
+### Import a public playlist
+
+```sh
+curl -b cookies.txt -H 'Content-Type: application/json' \
+  -d '{"url":"https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M"}' \
+  http://localhost:3000/api/spotify/import-playlist
+# → { playlist: {id, name}, songsImported: N, songsReused: M }
+```
+
+Imported songs have `youtubeId: null` — Ticket 4 will fill that in. Importing the same playlist twice creates a second local playlist (per spec, playlists are not deduped, only songs are).
 
 ## Tests
 
