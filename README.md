@@ -154,7 +154,31 @@ When a Song is created via `POST /api/songs` (without an explicit `youtubeId`) o
 
 ### `<YouTubePlayer videoId={...} />`
 
-Component at `src/components/YouTubePlayer.tsx`. Renders a plain YouTube embed `<iframe>`. Returns `null` for null/empty/malformed `videoId` so an unmatched song doesn't paint a broken iframe. Wired into actual pages in Ticket 5.
+Component at `src/components/YouTubePlayer.tsx`. Renders a plain YouTube embed `<iframe>`. Returns `null` for null/empty/malformed `videoId` so an unmatched song doesn't paint a broken iframe. Wired into the persistent player bar in `(app)/layout.tsx`.
+
+## Frontend / pages
+
+Dark-first UI, no theme toggle. Built with Tailwind v4 + native HTML + React Context — no UI libraries, no global state libs.
+
+| Route | Auth | What it does |
+|---|---|---|
+| `/` | none | Redirects to `/dashboard` (with session) or `/login` (without). |
+| `/login` | none | OWNER + USER login form (toggle). |
+| `/dashboard` | session | Lists effective user's playlists; create-playlist + Spotify-import forms. OWNER without an acting USER sees a "Pick a user to start" prompt — use the header switcher. |
+| `/playlist/[id]` | session + ownership | Songs in playlist order. ▶ Play sets the persistent bottom player. Songs whose YouTube auto-match hasn't completed yet show a disabled "Matching…" button + helper text. Remove deletes the join row (the song stays in the global library). |
+| `/search` | session | "Search Spotify". Results have **Save** (adds to global library) and an **+ Add to playlist…** dropdown. Duplicates are surfaced inline ("Already in this playlist"); upstream errors stay inline ("Spotify upstream error"). |
+
+Persistent header includes nav (Dashboard/Search), user identity, and — for OWNER sessions — a user switcher that calls `POST /api/auth/switch-user`. Persistent bottom player bar lives in `(app)/layout.tsx` so playback continues across page navigation.
+
+### Manual smoke test
+
+1. Visit http://localhost:3000 → redirects to `/login`.
+2. Sign in as USER (e.g. alice) → land on `/dashboard`.
+3. Create a playlist with the form on the dashboard.
+4. Click "Search" in the nav, search for a song.
+5. Use **+ Add to playlist…** to add a result to your playlist.
+6. Click into the playlist; press ▶ Play on a song. The player bar at the bottom plays the YouTube embed and persists when you navigate to other pages.
+7. Sign in as OWNER → confirm the "Pick a user to start" prompt + the user switcher dropdown in the header.
 
 ## Tests
 
