@@ -11,3 +11,11 @@ export function unauthorized(): Response {
 export function forbidden(): Response {
   return Response.json({ error: "Forbidden" }, { status: 403 });
 }
+
+export function effectiveUserId(session: Session): string | null {
+  if (session.role === "USER") return session.userId;
+  if (session.role === "OWNER" && session.actingUserId) {
+    return session.actingUserId;
+  }
+  return null;
+}
