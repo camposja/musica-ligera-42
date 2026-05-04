@@ -13,7 +13,7 @@ enum Role {
 
 model User {
   id             String     @id @default(uuid())
-  name           String
+  name           String     @unique
   role           Role
   accessCode     String
   spotifyUserId  String?
