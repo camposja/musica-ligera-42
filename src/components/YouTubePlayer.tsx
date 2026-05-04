@@ -1,4 +1,6 @@
-import { isValidYoutubeId } from "@/lib/youtube";
+"use client";
+
+const VIDEO_ID_RE = /^[A-Za-z0-9_-]{11}$/;
 
 type Props = {
   videoId: string | null | undefined;
@@ -13,7 +15,7 @@ export default function YouTubePlayer({
   height = 360,
   title = "YouTube player",
 }: Props) {
-  if (!videoId || !isValidYoutubeId(videoId)) return null;
+  if (!videoId || !VIDEO_ID_RE.test(videoId)) return null;
   return (
     <iframe
       width={width}
@@ -26,3 +28,5 @@ export default function YouTubePlayer({
     />
   );
 }
+
+export { VIDEO_ID_RE };
