@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   clearCookies,
   jsonRequest,
@@ -8,11 +8,21 @@ import {
   truncateAll,
 } from "./helpers";
 
+import * as youtubeModule from "@/lib/youtube";
 import { GET as listGET, POST as createPOST } from "@/app/api/songs/route";
+
+let triggerSpy: ReturnType<typeof vi.spyOn>;
 
 beforeEach(async () => {
   clearCookies();
   await truncateAll();
+  triggerSpy = vi
+    .spyOn(youtubeModule, "triggerMatchInBackground")
+    .mockImplementation(() => {});
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
 });
 
 async function makeUser(name = "alice") {
@@ -171,5 +181,53 @@ describe("POST /api/songs", () => {
     expect(r1.status).toBe(201);
     expect(r2.status).toBe(201);
     expect(await prisma.song.count()).toBe(2);
+  });
+});
+
+describe("POST /api/songs auto-match trigger", () => {
+  it("fires triggerMatchInBackground for newly-created songs without youtubeId", async () => {
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await createPOST(
+      jsonRequest("http://x/api/songs", { title: "t", artist: "a" }),
+    );
+    expect(res.status).toBe(201);
+    const body = await res.json();
+    expect(triggerSpy).toHaveBeenCalledTimes(1);
+    expect(triggerSpy).toHaveBeenCalledWith(body.song.id);
+  });
+
+  it("does NOT fire trigger when client supplied an explicit youtubeId", async () => {
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await createPOST(
+      jsonRequest("http://x/api/songs", {
+        title: "t",
+        artist: "a",
+        youtubeId: "explicitYTI",
+      }),
+    );
+    expect(res.status).toBe(201);
+    expect(triggerSpy).not.toHaveBeenCalled();
+  });
+
+  it("does NOT fire trigger on the existing-song (200) dedup path", async () => {
+    const u = await makeUser();
+    await setUserSession(u.id);
+    // Pre-existing row with the spotifyId we're about to POST.
+    await prisma.song.create({
+      data: { title: "old", artist: "old", spotifyId: "dupYT" },
+    });
+    triggerSpy.mockClear();
+
+    const res = await createPOST(
+      jsonRequest("http://x/api/songs", {
+        title: "new",
+        artist: "new",
+        spotifyId: "dupYT",
+      }),
+    );
+    expect(res.status).toBe(200);
+    expect(triggerSpy).not.toHaveBeenCalled();
   });
 });

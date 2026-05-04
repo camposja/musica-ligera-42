@@ -12,6 +12,9 @@ import {
   SpotifyError,
   type NormalizedTrack,
 } from "@/lib/spotify";
+import { triggerMatchInBackground } from "@/lib/youtube";
+
+const AUTO_MATCH_LIMIT_PER_IMPORT = 25;
 
 export async function POST(request: Request) {
   const session = await getSession();
@@ -70,9 +73,11 @@ export async function POST(request: Request) {
   const songsImported = incomingSpotifyIds.length - songsReused;
 
   // === Step 5: Open a short transaction for DB writes only ===
+  // songIdByTrack is hoisted out of the transaction so the post-commit
+  // auto-match block (below) can reuse the mapping without re-querying.
+  const songIdByTrack = new Map<string, string>();
   const playlist = await prisma.$transaction(async (tx) => {
     // Upsert each Song by spotifyId; preserve local rows on conflict.
-    const songIdByTrack = new Map<string, string>();
     for (const t of uniqueTracks) {
       const song = await tx.song.upsert({
         where: { spotifyId: t.spotifyId },
@@ -100,6 +105,20 @@ export async function POST(request: Request) {
     }
     return created;
   });
+
+  // Fire-and-forget auto-match for songs that don't have a youtubeId yet.
+  // Capped at 25 per import to protect the daily YouTube quota.
+  if (uniqueTracks.length > 0) {
+    const allSongIds = Array.from(songIdByTrack.values());
+    const needsMatch = await prisma.song.findMany({
+      where: { id: { in: allSongIds }, youtubeId: null },
+      select: { id: true },
+      take: AUTO_MATCH_LIMIT_PER_IMPORT,
+    });
+    for (const { id } of needsMatch) {
+      triggerMatchInBackground(id);
+    }
+  }
 
   return Response.json(
     {

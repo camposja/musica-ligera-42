@@ -126,7 +126,35 @@ curl -b cookies.txt -H 'Content-Type: application/json' \
 # → { playlist: {id, name}, songsImported: N, songsReused: M }
 ```
 
-Imported songs have `youtubeId: null` — Ticket 4 will fill that in. Importing the same playlist twice creates a second local playlist (per spec, playlists are not deduped, only songs are).
+Imported songs start with `youtubeId: null`; YouTube auto-match runs in the background after the response (see below). Importing the same playlist twice creates a second local playlist (per spec, playlists are not deduped, only songs are).
+
+## YouTube playback
+
+Songs are matched to YouTube videos via the [YouTube Data API v3 search endpoint](https://developers.google.com/youtube/v3/docs/search/list). The top result becomes `Song.youtubeId`; the next 2–3 are stored in `Song.youtubeAltIds` for later override.
+
+**Required env** (already in `.env.example`):
+- `YOUTUBE_API_KEY` — get one at https://console.cloud.google.com/ (enable "YouTube Data API v3" on the project)
+
+**Default daily quota is 10,000 units; each search costs 100 units (~100 matches/day).** Plan accordingly.
+
+| Method | Path | Auth | Behavior |
+|---|---|---|---|
+| POST | `/api/youtube/match` | OWNER-only | body `{songId}`. Re-runs YouTube search and overwrites `youtubeId` + `youtubeAltIds`. 404 with `{error:"No YouTube match found"}` when search returns 0 items. 503 + `Retry-After` on 429. 502 on other upstream errors. |
+| POST | `/api/youtube/override` | OWNER-only | body `{songId, newYoutubeId}`. Format-validates `newYoutubeId` against `^[A-Za-z0-9_-]{11}$`. Updates `youtubeId` only; `youtubeAltIds` is untouched. **No call to YouTube** — saves quota. |
+
+**Why OWNER-only:** `Song` is global shared state — every user with a song in their playlist plays the same `youtubeId`. A USER changing it would affect every other user, so manual mutation is locked to OWNER. Auto-match is fine for any session because it only fills `youtubeId` when it's null; it never overwrites an existing pick.
+
+### Auto-match (fire-and-forget)
+
+When a Song is created via `POST /api/songs` (without an explicit `youtubeId`) or via `POST /api/spotify/import-playlist`, a background match runs **after** the HTTP response is sent. Matches are processed serially (concurrency 1) via a chained promise; errors are logged and swallowed. Failed/quota-blocked songs stay `youtubeId: null` and can be retried later via `POST /api/youtube/match`.
+
+**Per-import cap: 25 songs.** A 100-track Spotify import will only auto-match the first 25 songs that need it; the rest stay unmatched until you trigger them manually. This bounds quota burn (≤2,500 units/import) so a single click can't wipe the daily budget.
+
+> ⚠️ **MVP / local-server only.** Fire-and-forget works on `pnpm dev` / `next start` because the Node process keeps running. It will **not** work on serverless deployments (Vercel functions, AWS Lambda) — those terminate execution once the response is sent. Replace with a real durable queue (BullMQ, pg-boss, Cloud Tasks) before deploying serverlessly.
+
+### `<YouTubePlayer videoId={...} />`
+
+Component at `src/components/YouTubePlayer.tsx`. Renders a plain YouTube embed `<iframe>`. Returns `null` for null/empty/malformed `videoId` so an unmatched song doesn't paint a broken iframe. Wired into actual pages in Ticket 5.
 
 ## Tests
 

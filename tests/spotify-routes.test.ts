@@ -28,11 +28,17 @@ afterEach(() => {
 });
 
 import { _resetTokenCacheForTests } from "@/lib/spotify";
+import * as youtubeModule from "@/lib/youtube";
 import { GET as searchGET } from "@/app/api/spotify/search/route";
 import { POST as importPOST } from "@/app/api/spotify/import-playlist/route";
 
+let triggerSpy: ReturnType<typeof vi.spyOn>;
+
 beforeEach(() => {
   _resetTokenCacheForTests();
+  triggerSpy = vi
+    .spyOn(youtubeModule, "triggerMatchInBackground")
+    .mockImplementation(() => {});
 });
 
 // --- fetch mocking helpers (queue-of-canned-responses) --------------------
@@ -256,16 +262,24 @@ describe("POST /api/spotify/import-playlist", () => {
     expect(playlist.userId).toBe(u.id);
     expect(playlist.songs.map((ps) => ps.song.spotifyId)).toEqual(["a", "b", "c"]);
     expect(playlist.songs.map((ps) => ps.order)).toEqual([0, 1, 2]);
-    // youtubeId stays null on imported songs (Ticket 4 fills it)
+    // youtubeId stays null on imported songs (Ticket 4 auto-matches in background)
     for (const ps of playlist.songs) {
       expect(ps.song.youtubeId).toBeNull();
     }
+    // Auto-match trigger fired once per imported song (3 here)
+    expect(triggerSpy).toHaveBeenCalledTimes(3);
   });
 
   it("dedup: reuses existing song by spotifyId", async () => {
-    // Pre-existing local song with spotifyId "a"
+    // Pre-existing local song with spotifyId "a", already has a youtubeId so
+    // the auto-match trigger should NOT fire for it.
     await prisma.song.create({
-      data: { title: "Local Title", artist: "Local Artist", spotifyId: "a" },
+      data: {
+        title: "Local Title",
+        artist: "Local Artist",
+        spotifyId: "a",
+        youtubeId: "EXISTINGYTID",
+      },
     });
 
     mockFetchSequence([
@@ -292,6 +306,10 @@ describe("POST /api/spotify/import-playlist", () => {
     // Local fields preserved (not overwritten by import)
     expect(songA?.title).toBe("Local Title");
     expect(songA?.artist).toBe("Local Artist");
+
+    // Auto-match trigger fired only for the 2 truly-new tracks (b, c) —
+    // NOT for "a" because it already had a youtubeId.
+    expect(triggerSpy).toHaveBeenCalledTimes(2);
   });
 
   it("re-importing the same playlist creates a second Playlist but reuses all songs", async () => {
@@ -377,6 +395,31 @@ describe("POST /api/spotify/import-playlist", () => {
       include: { songs: { orderBy: { order: "asc" } } },
     });
     expect(playlist.songs.map((ps) => ps.order)).toEqual([0, 1]);
+  });
+
+  it("caps auto-match triggers at 25 per import (quota guard)", async () => {
+    // Build a 30-track playlist; only the first 25 unmatched songs should
+    // get triggerMatchInBackground called.
+    const tracks = Array.from({ length: 30 }, (_, i) => track(`t${i}`));
+    mockFetchSequence([
+      tokenResponse(),
+      { status: 200, json: { name: "Big Mix" } },
+      { status: 200, json: { items: tracks, next: null } },
+    ]);
+
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await importPOST(
+      jsonRequest("http://x/api/spotify/import-playlist", { url: PLAYLIST_URL }),
+    );
+    expect(res.status).toBe(201);
+    const body = await res.json();
+    expect(body.songsImported).toBe(30);
+    expect(body.songsReused).toBe(0);
+    expect(await prisma.song.count()).toBe(30);
+
+    // Cap kicks in: exactly 25 trigger calls, not 30.
+    expect(triggerSpy).toHaveBeenCalledTimes(25);
   });
 
   it("falls back to 'Imported Spotify Playlist' when Spotify returns no name", async () => {

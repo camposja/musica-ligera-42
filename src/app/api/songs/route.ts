@@ -1,5 +1,6 @@
 import { getSession, unauthorized } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { triggerMatchInBackground } from "@/lib/youtube";
 
 export async function GET() {
   const session = await getSession();
@@ -78,6 +79,10 @@ export async function POST(request: Request) {
         youtubeAltIds,
       },
     });
+    // Auto-match if no explicit youtubeId was supplied. Fire-and-forget.
+    if (!song.youtubeId) {
+      triggerMatchInBackground(song.id);
+    }
     return Response.json({ song }, { status: 201 });
   } catch (err) {
     // Race-condition fallback: two concurrent POSTs with the same spotifyId
