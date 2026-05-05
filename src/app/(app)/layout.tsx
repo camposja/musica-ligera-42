@@ -34,14 +34,16 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     <SessionProvider session={session}>
       <PlayerProvider>
         <div className="flex min-h-full flex-col">
-          <Header
-            userName={userName}
-            actingUserName={actingUserName}
-            spotifyConnected={!!spotifyConn}
-            spotifyAccountId={spotifyConn?.spotifyUserId ?? null}
-          />
+          <div className="sticky top-0 z-30">
+            <Header
+              userName={userName}
+              actingUserName={actingUserName}
+              spotifyConnected={!!spotifyConn}
+              spotifyAccountId={spotifyConn?.spotifyUserId ?? null}
+            />
+            <PlayerBar />
+          </div>
           <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">{children}</main>
-          <PlayerBar />
         </div>
       </PlayerProvider>
     </SessionProvider>

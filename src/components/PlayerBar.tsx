@@ -6,18 +6,12 @@ import YouTubePlayer, { VIDEO_ID_RE } from "@/components/YouTubePlayer";
 export function PlayerBar() {
   const { song, stop } = useNowPlaying();
 
-  if (!song) {
-    return (
-      <div className="border-t border-border bg-surface px-4 py-2 text-xs text-muted">
-        Nothing playing
-      </div>
-    );
-  }
+  if (!song) return null;
 
   const playable = song.youtubeId !== null && VIDEO_ID_RE.test(song.youtubeId);
 
   return (
-    <div className="border-t border-border bg-surface px-4 py-2">
+    <div className="border-b border-border bg-surface px-4 py-2">
       <div className="flex items-center gap-4">
         <div className="min-w-0 flex-1">
           <div className="truncate font-medium">{song.title}</div>
