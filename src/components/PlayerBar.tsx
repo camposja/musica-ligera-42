@@ -5,20 +5,62 @@ import { useNowPlaying } from "@/components/PlayerProvider";
 import YouTubePlayer, { VIDEO_ID_RE } from "@/components/YouTubePlayer";
 import { YouTubeAudioPlayer } from "@/components/YouTubeAudioPlayer";
 
+type AudioStatus = "probing" | "ready" | "error";
+type AudioError = { code: string; detail: string };
+
 export function PlayerBar() {
   const { song, stop } = useNowPlaying();
-  const [audioFailed, setAudioFailed] = useState(false);
-
-  // Reset the fallback flag whenever the playing song changes; otherwise a
-  // failure on song A would permanently force iframe mode for song B.
-  useEffect(() => {
-    setAudioFailed(false);
-  }, [song?.id]);
-
-  if (!song) return null;
+  const [audioStatus, setAudioStatus] = useState<AudioStatus>("probing");
+  const [audioError, setAudioError] = useState<AudioError | null>(null);
+  const [manualFallback, setManualFallback] = useState(false);
 
   const videoId =
-    song.youtubeId && VIDEO_ID_RE.test(song.youtubeId) ? song.youtubeId : null;
+    song?.youtubeId && VIDEO_ID_RE.test(song.youtubeId) ? song.youtubeId : null;
+
+  // Probe the audio-status endpoint whenever the song changes. The probe can
+  // surface structured error codes (yt_dlp_missing, extract_failed, etc.); the
+  // browser <audio onError> can't read response bodies so without the probe
+  // the user would only see a generic media error.
+  useEffect(() => {
+    setAudioError(null);
+    setManualFallback(false);
+
+    if (!videoId) {
+      setAudioStatus("error");
+      return;
+    }
+
+    setAudioStatus("probing");
+    const ac = new AbortController();
+    fetch(`/api/youtube/audio-status/${videoId}`, { signal: ac.signal })
+      .then(async (res) => {
+        const body = (await res.json().catch(() => null)) as
+          | { ok: true }
+          | { ok: false; code: string; detail: string }
+          | null;
+        if (res.ok && body && body.ok) {
+          setAudioStatus("ready");
+        } else {
+          setAudioError(
+            body && !body.ok
+              ? { code: body.code, detail: body.detail }
+              : { code: "extract_failed", detail: `status ${res.status}` },
+          );
+          setAudioStatus("error");
+        }
+      })
+      .catch((err) => {
+        if (ac.signal.aborted) return;
+        setAudioError({
+          code: "extract_failed",
+          detail: `probe network error: ${(err as Error).message}`,
+        });
+        setAudioStatus("error");
+      });
+    return () => ac.abort();
+  }, [videoId]);
+
+  if (!song) return null;
 
   return (
     <div className="border-b border-border bg-surface px-3 py-2 sm:px-4 sm:py-3">
@@ -41,20 +83,44 @@ export function PlayerBar() {
             ×
           </button>
         </div>
-        {videoId ? (
-          audioFailed ? (
-            <div className="flex justify-center">
-              <YouTubePlayer videoId={videoId} width={320} height={180} />
-            </div>
-          ) : (
-            <YouTubeAudioPlayer
-              videoId={videoId}
-              onError={() => setAudioFailed(true)}
-            />
-          )
-        ) : (
+        {!videoId ? (
           <div className="rounded border border-border bg-background px-3 py-2 text-sm text-muted">
             Auto-matching YouTube video for &ldquo;{song.title}&rdquo;…
+          </div>
+        ) : manualFallback ? (
+          <div className="flex justify-center">
+            <YouTubePlayer videoId={videoId} width={320} height={180} />
+          </div>
+        ) : audioStatus === "probing" ? (
+          <div className="rounded border border-border bg-background px-3 py-2 text-sm text-muted">
+            Loading audio…
+          </div>
+        ) : audioStatus === "ready" ? (
+          <YouTubeAudioPlayer
+            videoId={videoId}
+            onError={() => {
+              setAudioError({
+                code: "media_error",
+                detail: "<audio> element fired onError after src load",
+              });
+              setAudioStatus("error");
+            }}
+          />
+        ) : (
+          <div className="flex flex-col gap-2 rounded border border-danger/40 bg-background px-3 py-2 text-sm">
+            <div className="text-danger">
+              Audio playback failed: <span className="font-mono">{audioError?.code ?? "unknown"}</span>
+            </div>
+            {audioError?.detail && (
+              <div className="break-words text-xs text-muted">{audioError.detail}</div>
+            )}
+            <button
+              type="button"
+              onClick={() => setManualFallback(true)}
+              className="self-start rounded border border-border px-3 py-1.5 text-xs text-muted hover:text-foreground"
+            >
+              Try YouTube embed
+            </button>
           </div>
         )}
       </div>

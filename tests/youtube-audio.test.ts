@@ -1,53 +1,84 @@
+import { EventEmitter } from "events";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-// Mock youtubei.js BEFORE importing anything that touches it.
-const mockGetStreamingData = vi.fn();
-vi.mock("youtubei.js", () => ({
-  Innertube: {
-    create: vi.fn(async () => ({ getStreamingData: mockGetStreamingData })),
-  },
+// Mock child_process.spawn BEFORE importing anything that touches it.
+const spawnMock = vi.fn();
+vi.mock("child_process", () => ({
+  spawn: (cmd: string, args: string[]) => spawnMock(cmd, args),
 }));
 
-import { Innertube } from "youtubei.js";
 import { clearCookies, ctx, setUserSession, prisma, truncateAll } from "./helpers";
 import {
-  AudioExtractionError,
-  _resetAudioCacheForTests,
-  getAudioStreamInfo,
-} from "@/lib/youtube-audio";
+  _resetCacheForTests,
+  resolveAudio,
+  evictAudioCache,
+} from "@/lib/playback/resolver";
+import { ResolveError } from "@/lib/playback/types";
 import { GET as audioGET } from "@/app/api/youtube/audio/[videoId]/route";
-
-const mockedCreate = vi.mocked(Innertube.create);
+import { GET as audioStatusGET } from "@/app/api/youtube/audio-status/[videoId]/route";
 
 const VID = "dQw4w9WgXcQ";
 
 beforeEach(async () => {
   clearCookies();
   await truncateAll();
-  _resetAudioCacheForTests();
-  mockGetStreamingData.mockReset();
-  mockedCreate.mockClear();
+  _resetCacheForTests();
+  spawnMock.mockReset();
 });
 
 afterEach(() => {
   vi.restoreAllMocks();
 });
 
-// --- helpers ----------------------------------------------------------------
+// --- spawn fake helper ------------------------------------------------------
 
-type FakeFormat = {
-  url?: string;
-  mime_type?: string;
-  content_length?: number;
+type FakeChildOpts = {
+  stdout?: string;
+  stderr?: string;
+  exitCode?: number;
+  spawnError?: NodeJS.ErrnoException;
 };
 
-function audioFormat(opts: FakeFormat = {}): FakeFormat {
-  return {
-    url: "https://cdn/mp4",
-    mime_type: 'audio/mp4; codecs="mp4a.40.2"',
-    content_length: 1234567,
-    ...opts,
-  };
+// Schedule events to fire AFTER the provider attaches listeners. We schedule
+// from inside the mocked spawn() (via mockImplementationOnce) rather than at
+// test-setup time so the events don't fire before the provider's .on() calls
+// have run.
+function mockSpawnOnce(opts: FakeChildOpts) {
+  spawnMock.mockImplementationOnce(() => {
+    const child = new EventEmitter() as EventEmitter & {
+      stdout: EventEmitter;
+      stderr: EventEmitter;
+      kill: (sig?: string) => void;
+    };
+    child.stdout = new EventEmitter();
+    child.stderr = new EventEmitter();
+    child.kill = vi.fn();
+
+    setImmediate(() => {
+      if (opts.spawnError) {
+        child.emit("error", opts.spawnError);
+        return;
+      }
+      if (opts.stdout) child.stdout.emit("data", Buffer.from(opts.stdout));
+      if (opts.stderr) child.stderr.emit("data", Buffer.from(opts.stderr));
+      child.emit("close", opts.exitCode ?? 0);
+    });
+
+    return child;
+  });
+}
+
+function ytDlpJson(opts: { url?: string; ext?: string; filesize?: number } = {}) {
+  return JSON.stringify({
+    url: opts.url ?? "https://cdn.example/audio.m4a",
+    ext: opts.ext ?? "m4a",
+    filesize: opts.filesize ?? 1234567,
+    acodec: "mp4a.40.2",
+  });
+}
+
+function enoentError(): NodeJS.ErrnoException {
+  return Object.assign(new Error("spawn yt-dlp ENOENT"), { code: "ENOENT" });
 }
 
 async function makeUserSession() {
@@ -57,125 +88,160 @@ async function makeUserSession() {
   await setUserSession(u.id);
 }
 
-// === getAudioStreamInfo ====================================================
+// === resolveAudio ==========================================================
 
-describe("getAudioStreamInfo", () => {
-  it("returns the URL and stripped content-type from getStreamingData", async () => {
-    mockGetStreamingData.mockResolvedValueOnce(
-      audioFormat({
-        url: "https://cdn/mp4",
-        mime_type: 'audio/mp4; codecs="mp4a.40.2"',
-        content_length: 4242,
-      }),
-    );
-    const info = await getAudioStreamInfo(VID);
-    expect(info.url).toBe("https://cdn/mp4");
-    expect(info.contentType).toBe("audio/mp4");
-    expect(info.contentLength).toBe(4242);
+describe("resolveAudio", () => {
+  it("returns a PlaybackStream from yt-dlp JSON", async () => {
+    mockSpawnOnce({
+      stdout: ytDlpJson({ url: "https://cdn/x.m4a", ext: "m4a", filesize: 4242 }),
+    });
+    const stream = await resolveAudio(VID);
+    expect(stream.url).toBe("https://cdn/x.m4a");
+    expect(stream.contentType).toBe("audio/mp4");
+    expect(stream.contentLength).toBe(4242);
+    expect(stream.expiresAt).toBeGreaterThan(Date.now());
   });
 
-  it("requests format:'mp4' first, falls back to 'any' when mp4 unavailable", async () => {
-    mockGetStreamingData
-      .mockRejectedValueOnce(new Error("no mp4 format"))
-      .mockResolvedValueOnce(
-        audioFormat({
-          url: "https://cdn/webm",
-          mime_type: 'audio/webm; codecs="opus"',
-        }),
-      );
-    const info = await getAudioStreamInfo(VID);
-    expect(info.url).toBe("https://cdn/webm");
-    expect(info.contentType).toBe("audio/webm");
-    expect(mockGetStreamingData).toHaveBeenCalledTimes(2);
-    expect(mockGetStreamingData.mock.calls[0][1]).toMatchObject({
-      type: "audio",
-      format: "mp4",
-    });
-    expect(mockGetStreamingData.mock.calls[1][1]).toMatchObject({
-      type: "audio",
-      format: "any",
+  it("maps webm/opus ext to audio/webm content type", async () => {
+    mockSpawnOnce({ stdout: ytDlpJson({ ext: "webm" }) });
+    const stream = await resolveAudio(VID);
+    expect(stream.contentType).toBe("audio/webm");
+  });
+
+  it("throws ResolveError(yt_dlp_missing) on ENOENT", async () => {
+    mockSpawnOnce({ spawnError: enoentError() });
+    await expect(resolveAudio(VID)).rejects.toMatchObject({
+      name: "ResolveError",
+      code: "yt_dlp_missing",
     });
   });
 
-  it("throws AudioExtractionError when both mp4 and 'any' fail", async () => {
-    mockGetStreamingData
-      .mockRejectedValueOnce(new Error("no mp4"))
-      .mockRejectedValueOnce(new Error("no audio at all"));
-    await expect(getAudioStreamInfo(VID)).rejects.toBeInstanceOf(
-      AudioExtractionError,
-    );
+  it("throws ResolveError(extract_failed) on non-zero exit", async () => {
+    mockSpawnOnce({ exitCode: 1, stderr: "ERROR: Video unavailable" });
+    await expect(resolveAudio(VID)).rejects.toMatchObject({
+      name: "ResolveError",
+      code: "extract_failed",
+    });
   });
 
-  it("throws AudioExtractionError when chosen format has no URL", async () => {
-    mockGetStreamingData.mockResolvedValueOnce(audioFormat({ url: undefined }));
-    await expect(getAudioStreamInfo(VID)).rejects.toBeInstanceOf(
-      AudioExtractionError,
-    );
+  it("throws ResolveError on non-JSON stdout", async () => {
+    mockSpawnOnce({ stdout: "not json at all" });
+    await expect(resolveAudio(VID)).rejects.toBeInstanceOf(ResolveError);
   });
 
-  it("throws AudioExtractionError when Innertube.create itself throws", async () => {
-    mockedCreate.mockRejectedValueOnce(new Error("network down"));
-    await expect(getAudioStreamInfo(VID)).rejects.toBeInstanceOf(
-      AudioExtractionError,
-    );
+  it("throws ResolveError(extract_failed) when JSON has no url field", async () => {
+    mockSpawnOnce({ stdout: JSON.stringify({ ext: "m4a" }) });
+    await expect(resolveAudio(VID)).rejects.toMatchObject({
+      code: "extract_failed",
+    });
   });
 
-  it("caches results by videoId across calls", async () => {
-    mockGetStreamingData.mockResolvedValueOnce(
-      audioFormat({ url: "https://cdn/once" }),
-    );
-    const a = await getAudioStreamInfo(VID);
-    const b = await getAudioStreamInfo(VID);
+  it("caches results — second call doesn't spawn yt-dlp", async () => {
+    mockSpawnOnce({ stdout: ytDlpJson({ url: "https://cdn/once" }) });
+    const a = await resolveAudio(VID);
+    const b = await resolveAudio(VID);
     expect(a.url).toBe("https://cdn/once");
     expect(b.url).toBe("https://cdn/once");
-    expect(mockGetStreamingData).toHaveBeenCalledTimes(1);
+    expect(spawnMock).toHaveBeenCalledTimes(1);
   });
 
-  it("constructs the Innertube client only once across many extractions", async () => {
-    mockGetStreamingData.mockResolvedValue(audioFormat());
-    await getAudioStreamInfo("aaaaaaaaaaa");
-    await getAudioStreamInfo("bbbbbbbbbbb");
-    await getAudioStreamInfo("ccccccccccc");
-    expect(mockedCreate).toHaveBeenCalledTimes(1);
+  it("evictAudioCache forces a re-resolve", async () => {
+    mockSpawnOnce({ stdout: ytDlpJson({ url: "https://cdn/first" }) });
+    mockSpawnOnce({ stdout: ytDlpJson({ url: "https://cdn/second" }) });
+    const a = await resolveAudio(VID);
+    expect(a.url).toBe("https://cdn/first");
+    evictAudioCache(VID);
+    const b = await resolveAudio(VID);
+    expect(b.url).toBe("https://cdn/second");
+    expect(spawnMock).toHaveBeenCalledTimes(2);
   });
 });
 
-// === GET /api/youtube/audio/[videoId] ======================================
+// === GET /api/youtube/audio-status =========================================
 
-function audioRequest(videoId: string, init: RequestInit = {}): Request {
-  return new Request(`http://x/api/youtube/audio/${videoId}`, init);
+function statusReq(videoId: string): Request {
+  return new Request(`http://x/api/youtube/audio-status/${videoId}`);
 }
 
-describe("GET /api/youtube/audio/[videoId]", () => {
+describe("GET /api/youtube/audio-status/[videoId]", () => {
   it("401 without session", async () => {
-    const res = await audioGET(audioRequest(VID), ctx({ videoId: VID }));
+    const res = await audioStatusGET(statusReq(VID), ctx({ videoId: VID }));
     expect(res.status).toBe(401);
   });
 
   it("400 on malformed videoId", async () => {
     await makeUserSession();
-    const res = await audioGET(
-      audioRequest("not-a-video-id"),
-      ctx({ videoId: "not-a-video-id" }),
+    const res = await audioStatusGET(
+      statusReq("bad"),
+      ctx({ videoId: "bad" }),
     );
     expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body).toMatchObject({ ok: false, code: "invalid_video_id" });
+  });
+
+  it("ok:true with contentType + contentLength on success", async () => {
+    await makeUserSession();
+    mockSpawnOnce({ stdout: ytDlpJson({ ext: "m4a", filesize: 42 }) });
+    const res = await audioStatusGET(statusReq(VID), ctx({ videoId: VID }));
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body).toMatchObject({
+      ok: true,
+      contentType: "audio/mp4",
+      contentLength: 42,
+    });
+  });
+
+  it("ok:false code:yt_dlp_missing when binary missing", async () => {
+    await makeUserSession();
+    mockSpawnOnce({ spawnError: enoentError() });
+    const res = await audioStatusGET(statusReq(VID), ctx({ videoId: VID }));
+    expect(res.status).toBe(502);
+    const body = await res.json();
+    expect(body).toMatchObject({ ok: false, code: "yt_dlp_missing" });
+  });
+
+  it("ok:false code:extract_failed on yt-dlp non-zero exit", async () => {
+    await makeUserSession();
+    mockSpawnOnce({ exitCode: 1, stderr: "Video unavailable" });
+    const res = await audioStatusGET(statusReq(VID), ctx({ videoId: VID }));
+    expect(res.status).toBe(502);
+    const body = await res.json();
+    expect(body).toMatchObject({ ok: false, code: "extract_failed" });
+  });
+});
+
+// === GET /api/youtube/audio ================================================
+
+function audioReq(videoId: string, init: RequestInit = {}): Request {
+  return new Request(`http://x/api/youtube/audio/${videoId}`, init);
+}
+
+describe("GET /api/youtube/audio/[videoId]", () => {
+  it("401 without session", async () => {
+    const res = await audioGET(audioReq(VID), ctx({ videoId: VID }));
+    expect(res.status).toBe(401);
+  });
+
+  it("400 on malformed videoId", async () => {
+    await makeUserSession();
+    const res = await audioGET(audioReq("bad"), ctx({ videoId: "bad" }));
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body).toMatchObject({ error: "invalid_video_id" });
   });
 
   it("happy path: 200, forwards content-type, streams body", async () => {
     await makeUserSession();
-    mockGetStreamingData.mockResolvedValueOnce(
-      audioFormat({ url: "https://cdn/mp4" }),
-    );
+    mockSpawnOnce({ stdout: ytDlpJson({ url: "https://cdn/x.m4a" }) });
     vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
       new Response("AUDIO_BYTES", {
         status: 200,
-        headers: {
-          "content-type": "audio/mp4",
-          "content-length": "11",
-        },
+        headers: { "content-type": "audio/mp4", "content-length": "11" },
       }),
     );
-    const res = await audioGET(audioRequest(VID), ctx({ videoId: VID }));
+    const res = await audioGET(audioReq(VID), ctx({ videoId: VID }));
     expect(res.status).toBe(200);
     expect(res.headers.get("content-type")).toBe("audio/mp4");
     expect(res.headers.get("accept-ranges")).toBe("bytes");
@@ -185,9 +251,7 @@ describe("GET /api/youtube/audio/[videoId]", () => {
 
   it("forwards Range header upstream and returns 206 + Content-Range", async () => {
     await makeUserSession();
-    mockGetStreamingData.mockResolvedValueOnce(
-      audioFormat({ url: "https://cdn/mp4" }),
-    );
+    mockSpawnOnce({ stdout: ytDlpJson() });
     const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
       new Response("PARTIAL", {
         status: 206,
@@ -199,39 +263,73 @@ describe("GET /api/youtube/audio/[videoId]", () => {
       }),
     );
     const res = await audioGET(
-      audioRequest(VID, { headers: { range: "bytes=100-199" } }),
+      audioReq(VID, { headers: { range: "bytes=100-199" } }),
       ctx({ videoId: VID }),
     );
     expect(res.status).toBe(206);
     expect(res.headers.get("content-range")).toBe("bytes 100-199/2000");
-    expect(fetchSpy).toHaveBeenCalledTimes(1);
     const sentHeaders = (fetchSpy.mock.calls[0][1] as RequestInit).headers as Headers;
     expect(sentHeaders.get("range")).toBe("bytes=100-199");
   });
 
-  it("502 extraction_failed when getStreamingData throws", async () => {
+  it("on upstream 403, evicts cache, re-resolves, retries — succeeds", async () => {
     await makeUserSession();
-    mockGetStreamingData
-      .mockRejectedValueOnce(new Error("no mp4"))
-      .mockRejectedValueOnce(new Error("no audio at all"));
-    const res = await audioGET(audioRequest(VID), ctx({ videoId: VID }));
-    expect(res.status).toBe(502);
-    const body = await res.json();
-    expect(body.error).toBe("extraction_failed");
+    mockSpawnOnce({ stdout: ytDlpJson({ url: "https://cdn/stale" }) });
+    mockSpawnOnce({ stdout: ytDlpJson({ url: "https://cdn/fresh" }) });
+    vi.spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(new Response("forbidden", { status: 403 }))
+      .mockResolvedValueOnce(
+        new Response("RECOVERED", {
+          status: 200,
+          headers: { "content-type": "audio/mp4" },
+        }),
+      );
+    const res = await audioGET(audioReq(VID), ctx({ videoId: VID }));
+    expect(res.status).toBe(200);
+    expect(await res.text()).toBe("RECOVERED");
+    expect(spawnMock).toHaveBeenCalledTimes(2);
   });
 
-  it("502 upstream_error when CDN returns 4xx", async () => {
+  it("on upstream 403 + retry still 403 → 502 stream_403", async () => {
     await makeUserSession();
-    mockGetStreamingData.mockResolvedValueOnce(
-      audioFormat({ url: "https://cdn/expired" }),
-    );
-    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
-      new Response("forbidden", { status: 403 }),
-    );
-    const res = await audioGET(audioRequest(VID), ctx({ videoId: VID }));
+    mockSpawnOnce({ stdout: ytDlpJson() });
+    mockSpawnOnce({ stdout: ytDlpJson() });
+    vi.spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(new Response("forbidden", { status: 403 }))
+      .mockResolvedValueOnce(new Response("forbidden", { status: 403 }));
+    const res = await audioGET(audioReq(VID), ctx({ videoId: VID }));
     expect(res.status).toBe(502);
     const body = await res.json();
-    expect(body.error).toBe("upstream_error");
-    expect(body.upstreamStatus).toBe(403);
+    expect(body).toMatchObject({ error: "stream_403" });
+  });
+
+  it("502 yt_dlp_missing when binary not on PATH", async () => {
+    await makeUserSession();
+    mockSpawnOnce({ spawnError: enoentError() });
+    const res = await audioGET(audioReq(VID), ctx({ videoId: VID }));
+    expect(res.status).toBe(502);
+    const body = await res.json();
+    expect(body).toMatchObject({ error: "yt_dlp_missing" });
+  });
+
+  it("502 extract_failed when yt-dlp exits non-zero", async () => {
+    await makeUserSession();
+    mockSpawnOnce({ exitCode: 1, stderr: "Video unavailable" });
+    const res = await audioGET(audioReq(VID), ctx({ videoId: VID }));
+    expect(res.status).toBe(502);
+    const body = await res.json();
+    expect(body).toMatchObject({ error: "extract_failed" });
+  });
+
+  it("502 upstream_failed when CDN returns non-403 4xx/5xx", async () => {
+    await makeUserSession();
+    mockSpawnOnce({ stdout: ytDlpJson() });
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      new Response("server error", { status: 500 }),
+    );
+    const res = await audioGET(audioReq(VID), ctx({ videoId: VID }));
+    expect(res.status).toBe(502);
+    const body = await res.json();
+    expect(body).toMatchObject({ error: "upstream_failed" });
   });
 });

@@ -181,7 +181,8 @@ Songs are matched to YouTube videos via the [YouTube Data API v3 search endpoint
 |---|---|---|---|
 | POST | `/api/youtube/match` | OWNER-only | body `{songId}`. Re-runs YouTube search and overwrites `youtubeId` + `youtubeAltIds`. 404 with `{error:"No YouTube match found"}` when search returns 0 items. 503 + `Retry-After` on 429. 502 on other upstream errors. |
 | POST | `/api/youtube/override` | OWNER-only | body `{songId, newYoutubeId}`. Format-validates `newYoutubeId` against `^[A-Za-z0-9_-]{11}$`. Updates `youtubeId` only; `youtubeAltIds` is untouched. **No call to YouTube** — saves quota. |
-| GET  | `/api/youtube/audio/[videoId]` | session | Streams audio extracted from YouTube via `youtubei.js` (InnerTube). Forwards the browser's `Range` header upstream (so `<audio>` seeking works → 206 Partial Content). 1-hour in-memory cache of stream URLs. 502 with `{error:"extraction_failed"}` if extraction fails. **No quota cost** — bypasses the YouTube Data API. |
+| GET  | `/api/youtube/audio/[videoId]` | session | Streams audio extracted from YouTube via `yt-dlp`. Forwards the browser's `Range` header upstream (so `<audio>` seeking works → 206 Partial Content). 45-minute in-memory cache of stream URLs. On upstream 403 the cache entry is evicted, yt-dlp re-runs once, and the stream is retried. Structured error codes (see below). **No quota cost** — bypasses the YouTube Data API. |
+| GET  | `/api/youtube/audio-status/[videoId]` | session | Lightweight diagnostic endpoint. Calls the same resolver as the stream route (so the stream's cache is warmed) but returns JSON `{ok:true, contentType, contentLength}` on success or `{ok:false, code, detail}` on failure. The player probes this before setting `<audio src>` so it can show the user a real error code (the browser's `<audio onError>` can't read response bodies). |
 
 **Why OWNER-only:** `Song` is global shared state — every user with a song in their playlist plays the same `youtubeId`. A USER changing it would affect every other user, so manual mutation is locked to OWNER. Auto-match is fine for any session because it only fills `youtubeId` when it's null; it never overwrites an existing pick.
 
@@ -195,35 +196,73 @@ When a Song is created via `POST /api/songs` (without an explicit `youtubeId`) o
 
 ### Playback
 
-**Primary: server-side audio extraction.** The player bar renders an `<audio src="/api/youtube/audio/[id]">` element. The route handler uses [`youtubei.js`](https://www.npmjs.com/package/youtubei.js) (a pure-JS client for YouTube's internal InnerTube API) to resolve a direct CDN URL for the audio-only stream, then proxies the bytes through to the browser. **No YouTube login required.** Format selection prefers `audio/mp4` (Safari can play AAC; it can't play YouTube's `audio/webm` opus), falling back to any container only when no mp4 audio-only format is available. Browser-native `<audio>` controls — play/pause/seek/volume — driven by `Range` request passthrough to YouTube's CDN.
+**Primary: server-side audio extraction with `yt-dlp`.** The player bar renders an `<audio src="/api/youtube/audio/[id]">` element. The route handler shells out to `yt-dlp` to resolve a direct CDN URL for the audio-only stream, then proxies the bytes through to the browser. **No YouTube login required.** Format selector: `bestaudio[ext=m4a]/bestaudio[ext=webm]/bestaudio` — m4a first (Safari can play AAC, can't play YouTube's webm/opus), webm next, anything as last resort. Browser-native `<audio>` controls driven by `Range` request passthrough.
 
 > **Why proxy, not 302 redirect?** YouTube stream URLs are bound to the requesting IP. A redirect to that URL would 403 from the browser's IP. The proxy uses our server's bandwidth (fine for personal/family scale).
 
-**Fallback: YouTube iframe.** If the `<audio>` element fires `onError` (extraction broke for that video, format incompatibility, etc.), `PlayerBar` swaps in `<YouTubePlayer>` — the original `https://www.youtube.com/embed/[id]` iframe. The iframe is gated by YouTube's anonymous-embed restrictions (most music videos require the visitor be signed into a YouTube account), so it's a *deepest* fallback, not a peer.
+> **Why a separate `audio-status` probe?** The browser's `<audio onError>` only exposes a generic `MediaError` — it can't read our JSON error body. The player probes the status endpoint first so it can surface real error codes (`yt_dlp_missing` vs `extract_failed` vs `stream_403`) instead of the same generic failure for all of them. Both endpoints share one resolver and one cache, so the probe + stream pair is one yt-dlp invocation.
 
-**Future: Spotify Web Playback SDK.** Captured as future work. When any one user has Spotify Premium connected (singleton OWNER model), we'd prefer the SDK over extraction for higher fidelity. Extraction stays the no-Premium-required path.
+**Manual fallback: YouTube iframe.** When extraction fails, the player shows the structured error code + a "Try YouTube embed" button. Clicking renders the original `https://www.youtube.com/embed/[id]` iframe. **No silent swap** — the goal during shakedown is to surface real failures, not hide them behind another broken thing (the iframe is itself gated by YouTube's anonymous-embed restrictions). Once yt-dlp proves stable for an extended period, we can flip the player to auto-fall-back.
 
-The auto-match filter still removes the *obviously* unplayable hits before they ever land in the DB — even though extraction sidesteps most of these, the filter helps the iframe-fallback case:
-- Non-embeddable videos (uploader disabled third-party embedding entirely)
-- Age-restricted videos (`contentDetails.contentRating.ytRating === "ytAgeRestricted"`)
-- Private videos
+**Future: Spotify Web Playback SDK.** Captured as future work — would become preferred-when-available for Premium-connected sessions. Extraction stays the no-Premium-required path.
 
-If all 4 candidates from a search are restricted, we fall back to the search order so the song still has *some* match — extraction usually still works on these.
+#### Install yt-dlp
 
-**For songs imported before the filter existed**, the OWNER can hit the "Re-check matches" button on the dashboard. It re-checks each song's stored `youtubeId + youtubeAltIds` (1 quota unit per song, no new searches) and promotes a playable alt if one exists.
+```bash
+brew install yt-dlp
+brew upgrade yt-dlp   # when YouTube changes break extraction
+```
 
-#### Caveats
+#### Verify yt-dlp works (isolate "app bug" from "system bug")
 
-- **`youtubei.js` fragility.** Uses YouTube's reverse-engineered InnerTube API (Android client) instead of the signature-decipher path that broke `@distube/ytdl-core` for us in May 2026. More resilient historically, but still subject to YouTube changes — recovery is `pnpm update youtubei.js`. If extraction breaks for an extended period, the swap to a `yt-dlp` shell-out is a ~30-line change to `src/lib/youtube-audio.ts`. The iframe fallback covers signed-in YouTube users during the gap.
-- **YouTube ToS gray area.** Extraction is unofficial. YouTube's TOS prohibits "downloading"; they have not pursued individual users in practice. For wider deployment this needs a re-evaluation.
-- **Server bandwidth.** Audio streams scale with concurrent listeners. For 2–7 family users this is trivial.
-- **Serverless deployment.** The streaming proxy assumes a long-running Node server. Vercel functions have a short streaming timeout — would need rework before deploying serverlessly.
+```bash
+which yt-dlp
+yt-dlp --version
+yt-dlp -f "bestaudio[ext=m4a]/bestaudio[ext=webm]/bestaudio" \
+       --dump-json --no-playlist --no-warnings \
+       "https://www.youtube.com/watch?v=M-9rOkv8hzQ"
+```
+
+If the third command prints JSON, yt-dlp is working — any playback failure is in our app code. If it errors, the issue is yt-dlp/system level (try `brew upgrade yt-dlp` first).
+
+#### Error codes
+
+The audio + audio-status routes return one of these `code` values on failure:
+
+| Code | Meaning |
+|---|---|
+| `invalid_video_id` (400) | The `[videoId]` segment didn't match `^[A-Za-z0-9_-]{11}$`. |
+| `yt_dlp_missing` (502) | The `yt-dlp` binary isn't on PATH. Install with `brew install yt-dlp`. |
+| `extract_failed` (502) | yt-dlp ran but didn't return usable stream info. Check `detail` for the stderr tail. |
+| `stream_403` (502) | The CDN returned 403 even after we re-resolved + retried once. URL gating issue (geo, age, private, etc.). |
+| `upstream_failed` (502) | Network error talking to the CDN, or a non-403 4xx/5xx. Transient most of the time. |
+
+#### Architecture (provider layer)
+
+The extractor lives behind a tiny `PlaybackProvider` interface so it's swappable:
+
+- `src/lib/playback/types.ts` — `PlaybackStream`, `PlaybackProvider`, `ResolveError`.
+- `src/lib/playback/cache.ts` — 45-minute in-memory cache, lazy expiry.
+- `src/lib/playback/providers/yt-dlp.ts` — `child_process.spawn` wrapper. 10s timeout that kills the child + clears listeners on expiry.
+- `src/lib/playback/resolver.ts` — wires cache + provider; exports `resolveAudio(videoId)` and `evictAudioCache(videoId)`.
+
+If yt-dlp ever needs replacing, only the file in `providers/` changes.
 
 #### Components
 
-- `src/components/YouTubeAudioPlayer.tsx` — `"use client"` `<audio controls autoPlay>` against the proxy endpoint. Calls `onError` so `PlayerBar` can fall back.
-- `src/components/YouTubePlayer.tsx` — `<iframe>` embed. Used as deepest fallback when extraction fails.
-- `src/components/PlayerBar.tsx` — wires both: `YouTubeAudioPlayer` first; on error swaps to `YouTubePlayer`. Resets the failure flag when the song changes.
+- `src/components/YouTubeAudioPlayer.tsx` — `"use client"` `<audio controls autoPlay>` against the proxy endpoint.
+- `src/components/YouTubePlayer.tsx` — `<iframe>` embed, rendered only when the user explicitly clicks the manual fallback button.
+- `src/components/PlayerBar.tsx` — owns the probe + state machine (`probing` / `ready` / `error`), the loading hint, the error display, and the manual fallback button.
+
+The auto-match filter still removes the *obviously* unplayable hits at match time — non-embeddable, age-restricted, private — even though yt-dlp sidesteps most of these, the filter helps the manual iframe-fallback case. The OWNER's "Re-check matches" button on the dashboard re-runs the filter on already-matched songs.
+
+#### Caveats
+
+- **Unofficial integration.** yt-dlp is a community project that reverse-engineers YouTube's internals. May break when YouTube changes things. Recovery: `brew upgrade yt-dlp`. Personal/local use only.
+- **Cold-start latency.** First play of a song is ~500ms-1s (Python startup + extraction). Subsequent plays for 45 minutes hit the cache instantly. The player shows "Loading audio…" while the probe is in flight.
+- **Server bandwidth.** Audio streams use the dev server's bandwidth. Trivial for 2-7 family users.
+- **Serverless deployment.** The streaming proxy assumes a long-running Node server. Vercel function timeouts would break this — needs rework before any serverless deploy.
+- **Safari + webm-only videos.** The format selector prefers m4a, but if a video has only webm Safari can't play it. The user sees the "Audio playback failed" state and can fall back to the iframe manually.
 
 ## Frontend / pages
 
