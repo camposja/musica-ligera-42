@@ -66,6 +66,22 @@ function searchResp(ids: string[]): MockedResponse {
   };
 }
 
+// Mocks the /videos endpoint embeddability check. Each id is returned with
+// status.embeddable=true and contentRating empty (i.e. not age-restricted)
+// so the filter approves all of them.
+function videosResp(ids: string[]): MockedResponse {
+  return {
+    status: 200,
+    json: {
+      items: ids.map((id) => ({
+        id,
+        status: { embeddable: true, privacyStatus: "public" },
+        contentDetails: { contentRating: {} },
+      })),
+    },
+  };
+}
+
 const PAD = (s: string) => (s + "X".repeat(11)).slice(0, 11);
 
 // === isValidYoutubeId ======================================================
@@ -238,11 +254,12 @@ describe("triggerMatchInBackground", () => {
   });
 
   it("processes serially (concurrency 1), not in parallel", async () => {
-    // Three searches in sequence; assert fetch was hit exactly once per song.
+    // Three searches in sequence; each search now also triggers a videos.list
+    // embeddability check, so queue both per song.
     mockFetchSequence([
-      searchResp([PAD("a")]),
-      searchResp([PAD("b")]),
-      searchResp([PAD("c")]),
+      searchResp([PAD("a")]), videosResp([PAD("a")]),
+      searchResp([PAD("b")]), videosResp([PAD("b")]),
+      searchResp([PAD("c")]), videosResp([PAD("c")]),
     ]);
     const s1 = await makeSong("1");
     const s2 = await makeSong("2");
@@ -251,8 +268,10 @@ describe("triggerMatchInBackground", () => {
     triggerMatchInBackground(s2.id);
     triggerMatchInBackground(s3.id);
     await flushPendingMatches();
-    const fetchCalls = vi.mocked(globalThis.fetch).mock.calls.length;
-    expect(fetchCalls).toBe(3);
+    const searchCalls = vi
+      .mocked(globalThis.fetch)
+      .mock.calls.filter((c) => String(c[0]).includes("/youtube/v3/search"));
+    expect(searchCalls).toHaveLength(3);
     // Sanity: each song got its result
     expect((await prisma.song.findUniqueOrThrow({ where: { id: s1.id } })).youtubeId).toBe(PAD("a"));
     expect((await prisma.song.findUniqueOrThrow({ where: { id: s2.id } })).youtubeId).toBe(PAD("b"));

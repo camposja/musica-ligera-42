@@ -192,6 +192,19 @@ When a Song is created via `POST /api/songs` (without an explicit `youtubeId`) o
 
 > ⚠️ **MVP / local-server only.** Fire-and-forget works on `pnpm dev` / `next start` because the Node process keeps running. It will **not** work on serverless deployments (Vercel functions, AWS Lambda) — those terminate execution once the response is sent. Replace with a real durable queue (BullMQ, pg-boss, Cloud Tasks) before deploying serverlessly.
 
+### Playback requires being signed into YouTube
+
+YouTube has been progressively tightening anonymous embed playback. Most music videos now show **"Video unavailable — watch on YouTube"** when the iframe runs in a browser that isn't signed into any YouTube account. **Sign into a free YouTube account once in the browser you're using and playback works for the same songs.** This is a YouTube platform decision, not something we can patch around — even with the embeddability + age-restriction filter on the auto-match (see below), too many videos in our typical match set are gated.
+
+The auto-match filters out the *obviously* unplayable hits before they ever land in the DB:
+- Non-embeddable videos (uploader disabled third-party embedding entirely)
+- Age-restricted videos (`contentDetails.contentRating.ytRating === "ytAgeRestricted"`)
+- Private videos
+
+If all 4 candidates from a search are restricted, we fall back to the search order so the song still has *some* match — playback may still need a YouTube login.
+
+**For songs imported before this filter existed**, the OWNER can hit the "Re-check matches" button on the dashboard. It re-checks each song's stored `youtubeId + youtubeAltIds` (1 quota unit per song, no new searches) and promotes a playable alt if one exists.
+
 ### `<YouTubePlayer videoId={...} />`
 
 Component at `src/components/YouTubePlayer.tsx`. Renders a plain YouTube embed `<iframe>`. Returns `null` for null/empty/malformed `videoId` so an unmatched song doesn't paint a broken iframe. Wired into the persistent player bar in `(app)/layout.tsx`.

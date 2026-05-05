@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { CreatePlaylistForm } from "@/components/CreatePlaylistForm";
 import { ImportPlaylistForm } from "@/components/ImportPlaylistForm";
 import { PlaylistList } from "@/components/PlaylistList";
+import { RefilterYoutubeButton } from "@/components/RefilterYoutubeButton";
 
 type SpotifyBanner = "connected" | "forbidden" | "error";
 
@@ -75,6 +76,7 @@ export default async function DashboardPage({
           <ImportPlaylistForm />
         </div>
       </div>
+      {session.role === "OWNER" && <RefilterYoutubeButton />}
     </div>
   );
 }

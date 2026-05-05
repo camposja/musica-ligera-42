@@ -17,6 +17,7 @@ export class YoutubeError extends Error {
 }
 
 const SEARCH_URL = "https://www.googleapis.com/youtube/v3/search";
+const VIDEOS_URL = "https://www.googleapis.com/youtube/v3/videos";
 const VIDEO_ID_RE = /^[A-Za-z0-9_-]{11}$/;
 
 function getApiKey(): string {
@@ -33,6 +34,58 @@ export function isValidYoutubeId(id: string): boolean {
 
 type SearchItem = { id?: { videoId?: string } | string };
 type SearchResponse = { items?: SearchItem[] };
+
+type VideoStatusItem = {
+  id: string;
+  status?: { embeddable?: boolean; privacyStatus?: string };
+  contentDetails?: { contentRating?: { ytRating?: string } };
+};
+type VideosResponse = { items?: VideoStatusItem[] };
+
+/**
+ * Returns the subset of `ids` that play **without requiring a YouTube
+ * sign-in**. Filters out:
+ *   - non-embeddable videos (status.embeddable === false): label-uploaded
+ *     music videos often disable third-party embeds entirely.
+ *   - age-restricted videos (contentDetails.contentRating.ytRating ===
+ *     "ytAgeRestricted"): these technically embed but YouTube blocks
+ *     playback for signed-out viewers, showing "Sign in to confirm your
+ *     age" — the most common reason a "match" looks broken to users.
+ *   - private videos.
+ *
+ * Costs 2 quota units per call (1 per `part`). Batches up to 50 IDs.
+ *
+ * On YouTube API failure, returns the input unchanged — we'd rather risk a
+ * non-playable match than silently drop everything.
+ */
+export async function filterEmbeddableIds(ids: string[]): Promise<string[]> {
+  if (ids.length === 0) return [];
+  const key = getApiKey();
+  const url = `${VIDEOS_URL}?part=status,contentDetails&id=${ids.map(encodeURIComponent).join(",")}&key=${encodeURIComponent(key)}`;
+  let res: Response;
+  try {
+    res = await fetch(url);
+  } catch (err) {
+    console.error("[youtube] embeddability check fetch failed", { err });
+    return ids;
+  }
+  if (!res.ok) {
+    console.error("[youtube] embeddability check non-OK", { status: res.status });
+    return ids;
+  }
+  const json = (await res.json()) as VideosResponse;
+  const ok = new Set<string>();
+  for (const item of json.items ?? []) {
+    const embeddable = item.status?.embeddable === true;
+    const notPrivate = item.status?.privacyStatus !== "private";
+    const ageRestricted =
+      item.contentDetails?.contentRating?.ytRating === "ytAgeRestricted";
+    if (embeddable && notPrivate && !ageRestricted) {
+      ok.add(item.id);
+    }
+  }
+  return ids.filter((id) => ok.has(id));
+}
 
 export async function searchVideo(query: string): Promise<YoutubeMatch> {
   const key = getApiKey();
@@ -66,7 +119,48 @@ export async function searchVideo(query: string): Promise<YoutubeMatch> {
   if (ids.length === 0) {
     throw new YoutubeError(404, "No YouTube match found");
   }
-  return { best: ids[0], alternates: ids.slice(1, 4) };
+  // Filter to embeddable picks only (most label-uploaded music videos disable
+  // third-party embedding; without this filter we end up with "Video unavailable
+  // — watch on YouTube" iframes for popular tracks). If the upstream check
+  // fails or every result is non-embeddable, fall back to the original order.
+  const embeddable = await filterEmbeddableIds(ids);
+  const ordered = embeddable.length > 0 ? embeddable : ids;
+  return { best: ordered[0], alternates: ordered.slice(1, 4) };
+}
+
+/**
+ * For an already-matched song, re-check whether its current `youtubeId` is
+ * still embeddable. If not, promote the first embeddable entry from
+ * `youtubeAltIds` (if any) to `youtubeId`. Returns whether a swap happened.
+ *
+ * This is the cheap fix for songs matched BEFORE the embeddability filter
+ * existed — uses 1 quota unit per song instead of 100 (no new search call).
+ */
+export async function refilterSongMatch(
+  songId: string,
+): Promise<{ changed: boolean; nowUnplayable: boolean }> {
+  const song = await prisma.song.findUnique({ where: { id: songId } });
+  if (!song || !song.youtubeId) return { changed: false, nowUnplayable: false };
+
+  const candidates = [song.youtubeId, ...song.youtubeAltIds].filter(
+    isValidYoutubeId,
+  );
+  if (candidates.length === 0) return { changed: false, nowUnplayable: true };
+
+  const embeddable = await filterEmbeddableIds(candidates);
+  if (embeddable.length === 0) {
+    return { changed: false, nowUnplayable: true };
+  }
+  if (embeddable[0] === song.youtubeId) {
+    return { changed: false, nowUnplayable: false };
+  }
+  const newBest = embeddable[0];
+  const newAlts = embeddable.slice(1);
+  await prisma.song.update({
+    where: { id: songId },
+    data: { youtubeId: newBest, youtubeAltIds: newAlts },
+  });
+  return { changed: true, nowUnplayable: false };
 }
 
 export async function matchSongById(
