@@ -13,6 +13,7 @@ const STATUS_FOR_CODE: Record<ResolveErrorCode, number> = {
   extract_failed: 502,
   stream_403: 502,
   upstream_failed: 502,
+  all_providers_failed: 502,
 };
 
 export async function GET(_request: Request, ctx: Ctx) {
@@ -33,6 +34,7 @@ export async function GET(_request: Request, ctx: Ctx) {
       ok: true,
       contentType: stream.contentType,
       contentLength: stream.contentLength ?? null,
+      provider: stream.provider,
     });
   } catch (err) {
     if (err instanceof ResolveError) {

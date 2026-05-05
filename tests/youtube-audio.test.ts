@@ -12,22 +12,33 @@ import {
   _resetCacheForTests,
   resolveAudio,
   evictAudioCache,
+  resetPlaybackProvidersForTests,
 } from "@/lib/playback/resolver";
 import { ResolveError } from "@/lib/playback/types";
 import { GET as audioGET } from "@/app/api/youtube/audio/[videoId]/route";
 import { GET as audioStatusGET } from "@/app/api/youtube/audio-status/[videoId]/route";
 
 const VID = "dQw4w9WgXcQ";
+const ORIGINAL_PIPED = process.env.PIPED_API_BASE_URL;
 
 beforeEach(async () => {
   clearCookies();
   await truncateAll();
   _resetCacheForTests();
   spawnMock.mockReset();
+  // Default: Piped fallback disabled. Individual tests opt in.
+  delete process.env.PIPED_API_BASE_URL;
+  resetPlaybackProvidersForTests();
 });
 
 afterEach(() => {
   vi.restoreAllMocks();
+  if (ORIGINAL_PIPED === undefined) {
+    delete process.env.PIPED_API_BASE_URL;
+  } else {
+    process.env.PIPED_API_BASE_URL = ORIGINAL_PIPED;
+  }
+  resetPlaybackProvidersForTests();
 });
 
 // --- spawn fake helper ------------------------------------------------------
@@ -100,6 +111,7 @@ describe("resolveAudio", () => {
     expect(stream.contentType).toBe("audio/mp4");
     expect(stream.contentLength).toBe(4242);
     expect(stream.expiresAt).toBeGreaterThan(Date.now());
+    expect(stream.provider).toBe("yt-dlp");
   });
 
   it("maps webm/opus ext to audio/webm content type", async () => {
@@ -180,7 +192,7 @@ describe("GET /api/youtube/audio-status/[videoId]", () => {
     expect(body).toMatchObject({ ok: false, code: "invalid_video_id" });
   });
 
-  it("ok:true with contentType + contentLength on success", async () => {
+  it("ok:true with contentType + contentLength + provider on success", async () => {
     await makeUserSession();
     mockSpawnOnce({ stdout: ytDlpJson({ ext: "m4a", filesize: 42 }) });
     const res = await audioStatusGET(statusReq(VID), ctx({ videoId: VID }));
@@ -190,6 +202,7 @@ describe("GET /api/youtube/audio-status/[videoId]", () => {
       ok: true,
       contentType: "audio/mp4",
       contentLength: 42,
+      provider: "yt-dlp",
     });
   });
 
@@ -331,5 +344,217 @@ describe("GET /api/youtube/audio/[videoId]", () => {
     expect(res.status).toBe(502);
     const body = await res.json();
     expect(body).toMatchObject({ error: "upstream_failed" });
+  });
+});
+
+// === resolveAudio with optional Piped fallback ============================
+
+const PIPED_BASE = "https://piped.test.example";
+
+function enablePiped() {
+  process.env.PIPED_API_BASE_URL = PIPED_BASE;
+  resetPlaybackProvidersForTests();
+}
+
+function pipedAudioStreams(streams: Array<{ url: string; mimeType?: string; contentLength?: number }>): unknown {
+  return { audioStreams: streams };
+}
+
+describe("resolveAudio with Piped fallback configured", () => {
+  it("yt-dlp success short-circuits Piped (fetch never called)", async () => {
+    enablePiped();
+    mockSpawnOnce({ stdout: ytDlpJson({ url: "https://cdn/yt.m4a" }) });
+    const fetchSpy = vi.spyOn(globalThis, "fetch");
+    const stream = await resolveAudio(VID);
+    expect(stream.provider).toBe("yt-dlp");
+    expect(stream.url).toBe("https://cdn/yt.m4a");
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it("yt-dlp fails + Piped success → returns provider:'piped'", async () => {
+    enablePiped();
+    mockSpawnOnce({ spawnError: enoentError() });
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      new Response(
+        JSON.stringify(
+          pipedAudioStreams([
+            { url: "https://piped-cdn/x.m4a", mimeType: "audio/mp4", contentLength: 999 },
+          ]),
+        ),
+        { status: 200, headers: { "content-type": "application/json" } },
+      ),
+    );
+    const stream = await resolveAudio(VID);
+    expect(stream.provider).toBe("piped");
+    expect(stream.url).toBe("https://piped-cdn/x.m4a");
+    expect(stream.contentType).toBe("audio/mp4");
+    expect(stream.contentLength).toBe(999);
+  });
+
+  it("yt-dlp fails + Piped fails → all_providers_failed with both in detail", async () => {
+    enablePiped();
+    mockSpawnOnce({ spawnError: enoentError() });
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      new Response("nope", { status: 502 }),
+    );
+    let caught: ResolveError | null = null;
+    try {
+      await resolveAudio(VID);
+    } catch (err) {
+      caught = err as ResolveError;
+    }
+    expect(caught).toBeInstanceOf(ResolveError);
+    expect(caught!.code).toBe("all_providers_failed");
+    expect(caught!.detail).toContain("yt-dlp:");
+    expect(caught!.detail).toContain("piped:");
+    expect(caught!.detail).toContain("502");
+  });
+
+  it("Piped HTTP non-OK → extract_failed mentions status", async () => {
+    enablePiped();
+    mockSpawnOnce({ exitCode: 1, stderr: "boom" });
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      new Response("err", { status: 503 }),
+    );
+    await expect(resolveAudio(VID)).rejects.toMatchObject({
+      code: "all_providers_failed",
+    });
+  });
+
+  it("Piped 200 with empty audioStreams → extract_failed", async () => {
+    enablePiped();
+    mockSpawnOnce({ spawnError: enoentError() });
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      new Response(JSON.stringify({ audioStreams: [] }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      }),
+    );
+    await expect(resolveAudio(VID)).rejects.toMatchObject({
+      code: "all_providers_failed",
+    });
+  });
+
+  it("Piped malformed body (missing audioStreams) → extract_failed, no TypeError", async () => {
+    enablePiped();
+    mockSpawnOnce({ spawnError: enoentError() });
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      new Response(JSON.stringify({}), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      }),
+    );
+    await expect(resolveAudio(VID)).rejects.toBeInstanceOf(ResolveError);
+  });
+
+  it("Piped audioStreams = string (wrong type) → extract_failed, no TypeError", async () => {
+    enablePiped();
+    mockSpawnOnce({ spawnError: enoentError() });
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      new Response(JSON.stringify({ audioStreams: "nope" }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      }),
+    );
+    await expect(resolveAudio(VID)).rejects.toBeInstanceOf(ResolveError);
+  });
+
+  it("prefers audio/mp4 over audio/webm in Piped audioStreams", async () => {
+    enablePiped();
+    mockSpawnOnce({ spawnError: enoentError() });
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      new Response(
+        JSON.stringify(
+          pipedAudioStreams([
+            { url: "https://piped/webm", mimeType: "audio/webm" },
+            { url: "https://piped/mp4", mimeType: "audio/mp4" },
+            { url: "https://piped/other" },
+          ]),
+        ),
+        { status: 200, headers: { "content-type": "application/json" } },
+      ),
+    );
+    const stream = await resolveAudio(VID);
+    expect(stream.url).toBe("https://piped/mp4");
+    expect(stream.contentType).toBe("audio/mp4");
+  });
+
+  it("falls back to first stream when no mp4/webm mime types present", async () => {
+    enablePiped();
+    mockSpawnOnce({ spawnError: enoentError() });
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      new Response(
+        JSON.stringify(pipedAudioStreams([{ url: "https://piped/anything" }])),
+        { status: 200, headers: { "content-type": "application/json" } },
+      ),
+    );
+    const stream = await resolveAudio(VID);
+    expect(stream.url).toBe("https://piped/anything");
+    expect(stream.provider).toBe("piped");
+  });
+
+  it("Piped unconfigured: yt-dlp failure surfaces original code (not all_providers_failed)", async () => {
+    // No enablePiped() — only yt-dlp registered.
+    mockSpawnOnce({ spawnError: enoentError() });
+    await expect(resolveAudio(VID)).rejects.toMatchObject({
+      code: "yt_dlp_missing",
+    });
+  });
+
+  it("cache hit short-circuits both providers", async () => {
+    enablePiped();
+    mockSpawnOnce({ stdout: ytDlpJson({ url: "https://cdn/once" }) });
+    const fetchSpy = vi.spyOn(globalThis, "fetch");
+    await resolveAudio(VID);
+    spawnMock.mockReset();
+    await resolveAudio(VID);
+    expect(spawnMock).not.toHaveBeenCalled();
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+});
+
+// === audio-status surfaces all_providers_failed ===========================
+
+describe("GET /api/youtube/audio-status with Piped configured", () => {
+  it("502 + all_providers_failed when both fail; detail names both", async () => {
+    enablePiped();
+    await makeUserSession();
+    mockSpawnOnce({ exitCode: 1, stderr: "boom" });
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      new Response("nope", { status: 502 }),
+    );
+    const res = await audioStatusGET(statusReq(VID), ctx({ videoId: VID }));
+    expect(res.status).toBe(502);
+    const body = await res.json();
+    expect(body).toMatchObject({
+      ok: false,
+      code: "all_providers_failed",
+    });
+    expect(body.detail).toContain("yt-dlp:");
+    expect(body.detail).toContain("piped:");
+  });
+
+  it("piped success path: response includes provider:'piped'", async () => {
+    enablePiped();
+    await makeUserSession();
+    mockSpawnOnce({ spawnError: enoentError() });
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      new Response(
+        JSON.stringify(
+          pipedAudioStreams([
+            { url: "https://piped/x.m4a", mimeType: "audio/mp4" },
+          ]),
+        ),
+        { status: 200, headers: { "content-type": "application/json" } },
+      ),
+    );
+    const res = await audioStatusGET(statusReq(VID), ctx({ videoId: VID }));
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body).toMatchObject({
+      ok: true,
+      provider: "piped",
+      contentType: "audio/mp4",
+    });
   });
 });

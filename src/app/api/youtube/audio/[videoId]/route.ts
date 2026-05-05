@@ -17,6 +17,7 @@ const STATUS_FOR_CODE: Record<ResolveErrorCode, number> = {
   extract_failed: 502,
   stream_403: 502,
   upstream_failed: 502,
+  all_providers_failed: 502,
 };
 
 const FORWARD_RESPONSE_HEADERS = [

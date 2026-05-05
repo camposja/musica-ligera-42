@@ -119,6 +119,7 @@ export const ytDlpProvider: PlaybackProvider = {
       contentType: mimeFromExt(json.ext),
       contentLength: json.filesize ?? json.filesize_approx ?? undefined,
       expiresAt: Date.now() + CACHE_TTL_MS,
+      provider: "yt-dlp",
     };
   },
 };

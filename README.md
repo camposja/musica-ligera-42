@@ -221,7 +221,9 @@ When a Song is created via `POST /api/songs` (without an explicit `youtubeId`) o
 
 > **Why a separate `audio-status` probe?** The browser's `<audio onError>` only exposes a generic `MediaError` — it can't read our JSON error body. The player probes the status endpoint first so it can surface real error codes (`yt_dlp_missing` vs `extract_failed` vs `stream_403`) instead of the same generic failure for all of them. Both endpoints share one resolver and one cache, so the probe + stream pair is one yt-dlp invocation.
 
-**Manual fallback: YouTube iframe.** When extraction fails, the player shows the structured error code + a "Try YouTube embed" button. Clicking renders the original `https://www.youtube.com/embed/[id]` iframe. **No silent swap** — the goal during shakedown is to surface real failures, not hide them behind another broken thing (the iframe is itself gated by YouTube's anonymous-embed restrictions). Once yt-dlp proves stable for an extended period, we can flip the player to auto-fall-back.
+**Optional audio fallback: Piped.** Set `PIPED_API_BASE_URL` to point at any currently-working public Piped instance (the public list rotates — check what's responding today, or self-host) and the resolver will try yt-dlp first, then Piped. If unset, the app behaves exactly like before: yt-dlp only. Piped uses its own server-side stack but is **not magic insurance** — a YouTube-side change (signature scheme, etc.) can still break both providers together; it mainly helps when yt-dlp is missing, hung, IP-rate-limited, or hits a per-video edge case. The resolver memoizes the provider list on first call, so **changing `PIPED_API_BASE_URL` requires restarting `pnpm dev`**.
+
+**Manual video fallback: YouTube iframe.** Distinct from the audio fallback above. When all audio providers fail, the player shows the structured error code + a "Try YouTube embed" button. Clicking renders the original `https://www.youtube.com/embed/[id]` iframe. **No silent swap** — the iframe is "Watch mode" (luxury video), not the audio fallback. Watch mode is itself gated by YouTube's anonymous-embed restrictions.
 
 **Future: Spotify Web Playback SDK.** Captured as future work — would become preferred-when-available for Premium-connected sessions. Extraction stays the no-Premium-required path.
 
@@ -255,15 +257,17 @@ The audio + audio-status routes return one of these `code` values on failure:
 | `extract_failed` (502) | yt-dlp ran but didn't return usable stream info. Check `detail` for the stderr tail. |
 | `stream_403` (502) | The CDN returned 403 even after we re-resolved + retried once. URL gating issue (geo, age, private, etc.). |
 | `upstream_failed` (502) | Network error talking to the CDN, or a non-403 4xx/5xx. Transient most of the time. |
+| `all_providers_failed` (502) | Both yt-dlp and Piped failed (only emitted when `PIPED_API_BASE_URL` is set). `detail` contains a `"yt-dlp: <code>: <detail>; piped: <code>: <detail>"` summary so you can see what each provider said. |
 
 #### Architecture (provider layer)
 
 The extractor lives behind a tiny `PlaybackProvider` interface so it's swappable:
 
-- `src/lib/playback/types.ts` — `PlaybackStream`, `PlaybackProvider`, `ResolveError`.
-- `src/lib/playback/cache.ts` — 45-minute in-memory cache, lazy expiry.
+- `src/lib/playback/types.ts` — `PlaybackStream` (carries the literal `provider: "yt-dlp" | "piped"`), `PlaybackProvider`, `ResolveError`.
+- `src/lib/playback/cache.ts` — 45-minute in-memory cache, lazy expiry. Keyed by `videoId` only — whichever provider succeeded gets cached transparently.
 - `src/lib/playback/providers/yt-dlp.ts` — `child_process.spawn` wrapper. 10s timeout that kills the child + clears listeners on expiry.
-- `src/lib/playback/resolver.ts` — wires cache + provider; exports `resolveAudio(videoId)` and `evictAudioCache(videoId)`.
+- `src/lib/playback/providers/piped.ts` — `createPipedProvider(baseUrl)` factory. Takes the base URL by injection; the module never reads `process.env`. `fetch` + `AbortSignal.timeout(5_000)`. Defensive parsing of `audioStreams[]` (public instances vary).
+- `src/lib/playback/resolver.ts` — wires cache + the provider list; exports `resolveAudio(videoId)`, `evictAudioCache(videoId)`, and `resetPlaybackProvidersForTests()`. The single `process.env.PIPED_API_BASE_URL` read in the codebase lives in `getPlaybackProviders()` here, memoized on first call.
 
 If yt-dlp ever needs replacing, only the file in `providers/` changes.
 
