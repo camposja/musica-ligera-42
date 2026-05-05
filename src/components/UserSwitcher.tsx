@@ -51,7 +51,7 @@ export function UserSwitcher({ currentActingUserId }: Props) {
       value={currentActingUserId ?? ""}
       onChange={onChange}
       disabled={switching}
-      className="rounded border border-border bg-background px-2 py-1 text-sm outline-none focus:border-accent"
+      className="max-w-[8rem] rounded border border-border bg-background px-2 py-1 text-sm outline-none focus:border-accent sm:max-w-none"
     >
       <option value="" disabled>
         Pick a user…

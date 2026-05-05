@@ -74,7 +74,7 @@ export function HeaderMenu({ isOwner, spotifyConnected, spotifyAccountId }: Prop
       {open && (
         <div
           role="menu"
-          className="absolute right-0 top-full z-40 mt-1 w-64 overflow-hidden rounded border border-border bg-surface shadow-lg"
+          className="absolute right-0 top-full z-40 mt-1 w-56 max-w-[calc(100vw-1rem)] overflow-hidden rounded border border-border bg-surface shadow-lg sm:w-64"
         >
           {isOwner && (
             <div className="border-b border-border px-4 py-3 text-xs">
