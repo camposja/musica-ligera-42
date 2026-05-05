@@ -33,6 +33,14 @@ model Song {
   youtubeId      String?
   youtubeAltIds  String[]
 
+  // Match-quality metadata. Null on legacy matches written before
+  // the looser-matching ticket (Ticket 8). New + rematched songs
+  // populate these so the UI can label exact vs loose matches.
+  youtubeMatchType    String?  // "exact" | "loose"
+  youtubeMatchReason  String?  // "exact" | "live" | "lyric_video" | "official_audio" | "acoustic" | "remaster" | "remix" | "close"
+  youtubeMatchTitle   String?  // YouTube result title at match time
+  youtubeMatchChannel String?  // YouTube channel name at match time
+
   createdAt      DateTime       @default(now())
 
   playlistSongs  PlaylistSong[]

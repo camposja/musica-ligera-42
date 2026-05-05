@@ -1,6 +1,7 @@
 import { getEffectiveUserIdOrNull, getRequiredSession } from "@/lib/current-user";
 import { prisma } from "@/lib/prisma";
 import { CreatePlaylistForm } from "@/components/CreatePlaylistForm";
+import { FindMissingMatchesButton } from "@/components/FindMissingMatchesButton";
 import { ImportPlaylistForm } from "@/components/ImportPlaylistForm";
 import { PlaylistList } from "@/components/PlaylistList";
 import { RefilterYoutubeButton } from "@/components/RefilterYoutubeButton";
@@ -76,7 +77,12 @@ export default async function DashboardPage({
           <ImportPlaylistForm />
         </div>
       </div>
-      {session.role === "OWNER" && <RefilterYoutubeButton />}
+      {session.role === "OWNER" && (
+        <div className="flex flex-col gap-3">
+          <FindMissingMatchesButton />
+          <RefilterYoutubeButton />
+        </div>
+      )}
     </div>
   );
 }

@@ -170,17 +170,36 @@ Imported songs start with `youtubeId: null`; YouTube auto-match runs in the back
 
 ## YouTube playback
 
-Songs are matched to YouTube videos via the [YouTube Data API v3 search endpoint](https://developers.google.com/youtube/v3/docs/search/list). The top result becomes `Song.youtubeId`; the next 2–3 are stored in `Song.youtubeAltIds` for later override.
+Songs are matched to YouTube videos via the [YouTube Data API v3 search endpoint](https://developers.google.com/youtube/v3/docs/search/list). We pull up to 10 candidates per search, fetch their snippet + duration via `videos.list` (one batched call), and run them through a **scorer** (`src/lib/youtube-match.ts`) that picks the best — exact match (≥85), loose match (60–84), or none (<60). Top result becomes `Song.youtubeId`; the next 3 scored alternates are stored in `Song.youtubeAltIds`. Match metadata (`youtubeMatchType`, `youtubeMatchReason`, `youtubeMatchTitle`, `youtubeMatchChannel`) drives the loose-match badges in the UI.
 
 **Required env** (already in `.env.example`):
 - `YOUTUBE_API_KEY` — get one at https://console.cloud.google.com/ (enable "YouTube Data API v3" on the project)
 
-**Default daily quota is 10,000 units; each search costs 100 units (~100 matches/day).** Plan accordingly.
+**Quota: each match call costs ~103 units (search 100 + videos.list 3); default daily quota is 10,000 → ~95 matches/day.** Plan accordingly.
+
+### Scorer (`src/lib/youtube-match.ts`)
+
+Concrete weights (so future "match got worse" bugs aren't a goose chase):
+
+- Base: 30
+- Title coverage (fraction of song-title tokens appearing in the result): +0..30
+- Artist token in result title OR channel name: +30
+- Channel ends in `VEVO` or ` - Topic` (official auto-uploads): +10
+- Result duration <30s or >12min: -20 (snippet/preview/compilation likely not the song)
+- Single-word title with no artist signal: -25 (defends against "Hello World" type collisions)
+- Soft-tag detected (live, lyric_video, acoustic, remaster, remix): -25 (pushes perfect-otherwise candidates into loose territory)
+- Cover-by patterns (`cover by `, `guitar cover`, `piano cover`, etc.): cap at 50 (never qualifies)
+- Hard rejects (`karaoke`, `instrumental`, `reaction`, `tutorial`, `nightcore`, `8d audio`, `slowed and reverb`): score=0, rejected entirely
+
+Reason tags surface in the UI badge: "Live version", "Lyric video", "Acoustic", "Remaster", "Remix", or just "Loose match" when no specific tag fits. `official_audio` is detected but does NOT penalize — it's the canonical recording, just no video.
+
+A 25-row table-driven test suite (`tests/youtube-match.test.ts`) is the regression net.
 
 | Method | Path | Auth | Behavior |
 |---|---|---|---|
-| POST | `/api/youtube/match` | OWNER-only | body `{songId}`. Re-runs YouTube search and overwrites `youtubeId` + `youtubeAltIds`. 404 with `{error:"No YouTube match found"}` when search returns 0 items. 503 + `Retry-After` on 429. 502 on other upstream errors. |
-| POST | `/api/youtube/override` | OWNER-only | body `{songId, newYoutubeId}`. Format-validates `newYoutubeId` against `^[A-Za-z0-9_-]{11}$`. Updates `youtubeId` only; `youtubeAltIds` is untouched. **No call to YouTube** — saves quota. |
+| POST | `/api/youtube/match` | OWNER-only | body `{songId}`. Re-runs YouTube search and overwrites `youtubeId` + `youtubeAltIds` + match metadata. 404 with `{error:"No YouTube match found"}` when search returns 0 items, OR no candidate clears the loose threshold. 503 + `Retry-After` on 429. 502 on other upstream errors. |
+| POST | `/api/youtube/override` | OWNER-only | body `{songId, newYoutubeId}`. Format-validates `newYoutubeId` against `^[A-Za-z0-9_-]{11}$`. Updates `youtubeId` only; `youtubeAltIds` and match metadata are untouched. **No call to YouTube** — saves quota. |
+| POST | `/api/youtube/rematch-missing` | OWNER-only | Re-runs the matcher on songs with `youtubeId: null`. Capped at 50 songs per call (~5,150 quota units). Bails with 503 on YouTube 403 (quota). Returns `{checked, matchedExact, matchedLoose, stillUnmatched, errored, capReached}`. Wired to the "Find missing matches" dashboard button. |
 | GET  | `/api/youtube/audio/[videoId]` | session | Streams audio extracted from YouTube via `yt-dlp`. Forwards the browser's `Range` header upstream (so `<audio>` seeking works → 206 Partial Content). 45-minute in-memory cache of stream URLs. On upstream 403 the cache entry is evicted, yt-dlp re-runs once, and the stream is retried. Structured error codes (see below). **No quota cost** — bypasses the YouTube Data API. |
 | GET  | `/api/youtube/audio-status/[videoId]` | session | Lightweight diagnostic endpoint. Calls the same resolver as the stream route (so the stream's cache is warmed) but returns JSON `{ok:true, contentType, contentLength}` on success or `{ok:false, code, detail}` on failure. The player probes this before setting `<audio src>` so it can show the user a real error code (the browser's `<audio onError>` can't read response bodies). |
 

@@ -12,6 +12,38 @@ type Props = {
   songs: Array<{ order: number; song: Song }>;
 };
 
+const REASON_LABELS: Record<string, string> = {
+  live: "Live version",
+  lyric_video: "Lyric video",
+  official_audio: "Official audio",
+  acoustic: "Acoustic",
+  remaster: "Remaster",
+  remix: "Remix",
+  close: "Close match",
+};
+
+function MatchBadge({ song }: { song: Song }) {
+  // Only loose matches get a badge — exact matches and legacy/unmatched
+  // (matchType === null) stay clean. The badge tells the user this isn't
+  // the canonical version of the song.
+  if (song.youtubeMatchType !== "loose") return null;
+  const reasonLabel =
+    (song.youtubeMatchReason && REASON_LABELS[song.youtubeMatchReason]) ??
+    "Loose match";
+  return (
+    <span
+      title={
+        song.youtubeMatchTitle && song.youtubeMatchChannel
+          ? `Matched: "${song.youtubeMatchTitle}" by ${song.youtubeMatchChannel}`
+          : "This is a loose match — close to the song but not the canonical version"
+      }
+      className="inline-flex shrink-0 items-center rounded border border-accent/40 bg-accent/10 px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-accent"
+    >
+      {reasonLabel}
+    </span>
+  );
+}
+
 export function SongList({ playlistId, songs }: Props) {
   const router = useRouter();
   const { playSong, song: nowPlaying } = useNowPlaying();
@@ -58,7 +90,10 @@ export function SongList({ playlistId, songs }: Props) {
             >
               <span className="w-6 text-right text-xs text-muted">{order + 1}</span>
               <div className="min-w-0 flex-1">
-                <div className="truncate font-medium">{song.title}</div>
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                  <span className="truncate font-medium">{song.title}</span>
+                  <MatchBadge song={song} />
+                </div>
                 <div className="truncate text-sm text-muted">
                   {song.artist}
                   {song.album ? ` — ${song.album}` : ""}

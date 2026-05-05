@@ -23,6 +23,7 @@ import { _resetMatchChainForTests } from "@/lib/youtube";
 
 import { POST as matchPOST } from "@/app/api/youtube/match/route";
 import { POST as overridePOST } from "@/app/api/youtube/override/route";
+import { POST as rematchMissingPOST } from "@/app/api/youtube/rematch-missing/route";
 
 beforeEach(async () => {
   clearCookies();
@@ -64,6 +65,38 @@ function searchResp(ids: string[]): MockedResponse {
     status: 200,
     json: { items: ids.map((id) => ({ id: { videoId: id } })) },
   };
+}
+
+function isoDuration(sec: number): string {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `PT${m > 0 ? `${m}M` : ""}${s > 0 ? `${s}S` : "0S"}`;
+}
+
+// Each id gets a canonical "Adele - Hello (Official Music Video)" title +
+// AdeleVEVO channel so the scorer treats it as an exact match.
+function videosResp(ids: string[]): MockedResponse {
+  return {
+    status: 200,
+    json: {
+      items: ids.map((id) => ({
+        id,
+        snippet: {
+          title: `Adele - Hello (Official Music Video) [${id}]`,
+          channelTitle: "AdeleVEVO",
+        },
+        status: { embeddable: true, privacyStatus: "public" },
+        contentDetails: {
+          duration: isoDuration(240),
+          contentRating: {},
+        },
+      })),
+    },
+  };
+}
+
+function matchPair(ids: string[]): MockedResponse[] {
+  return [searchResp(ids), videosResp(ids)];
 }
 
 const PAD = (s: string) => (s + "X".repeat(11)).slice(0, 11);
@@ -109,25 +142,27 @@ describe("POST /api/youtube/match", () => {
     expect(res.status).toBe(404);
   });
 
-  it("happy path: writes youtubeId + youtubeAltIds, returns updated song", async () => {
-    mockFetchSequence([searchResp([PAD("a"), PAD("b"), PAD("c"), PAD("d")])]);
+  it("happy path: writes youtubeId + altIds + match metadata, returns updated song", async () => {
+    mockFetchSequence(matchPair([PAD("a"), PAD("b"), PAD("c"), PAD("d")]));
     const s = await makeSong();
     await setOwnerSession();
     const res = await matchPOST(jsonRequest("http://x", { songId: s.id }));
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.song.youtubeId).toBe(PAD("a"));
-    expect(body.song.youtubeAltIds).toEqual([PAD("b"), PAD("c"), PAD("d")]);
+    expect(body.song.youtubeAltIds).toHaveLength(3);
+    expect(body.song.youtubeMatchType).toBe("exact");
   });
 
   it("force-overwrites an existing youtubeId", async () => {
-    mockFetchSequence([searchResp([PAD("n")])]);
+    mockFetchSequence(matchPair([PAD("n")]));
     const s = await makeSong({ youtubeId: "EXISTINGYTID" });
     await setOwnerSession();
     const res = await matchPOST(jsonRequest("http://x", { songId: s.id }));
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.song.youtubeId).toBe(PAD("n"));
+    expect(body.song.youtubeMatchType).toBe("exact");
   });
 
   it("404 with 'No YouTube match found' when search returns 0 items", async () => {
@@ -252,5 +287,115 @@ describe("POST /api/youtube/override", () => {
     const body = await res.json();
     expect(body.song.youtubeId).toBe(VALID);
     expect(body.song.youtubeAltIds).toEqual(["alt1alt1alt", "alt2alt2alt"]);
+  });
+});
+
+// === POST /api/youtube/rematch-missing (OWNER-only) ========================
+
+describe("POST /api/youtube/rematch-missing", () => {
+  // Title is plain "Hello" so it matches the canned videosResp title
+  // ("Adele - Hello ..."). Songs are distinguished by id, not title.
+  async function makeUnmatchedSong() {
+    return prisma.song.create({
+      data: { title: "Hello", artist: "Adele", youtubeId: null },
+    });
+  }
+
+  it("401 without session", async () => {
+    const res = await rematchMissingPOST();
+    expect(res.status).toBe(401);
+  });
+
+  it("403 with USER session", async () => {
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await rematchMissingPOST();
+    expect(res.status).toBe(403);
+  });
+
+  it("happy path: matches all unmatched songs and reports counts", async () => {
+    await makeUnmatchedSong();
+    await makeUnmatchedSong();
+    mockFetchSequence([
+      ...matchPair([PAD("a")]),
+      ...matchPair([PAD("b")]),
+    ]);
+    await setOwnerSession();
+    const res = await rematchMissingPOST();
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.checked).toBe(2);
+    expect(body.matchedExact).toBe(2);
+    expect(body.matchedLoose).toBe(0);
+    expect(body.stillUnmatched).toBe(0);
+  });
+
+  it("counts loose matches separately from exact", async () => {
+    await makeUnmatchedSong();
+    mockFetchSequence([
+      searchResp([PAD("l")]),
+      {
+        status: 200,
+        json: {
+          items: [
+            {
+              id: PAD("l"),
+              snippet: {
+                title: "Adele - Hello (Live at Royal Albert Hall)",
+                channelTitle: "AdeleVEVO",
+              },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT4M30S", contentRating: {} },
+            },
+          ],
+        },
+      },
+    ]);
+    await setOwnerSession();
+    const res = await rematchMissingPOST();
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.matchedExact).toBe(0);
+    expect(body.matchedLoose).toBe(1);
+  });
+
+  it("counts a 404-from-search song as stillUnmatched (not errored)", async () => {
+    await makeUnmatchedSong();
+    mockFetchSequence([{ status: 200, json: { items: [] } }]);
+    await setOwnerSession();
+    const res = await rematchMissingPOST();
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.stillUnmatched).toBe(1);
+    expect(body.errored).toBe(0);
+  });
+
+  it("bails with 503 on YouTube 403 (quota), preserving partial counts", async () => {
+    await makeUnmatchedSong();
+    await makeUnmatchedSong();
+    mockFetchSequence([
+      ...matchPair([PAD("a")]),
+      { status: 403, json: {} },
+    ]);
+    await setOwnerSession();
+    const res = await rematchMissingPOST();
+    expect(res.status).toBe(503);
+    const body = await res.json();
+    expect(body.matchedExact).toBe(1);
+    expect(body.checked).toBe(2);
+    expect(body.error).toMatch(/quota/i);
+  });
+
+  it("ignores already-matched songs (only youtubeId:null is processed)", async () => {
+    await prisma.song.create({
+      data: { title: "Hello", artist: "Adele", youtubeId: "ALREADYMATCH" },
+    });
+    const fetchSpy = mockFetchSequence([]);
+    await setOwnerSession();
+    const res = await rematchMissingPOST();
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.checked).toBe(0);
+    expect(fetchSpy).not.toHaveBeenCalled();
   });
 });

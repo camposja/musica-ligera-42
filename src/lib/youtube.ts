@@ -1,9 +1,9 @@
 import { prisma } from "@/lib/prisma";
-
-export type YoutubeMatch = {
-  best: string;
-  alternates: string[];
-};
+import {
+  pickBestMatch,
+  type Candidate,
+  type MatchResult,
+} from "@/lib/youtube-match";
 
 export class YoutubeError extends Error {
   constructor(
@@ -19,6 +19,7 @@ export class YoutubeError extends Error {
 const SEARCH_URL = "https://www.googleapis.com/youtube/v3/search";
 const VIDEOS_URL = "https://www.googleapis.com/youtube/v3/videos";
 const VIDEO_ID_RE = /^[A-Za-z0-9_-]{11}$/;
+const SEARCH_LIMIT = 10;
 
 function getApiKey(): string {
   const key = process.env.YOUTUBE_API_KEY;
@@ -35,61 +36,107 @@ export function isValidYoutubeId(id: string): boolean {
 type SearchItem = { id?: { videoId?: string } | string };
 type SearchResponse = { items?: SearchItem[] };
 
-type VideoStatusItem = {
+type VideoDetailsItem = {
   id: string;
+  snippet?: { title?: string; channelTitle?: string };
   status?: { embeddable?: boolean; privacyStatus?: string };
-  contentDetails?: { contentRating?: { ytRating?: string } };
+  contentDetails?: {
+    duration?: string;
+    contentRating?: { ytRating?: string };
+  };
 };
-type VideosResponse = { items?: VideoStatusItem[] };
+type VideosResponse = { items?: VideoDetailsItem[] };
+
+export type VideoDetails = {
+  id: string;
+  title: string;
+  channel: string;
+  embeddable: boolean;
+  ageRestricted: boolean;
+  isPrivate: boolean;
+  durationSec: number;
+};
+
+// Parse ISO 8601 duration like PT3M42S into seconds.
+function parseIsoDuration(s: string | undefined): number {
+  if (!s) return 0;
+  const m = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/.exec(s);
+  if (!m) return 0;
+  const h = m[1] ? Number(m[1]) : 0;
+  const min = m[2] ? Number(m[2]) : 0;
+  const sec = m[3] ? Number(m[3]) : 0;
+  return h * 3600 + min * 60 + sec;
+}
 
 /**
- * Returns the subset of `ids` that play **without requiring a YouTube
- * sign-in**. Filters out:
- *   - non-embeddable videos (status.embeddable === false): label-uploaded
- *     music videos often disable third-party embeds entirely.
- *   - age-restricted videos (contentDetails.contentRating.ytRating ===
- *     "ytAgeRestricted"): these technically embed but YouTube blocks
- *     playback for signed-out viewers, showing "Sign in to confirm your
- *     age" — the most common reason a "match" looks broken to users.
- *   - private videos.
- *
- * Costs 2 quota units per call (1 per `part`). Batches up to 50 IDs.
- *
- * On YouTube API failure, returns the input unchanged — we'd rather risk a
- * non-playable match than silently drop everything.
+ * Fetch full per-video details for up to 50 IDs in one /videos call.
+ * Costs 3 quota units (1 per `part`). Returns a Map keyed by id.
  */
-export async function filterEmbeddableIds(ids: string[]): Promise<string[]> {
-  if (ids.length === 0) return [];
+export async function fetchVideoDetails(
+  ids: string[],
+): Promise<Map<string, VideoDetails>> {
+  const out = new Map<string, VideoDetails>();
+  if (ids.length === 0) return out;
   const key = getApiKey();
-  const url = `${VIDEOS_URL}?part=status,contentDetails&id=${ids.map(encodeURIComponent).join(",")}&key=${encodeURIComponent(key)}`;
+  const url = `${VIDEOS_URL}?part=snippet,status,contentDetails&id=${ids
+    .map(encodeURIComponent)
+    .join(",")}&key=${encodeURIComponent(key)}`;
   let res: Response;
   try {
     res = await fetch(url);
   } catch (err) {
-    console.error("[youtube] embeddability check fetch failed", { err });
-    return ids;
+    console.error("[youtube] videos.list fetch failed", { err });
+    return out;
   }
   if (!res.ok) {
-    console.error("[youtube] embeddability check non-OK", { status: res.status });
-    return ids;
+    console.error("[youtube] videos.list non-OK", { status: res.status });
+    return out;
   }
   const json = (await res.json()) as VideosResponse;
-  const ok = new Set<string>();
   for (const item of json.items ?? []) {
-    const embeddable = item.status?.embeddable === true;
-    const notPrivate = item.status?.privacyStatus !== "private";
-    const ageRestricted =
-      item.contentDetails?.contentRating?.ytRating === "ytAgeRestricted";
-    if (embeddable && notPrivate && !ageRestricted) {
-      ok.add(item.id);
-    }
+    out.set(item.id, {
+      id: item.id,
+      title: item.snippet?.title ?? "",
+      channel: item.snippet?.channelTitle ?? "",
+      embeddable: item.status?.embeddable === true,
+      ageRestricted:
+        item.contentDetails?.contentRating?.ytRating === "ytAgeRestricted",
+      isPrivate: item.status?.privacyStatus === "private",
+      durationSec: parseIsoDuration(item.contentDetails?.duration),
+    });
   }
-  return ids.filter((id) => ok.has(id));
+  return out;
 }
 
-export async function searchVideo(query: string): Promise<YoutubeMatch> {
+/**
+ * Backwards-compatible: returns the subset of `ids` that play without a
+ * YouTube sign-in. Used by `refilterSongMatch`.
+ *
+ * On YouTube API failure, returns the input unchanged — better to risk a
+ * non-playable match than silently drop everything.
+ */
+export async function filterEmbeddableIds(ids: string[]): Promise<string[]> {
+  if (ids.length === 0) return [];
+  const details = await fetchVideoDetails(ids);
+  if (details.size === 0) return ids;
+  return ids.filter((id) => {
+    const d = details.get(id);
+    if (!d) return false;
+    return d.embeddable && !d.ageRestricted && !d.isPrivate;
+  });
+}
+
+/**
+ * Search YouTube for `query`, fetch full details for up to 10 candidates,
+ * and return them in YouTube's relevance order. Caller (the matcher) is
+ * responsible for scoring + picking the best one.
+ *
+ * Quota: search.list = 100 units, videos.list = 3 units → 103 units per call
+ * (was 102 with the old embeddability-only path; +1 for snippet).
+ */
+export async function searchCandidates(query: string): Promise<Candidate[]> {
   const key = getApiKey();
-  const url = `${SEARCH_URL}?part=snippet&type=video&maxResults=4&q=${encodeURIComponent(query)}&key=${encodeURIComponent(key)}`;
+  const url = `${SEARCH_URL}?part=snippet&type=video&maxResults=${SEARCH_LIMIT}&q=${encodeURIComponent(query)}&key=${encodeURIComponent(key)}`;
   const res = await fetch(url);
 
   if (res.status === 429) {
@@ -101,7 +148,6 @@ export async function searchVideo(query: string): Promise<YoutubeMatch> {
     );
   }
   if (res.status === 403) {
-    // Google returns 403 for both quota-exceeded and invalid-key cases.
     throw new YoutubeError(403, "YouTube 403 (quota exceeded or invalid key)");
   }
   if (!res.ok) {
@@ -113,19 +159,30 @@ export async function searchVideo(query: string): Promise<YoutubeMatch> {
   const ids: string[] = [];
   for (const it of items) {
     const vid =
-      typeof it.id === "string" ? it.id : (it.id as { videoId?: string } | undefined)?.videoId;
+      typeof it.id === "string"
+        ? it.id
+        : (it.id as { videoId?: string } | undefined)?.videoId;
     if (vid && isValidYoutubeId(vid)) ids.push(vid);
   }
-  if (ids.length === 0) {
-    throw new YoutubeError(404, "No YouTube match found");
+  if (ids.length === 0) return [];
+
+  const details = await fetchVideoDetails(ids);
+  const candidates: Candidate[] = [];
+  for (const id of ids) {
+    const d = details.get(id);
+    if (!d) continue;
+    // Skip private — those literally cannot be played even by yt-dlp.
+    // Keep non-embeddable + age-restricted: yt-dlp can play them; the
+    // iframe fallback is the only thing they break.
+    if (d.isPrivate) continue;
+    candidates.push({
+      id: d.id,
+      title: d.title,
+      channel: d.channel,
+      durationSec: d.durationSec,
+    });
   }
-  // Filter to embeddable picks only (most label-uploaded music videos disable
-  // third-party embedding; without this filter we end up with "Video unavailable
-  // — watch on YouTube" iframes for popular tracks). If the upstream check
-  // fails or every result is non-embeddable, fall back to the original order.
-  const embeddable = await filterEmbeddableIds(ids);
-  const ordered = embeddable.length > 0 ? embeddable : ids;
-  return { best: ordered[0], alternates: ordered.slice(1, 4) };
+  return candidates;
 }
 
 /**
@@ -133,8 +190,8 @@ export async function searchVideo(query: string): Promise<YoutubeMatch> {
  * still embeddable. If not, promote the first embeddable entry from
  * `youtubeAltIds` (if any) to `youtubeId`. Returns whether a swap happened.
  *
- * This is the cheap fix for songs matched BEFORE the embeddability filter
- * existed — uses 1 quota unit per song instead of 100 (no new search call).
+ * Less critical now that yt-dlp playback works: this only matters if the
+ * user explicitly clicks "Try YouTube embed" (the manual iframe fallback).
  */
 export async function refilterSongMatch(
   songId: string,
@@ -163,21 +220,41 @@ export async function refilterSongMatch(
   return { changed: true, nowUnplayable: false };
 }
 
+export type MatchOutcome =
+  | { matched: true; type: "exact" | "loose"; result: MatchResult }
+  | { matched: false };
+
 export async function matchSongById(
   songId: string,
   opts?: { force?: boolean },
-): Promise<void> {
+): Promise<MatchOutcome> {
   const song = await prisma.song.findUnique({ where: { id: songId } });
-  if (!song) return;
-  if (!opts?.force && song.youtubeId) return;
+  if (!song) return { matched: false };
+  if (!opts?.force && song.youtubeId) return { matched: false };
 
   const query = `${song.artist} ${song.title}`.trim();
-  const match = await searchVideo(query);
+  const candidates = await searchCandidates(query);
+  if (candidates.length === 0) {
+    throw new YoutubeError(404, "No YouTube match found");
+  }
+  const match = pickBestMatch({ title: song.title, artist: song.artist }, candidates);
+  if (!match) {
+    throw new YoutubeError(404, "No YouTube match cleared the loose threshold");
+  }
 
   await prisma.song.update({
     where: { id: songId },
-    data: { youtubeId: match.best, youtubeAltIds: match.alternates },
+    data: {
+      youtubeId: match.best,
+      youtubeAltIds: match.alternates,
+      youtubeMatchType: match.type,
+      youtubeMatchReason: match.reason,
+      youtubeMatchTitle: match.title,
+      youtubeMatchChannel: match.channel,
+    },
   });
+
+  return { matched: true, type: match.type, result: match };
 }
 
 // === Background trigger (concurrency 1, errors swallowed) ==================
@@ -188,35 +265,24 @@ let chain: Promise<void> = Promise.resolve();
  * Fire-and-forget background match. Serializes via a single chained promise
  * (concurrency 1) so we never fan out N parallel YouTube requests.
  *
- * Errors are unconditionally caught and logged — a quota / network / no-result
- * failure here must NEVER reject up the chain (which would crash the worker)
- * or bubble into the original API response.
- *
- * MVP/local-server only: in serverless deployments the worker is killed after
- * the response is sent, so this work would be aborted. Replace with a durable
- * queue before any serverless deploy.
+ * Errors are unconditionally caught and logged.
  */
 export function triggerMatchInBackground(songId: string): void {
   chain = chain.then(() =>
-    matchSongById(songId).catch((err: unknown) => {
-      console.error("[youtube] background match failed", { songId, err });
-    }),
+    matchSongById(songId)
+      .then(() => {})
+      .catch((err: unknown) => {
+        console.error("[youtube] background match failed", { songId, err });
+      }),
   );
 }
 
-/**
- * TEST-ONLY. Awaits the current background-match chain so tests can
- * deterministically assert state after auto-match has settled. Route handler
- * code must NEVER call this; it would block requests on unrelated work.
- */
+/** TEST-ONLY. Awaits the current background-match chain. */
 export async function flushPendingMatches(): Promise<void> {
   await chain;
 }
 
-/**
- * TEST-ONLY. Resets the internal background chain. Useful in test setup
- * to make sure leftover work from a prior test doesn't bleed through.
- */
+/** TEST-ONLY. Resets the internal background chain. */
 export function _resetMatchChainForTests(): void {
   chain = Promise.resolve();
 }
