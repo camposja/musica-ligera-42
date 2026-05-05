@@ -52,7 +52,7 @@ export function SongList({ playlistId, songs }: Props) {
           return (
             <li
               key={song.id}
-              className={`flex items-center gap-3 px-4 py-3 ${
+              className={`flex items-center gap-2 px-3 py-3 sm:gap-3 sm:px-4 ${
                 isPlaying ? "bg-accent/10" : ""
               }`}
             >
@@ -73,7 +73,7 @@ export function SongList({ playlistId, songs }: Props) {
                 type="button"
                 onClick={() => playable && playSong(song)}
                 disabled={!playable}
-                className="rounded bg-accent px-3 py-1 text-xs font-medium text-accent-foreground disabled:cursor-not-allowed disabled:bg-border disabled:text-muted"
+                className="shrink-0 rounded bg-accent px-3 py-1.5 text-xs font-medium text-accent-foreground disabled:cursor-not-allowed disabled:bg-border disabled:text-muted sm:text-sm"
               >
                 {playable ? "▶ Play" : "Matching…"}
               </button>
@@ -81,7 +81,7 @@ export function SongList({ playlistId, songs }: Props) {
                 type="button"
                 onClick={() => remove(song.id)}
                 disabled={removingId === song.id}
-                className="rounded border border-border px-2 py-1 text-xs text-muted hover:text-danger disabled:opacity-50"
+                className="shrink-0 rounded border border-border px-2 py-1.5 text-xs text-muted hover:text-danger disabled:opacity-50 sm:text-sm"
               >
                 {removingId === song.id ? "Removing…" : "Remove"}
               </button>
