@@ -4,6 +4,7 @@ import {
   getSession,
   unauthorized,
 } from "@/lib/auth";
+import { lockedResponse } from "@/lib/playlist-rules";
 import { prisma } from "@/lib/prisma";
 
 type Ctx = { params: Promise<{ id: string }> };
@@ -32,12 +33,13 @@ export async function POST(request: Request, ctx: Ctx) {
 
   const playlist = await prisma.playlist.findUnique({
     where: { id: playlistId },
-    select: { userId: true },
+    select: { userId: true, locked: true },
   });
   if (!playlist) {
     return Response.json({ error: "Playlist not found" }, { status: 404 });
   }
   if (playlist.userId !== eid) return forbidden();
+  if (playlist.locked) return lockedResponse();
 
   const song = await prisma.song.findUnique({
     where: { id: songId },

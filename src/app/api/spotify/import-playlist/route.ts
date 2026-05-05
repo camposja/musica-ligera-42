@@ -89,7 +89,14 @@ export async function POST(request: Request) {
       songIdByTrack.set(t.spotifyId, song.id);
     }
     const created = await tx.playlist.create({
-      data: { name: playlistName, userId: eid },
+      data: {
+        name: playlistName,
+        userId: eid,
+        source: "SPOTIFY_IMPORT",
+        locked: true,
+        importedAt: new Date(),
+        sourceLabel: "Spotify import",
+      },
     });
     if (uniqueTracks.length > 0) {
       await tx.playlistSong.createMany({

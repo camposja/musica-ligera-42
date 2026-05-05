@@ -10,6 +10,7 @@ import type { Song } from "@/types/api";
 type Props = {
   playlistId: string;
   songs: Array<{ order: number; song: Song }>;
+  locked?: boolean;
 };
 
 const REASON_LABELS: Record<string, string> = {
@@ -44,7 +45,7 @@ function MatchBadge({ song }: { song: Song }) {
   );
 }
 
-export function SongList({ playlistId, songs }: Props) {
+export function SongList({ playlistId, songs, locked = false }: Props) {
   const router = useRouter();
   const { playQueue, song: nowPlaying } = useNowPlaying();
   const [removingId, setRemovingId] = useState<string | null>(null);
@@ -124,14 +125,16 @@ export function SongList({ playlistId, songs }: Props) {
               >
                 {playable ? "▶ Play" : "Matching…"}
               </button>
-              <button
-                type="button"
-                onClick={() => remove(song.id)}
-                disabled={removingId === song.id}
-                className="shrink-0 rounded border border-border px-2 py-1.5 text-xs text-muted hover:text-danger disabled:opacity-50 sm:text-sm"
-              >
-                {removingId === song.id ? "Removing…" : "Remove"}
-              </button>
+              {!locked && (
+                <button
+                  type="button"
+                  onClick={() => remove(song.id)}
+                  disabled={removingId === song.id}
+                  className="shrink-0 rounded border border-border px-2 py-1.5 text-xs text-muted hover:text-danger disabled:opacity-50 sm:text-sm"
+                >
+                  {removingId === song.id ? "Removing…" : "Remove"}
+                </button>
+              )}
             </li>
           );
         })}

@@ -11,6 +11,12 @@ enum Role {
   USER
 }
 
+enum PlaylistSource {
+  MANUAL
+  SPOTIFY_IMPORT
+  CLONE
+}
+
 model User {
   id             String     @id @default(uuid())
   name           String     @unique
@@ -47,14 +53,21 @@ model Song {
 }
 
 model Playlist {
-  id         String         @id @default(uuid())
-  name       String
-  userId     String
-  user       User           @relation(fields: [userId], references: [id])
-  songs      PlaylistSong[]
-  createdAt  DateTime       @default(now())
+  id           String         @id @default(uuid())
+  name         String
+  userId       String
+  user         User           @relation(fields: [userId], references: [id])
+  songs        PlaylistSong[]
+  createdAt    DateTime       @default(now())
+
+  source       PlaylistSource @default(MANUAL)
+  locked       Boolean        @default(false)
+  clonedFromId String?
+  importedAt   DateTime?
+  sourceLabel  String?
 
   @@index([userId])
+  @@index([clonedFromId])
 }
 
 model PlaylistSong {

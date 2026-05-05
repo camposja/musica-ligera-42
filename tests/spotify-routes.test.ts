@@ -304,6 +304,10 @@ describe("POST /api/spotify/import-playlist", () => {
       include: { songs: { orderBy: { order: "asc" }, include: { song: true } } },
     });
     expect(playlist.userId).toBe(u.id);
+    expect(playlist.source).toBe("SPOTIFY_IMPORT");
+    expect(playlist.locked).toBe(true);
+    expect(playlist.importedAt).toBeInstanceOf(Date);
+    expect(playlist.sourceLabel).toBe("Spotify import");
     expect(playlist.songs.map((ps) => ps.song.spotifyId)).toEqual(["a", "b", "c"]);
     expect(playlist.songs.map((ps) => ps.order)).toEqual([0, 1, 2]);
     // youtubeId stays null on imported songs (Ticket 4 auto-matches in background)
