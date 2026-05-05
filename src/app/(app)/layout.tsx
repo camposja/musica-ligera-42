@@ -25,11 +25,21 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     actingUserName = u?.name;
   }
 
+  const spotifyConn = await prisma.spotifyConnection.findUnique({
+    where: { id: "singleton" },
+    select: { spotifyUserId: true },
+  });
+
   return (
     <SessionProvider session={session}>
       <PlayerProvider>
         <div className="flex min-h-full flex-col">
-          <Header userName={userName} actingUserName={actingUserName} />
+          <Header
+            userName={userName}
+            actingUserName={actingUserName}
+            spotifyConnected={!!spotifyConn}
+            spotifyAccountId={spotifyConn?.spotifyUserId ?? null}
+          />
           <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">{children}</main>
           <PlayerBar />
         </div>

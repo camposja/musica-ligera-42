@@ -4,6 +4,7 @@ import {
   emptyRequest,
   jsonRequest,
   prisma,
+  seedSpotifyConnection,
   setOwnerActingSession,
   setOwnerSession,
   setUserSession,
@@ -13,10 +14,12 @@ import {
 // Stash + restore Spotify env so a missing-creds test can be exercised cleanly.
 const ORIGINAL_ID = process.env.SPOTIFY_CLIENT_ID;
 const ORIGINAL_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
+const ORIGINAL_REDIRECT = process.env.SPOTIFY_REDIRECT_URI;
 
 beforeEach(async () => {
   process.env.SPOTIFY_CLIENT_ID = "test_client_id";
   process.env.SPOTIFY_CLIENT_SECRET = "test_client_secret";
+  process.env.SPOTIFY_REDIRECT_URI = "http://localhost:3000/api/spotify/callback";
   clearCookies();
   await truncateAll();
 });
@@ -25,6 +28,7 @@ afterEach(() => {
   vi.restoreAllMocks();
   process.env.SPOTIFY_CLIENT_ID = ORIGINAL_ID;
   process.env.SPOTIFY_CLIENT_SECRET = ORIGINAL_SECRET;
+  process.env.SPOTIFY_REDIRECT_URI = ORIGINAL_REDIRECT;
 });
 
 import { _resetTokenCacheForTests } from "@/lib/spotify";
@@ -229,8 +233,8 @@ describe("POST /api/spotify/import-playlist", () => {
   });
 
   it("happy path: creates playlist + 3 songs in order", async () => {
+    await seedSpotifyConnection();
     mockFetchSequence([
-      tokenResponse(),
       { status: 200, json: { name: "My Mix" } },
       {
         status: 200,
@@ -282,8 +286,8 @@ describe("POST /api/spotify/import-playlist", () => {
       },
     });
 
+    await seedSpotifyConnection();
     mockFetchSequence([
-      tokenResponse(),
       { status: 200, json: { name: "Mix" } },
       {
         status: 200,
@@ -313,12 +317,12 @@ describe("POST /api/spotify/import-playlist", () => {
   });
 
   it("re-importing the same playlist creates a second Playlist but reuses all songs", async () => {
+    await seedSpotifyConnection();
     const tracks = [track("a"), track("b")];
     mockFetchSequence([
-      tokenResponse(),
       { status: 200, json: { name: "Mix" } },
       { status: 200, json: { items: tracks, next: null } },
-      // Second import — fetch token still cached, so just playlist + tracks
+      // Second import: cached token still valid, just playlist + tracks
       { status: 200, json: { name: "Mix" } },
       { status: 200, json: { items: tracks, next: null } },
     ]);
@@ -344,19 +348,51 @@ describe("POST /api/spotify/import-playlist", () => {
     expect(await prisma.song.count()).toBe(2);
   });
 
-  it("404 when Spotify says playlist not found", async () => {
-    mockFetchSequence([tokenResponse(), { status: 404, json: { error: "no" } }]);
+  it("404 with code playlist_not_found_or_private when Spotify says not found", async () => {
+    await seedSpotifyConnection();
+    mockFetchSequence([{ status: 404, json: { error: "no" } }]);
     const u = await makeUser();
     await setUserSession(u.id);
     const res = await importPOST(
       jsonRequest("http://x/api/spotify/import-playlist", { url: PLAYLIST_URL }),
     );
     expect(res.status).toBe(404);
+    const body = await res.json();
+    expect(body.code).toBe("playlist_not_found_or_private");
+  });
+
+  it("403 with code spotify_restricted when Spotify forbids the playlist", async () => {
+    await seedSpotifyConnection();
+    mockFetchSequence([
+      { status: 200, json: { name: "Editorial Mix" } },
+      { status: 403, json: { error: { status: 403, message: "Forbidden" } } },
+    ]);
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await importPOST(
+      jsonRequest("http://x/api/spotify/import-playlist", { url: PLAYLIST_URL }),
+    );
+    expect(res.status).toBe(403);
+    const body = await res.json();
+    expect(body.code).toBe("spotify_restricted");
+  });
+
+  it("409 with code not_connected when no SpotifyConnection row exists", async () => {
+    // No seedSpotifyConnection(); no fetch mocks needed (no upstream call should happen).
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await importPOST(
+      jsonRequest("http://x/api/spotify/import-playlist", { url: PLAYLIST_URL }),
+    );
+    expect(res.status).toBe(409);
+    const body = await res.json();
+    expect(body.code).toBe("not_connected");
+    expect(body.connectUrl).toBe("/api/spotify/connect");
   });
 
   it("empty playlist → 201 with empty Playlist row, songsImported = 0", async () => {
+    await seedSpotifyConnection();
     mockFetchSequence([
-      tokenResponse(),
       { status: 200, json: { name: "Empty" } },
       { status: 200, json: { items: [], next: null } },
     ]);
@@ -374,8 +410,8 @@ describe("POST /api/spotify/import-playlist", () => {
   });
 
   it("Spotify playlist with a duplicate track produces only one PlaylistSong row", async () => {
+    await seedSpotifyConnection();
     mockFetchSequence([
-      tokenResponse(),
       { status: 200, json: { name: "Dups" } },
       {
         status: 200,
@@ -398,11 +434,11 @@ describe("POST /api/spotify/import-playlist", () => {
   });
 
   it("caps auto-match triggers at 25 per import (quota guard)", async () => {
+    await seedSpotifyConnection();
     // Build a 30-track playlist; only the first 25 unmatched songs should
     // get triggerMatchInBackground called.
     const tracks = Array.from({ length: 30 }, (_, i) => track(`t${i}`));
     mockFetchSequence([
-      tokenResponse(),
       { status: 200, json: { name: "Big Mix" } },
       { status: 200, json: { items: tracks, next: null } },
     ]);
@@ -423,8 +459,8 @@ describe("POST /api/spotify/import-playlist", () => {
   });
 
   it("falls back to 'Imported Spotify Playlist' when Spotify returns no name", async () => {
+    await seedSpotifyConnection();
     mockFetchSequence([
-      tokenResponse(),
       { status: 200, json: { name: "" } },
       { status: 200, json: { items: [track("a")], next: null } },
     ]);
@@ -439,8 +475,8 @@ describe("POST /api/spotify/import-playlist", () => {
   });
 
   it("OWNER acting as user can import for that user", async () => {
+    await seedSpotifyConnection();
     mockFetchSequence([
-      tokenResponse(),
       { status: 200, json: { name: "Owned" } },
       { status: 200, json: { items: [track("a")], next: null } },
     ]);

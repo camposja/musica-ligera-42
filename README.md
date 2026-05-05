@@ -91,18 +91,46 @@ This keeps song creation single-source and lets later tickets (Spotify import) r
 
 ## Spotify integration
 
-Search the Spotify catalog and import public Spotify playlists. Uses the [Client Credentials Flow](https://developer.spotify.com/documentation/web-api/tutorials/client-credentials-flow) — no user-OAuth, so private playlists are out of scope.
+Search uses the Spotify [Client Credentials Flow](https://developer.spotify.com/documentation/web-api/tutorials/client-credentials-flow) (no user auth needed). **Playlist import requires OAuth Authorization Code** — the Spotify [Web API change of Nov 27 2024](https://developer.spotify.com/blog/2024-11-27-changes-to-the-web-api) removed Client-Credentials access to playlist endpoints for apps in Development Mode.
+
+**Singleton OWNER connection model.** The OWNER connects once via the dashboard; all imports (including those triggered by USER sessions) use that connection. USERs never go through Spotify OAuth themselves. If the OWNER reconnects with a different Spotify account, every USER's imports use that new account.
 
 **Required env** (already in `.env.example`):
 - `SPOTIFY_CLIENT_ID` — from your app at https://developer.spotify.com/dashboard
 - `SPOTIFY_CLIENT_SECRET`
+- `SPOTIFY_REDIRECT_URI=http://127.0.0.1:3000/api/spotify/callback`
+
+**One-time Spotify Dashboard setup**: open your app at https://developer.spotify.com/dashboard → Edit Settings → **Redirect URIs** → add `http://127.0.0.1:3000/api/spotify/callback` *exactly* (no trailing slash) → Save.
+
+⚠️ **Spotify rejects `http://localhost` as "not secure"** (policy change in 2024). Use the literal loopback IP `127.0.0.1` in **all three places**: `.env`, the Spotify Dashboard, and the browser URL you visit when testing (`http://127.0.0.1:3000`, not `http://localhost:3000`). If you mix the two, the OAuth state cookie won't travel between connect and callback and you'll see "Missing OAuth state cookie". `https://` URLs are also accepted (with a real cert), but for local dev `http://127.0.0.1` is what works.
+
+**Connect flow**: sign in as OWNER → click "Connect Spotify" in the header → approve on Spotify's screen → land back on `/dashboard?spotify=connected`. The header now shows "Spotify: Connected" with a Disconnect link.
+
+Scopes requested: `playlist-read-private playlist-read-collaborative`. We deliberately skip `user-read-private` — we don't display the Spotify profile, and the Spotify user `id` is in the public profile subset returned by `/v1/me`.
 
 | Method | Path | Auth | Behavior |
 |---|---|---|---|
-| GET | `/api/spotify/search?q=...` | session | normalized track results; **does not persist** |
-| POST | `/api/spotify/import-playlist` | session + effective user | body `{url}` (open.spotify.com URL, `spotify:playlist:` URI, or 22-char id); creates a Playlist for the effective user, upserts each Song by `spotifyId`, links them in Spotify order. Returns `{playlist, songsImported, songsReused}`. |
+| GET | `/api/spotify/search?q=...` | session | Client-Credentials search; normalized track results; **does not persist** |
+| GET | `/api/spotify/connect` | OWNER | redirects to Spotify authorize URL; sets short-lived signed `ml42_spotify_oauth_state` cookie for CSRF |
+| GET | `/api/spotify/callback` | OWNER | verifies state cookie (cleared on every exit), exchanges code for tokens, stores singleton `SpotifyConnection` row, redirects `/dashboard?spotify=connected\|forbidden\|error` |
+| POST | `/api/spotify/disconnect` | OWNER | deletes the singleton `SpotifyConnection` row |
+| GET | `/api/spotify/status` | session | returns `{connected, spotifyUserId}` — never returns tokens |
+| POST | `/api/spotify/import-playlist` | session + effective user | body `{url}` (open.spotify.com URL, `spotify:playlist:` URI, or 22-char id); uses the OWNER's stored token (refreshing if needed). Creates a Playlist for the effective user, upserts each Song by `spotifyId`, links them in Spotify order. Returns `{playlist, songsImported, songsReused}` on 201. |
 
-Search results are returned in this shape: `{spotifyId, title, artist, album, durationMs, albumImageUrl}`. Multiple artists are joined with `, `. The endpoint returns 502 for upstream Spotify errors and 503 (with `Retry-After` header passed through) on rate limiting.
+Search results: `{spotifyId, title, artist, album, durationMs, albumImageUrl}` (multiple artists joined with `, `). Search returns 502 for upstream errors and 503 (with `Retry-After`) on rate limit.
+
+### Import error mapping
+
+`POST /api/spotify/import-playlist` returns a stable `code` field on every error response so the UI can render specific inline messages instead of a generic banner:
+
+| HTTP | `code` | Meaning |
+|---|---|---|
+| 409 | `not_connected` | No `SpotifyConnection` row. Body includes `connectUrl: "/api/spotify/connect"`. UI: prompt OWNER to connect, tell USER to ask the OWNER. |
+| 409 | `reconnect_required` | Refresh token rejected by Spotify (`invalid_grant`); the row was deleted automatically. Same UI prompt. |
+| 404 | `playlist_not_found_or_private` | Spotify returned 404 — playlist doesn't exist or isn't visible to the connected account. |
+| 403 | `spotify_restricted` | Spotify returned 403 — typically Spotify-owned editorial / algorithmic playlists. **OAuth does not unlock these for Development-Mode apps.** Use a user-created playlist. |
+| 503 | `rate_limited` | Spotify returned 429. `Retry-After` header passed through. |
+| 502 | `upstream` | Other upstream Spotify errors. |
 
 ### Save-a-search-result flow (two steps)
 
@@ -117,16 +145,25 @@ curl -b cookies.txt -H 'Content-Type: application/json' \
   http://localhost:3000/api/songs
 ```
 
-### Import a public playlist
+### Import a (user-created public) playlist
 
 ```sh
 curl -b cookies.txt -H 'Content-Type: application/json' \
-  -d '{"url":"https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M"}' \
+  -d '{"url":"https://open.spotify.com/playlist/<user-created-id>"}' \
   http://localhost:3000/api/spotify/import-playlist
-# → { playlist: {id, name}, songsImported: N, songsReused: M }
+# → 201 { playlist: {id, name}, songsImported: N, songsReused: M }
+# → 409 { code: "not_connected", connectUrl: "/api/spotify/connect", ... } if no OAuth connection
+# → 403 { code: "spotify_restricted", ... } for editorial / algorithmic playlists
 ```
 
 Imported songs start with `youtubeId: null`; YouTube auto-match runs in the background after the response (see below). Importing the same playlist twice creates a second local playlist (per spec, playlists are not deduped, only songs are).
+
+### Caveats and security debt
+
+- **Editorial / algorithmic Spotify playlists** (`open.spotify.com/playlist/37i9dQZF1...` — "Today's Top Hits" etc.) **may still fail post-OAuth.** The Nov 2024 change restricted them at the API level for Development-Mode apps regardless of auth flow. Use a user-created public playlist to verify.
+- **Tokens are stored plaintext in Postgres.** Acceptable for a local MVP; encrypt at rest before any production deploy (future work — derive a key from `SESSION_SECRET`).
+- **Refresh-token death is handled.** If Spotify returns `invalid_grant` on refresh, the singleton `SpotifyConnection` row is deleted and the next import returns `409 reconnect_required`. The UI prompts the OWNER to reconnect.
+- **Per-USER Spotify connections** are explicit non-goals for now. The dead `User.spotifyUserId` column from Ticket 1 will be removed in a separate migration.
 
 ## YouTube playback
 

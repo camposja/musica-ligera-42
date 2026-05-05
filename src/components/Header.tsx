@@ -7,13 +7,24 @@ import { ApiError, apiFetch } from "@/lib/api-client";
 import { useSession } from "@/components/SessionProvider";
 import { UserSwitcher } from "@/components/UserSwitcher";
 
-type Props = { userName?: string; actingUserName?: string };
+type Props = {
+  userName?: string;
+  actingUserName?: string;
+  spotifyConnected: boolean;
+  spotifyAccountId: string | null;
+};
 
-export function Header({ userName, actingUserName }: Props) {
+export function Header({
+  userName,
+  actingUserName,
+  spotifyConnected,
+  spotifyAccountId,
+}: Props) {
   const session = useSession();
   const router = useRouter();
   const pathname = usePathname();
   const [signingOut, setSigningOut] = useState(false);
+  const [disconnecting, setDisconnecting] = useState(false);
 
   async function logout() {
     setSigningOut(true);
@@ -24,6 +35,18 @@ export function Header({ userName, actingUserName }: Props) {
     } catch (err) {
       setSigningOut(false);
       console.error(err instanceof ApiError ? err.message : err);
+    }
+  }
+
+  async function disconnectSpotify() {
+    setDisconnecting(true);
+    try {
+      await apiFetch("/api/spotify/disconnect", { method: "POST" });
+      router.refresh();
+    } catch (err) {
+      console.error(err instanceof ApiError ? err.message : err);
+    } finally {
+      setDisconnecting(false);
     }
   }
 
@@ -69,6 +92,29 @@ export function Header({ userName, actingUserName }: Props) {
                 <span className="text-sm text-muted">Not acting</span>
               )}
               <UserSwitcher currentActingUserId={session.actingUserId} />
+              {spotifyConnected ? (
+                <span className="flex items-center gap-2 text-xs text-muted">
+                  <span className="rounded bg-accent/20 px-2 py-0.5 font-medium text-accent">
+                    Spotify: Connected
+                    {spotifyAccountId ? ` (${spotifyAccountId})` : ""}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={disconnectSpotify}
+                    disabled={disconnecting}
+                    className="text-xs text-muted underline hover:text-foreground disabled:opacity-50"
+                  >
+                    {disconnecting ? "…" : "Disconnect"}
+                  </button>
+                </span>
+              ) : (
+                <a
+                  href="/api/spotify/connect"
+                  className="rounded border border-accent px-2 py-0.5 text-xs font-medium text-accent hover:bg-accent/10"
+                >
+                  Connect Spotify
+                </a>
+              )}
             </>
           )}
           <button

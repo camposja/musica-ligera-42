@@ -39,8 +39,31 @@ export async function setUserSession(userId: string): Promise<void> {
 
 export async function truncateAll(): Promise<void> {
   await prisma.$executeRawUnsafe(
-    `TRUNCATE TABLE "User", "Song", "Playlist", "PlaylistSong" RESTART IDENTITY CASCADE`,
+    `TRUNCATE TABLE "User", "Song", "Playlist", "PlaylistSong", "SpotifyConnection" RESTART IDENTITY CASCADE`,
   );
+}
+
+export async function seedSpotifyConnection(opts?: {
+  expiresAt?: Date;
+  accessToken?: string;
+  refreshToken?: string;
+}): Promise<void> {
+  await prisma.spotifyConnection.upsert({
+    where: { id: "singleton" },
+    create: {
+      id: "singleton",
+      accessToken: opts?.accessToken ?? "test_access_token",
+      refreshToken: opts?.refreshToken ?? "test_refresh_token",
+      expiresAt: opts?.expiresAt ?? new Date(Date.now() + 60 * 60 * 1000),
+      scope: "playlist-read-private playlist-read-collaborative",
+      spotifyUserId: "test_spotify_user",
+    },
+    update: {
+      accessToken: opts?.accessToken ?? "test_access_token",
+      refreshToken: opts?.refreshToken ?? "test_refresh_token",
+      expiresAt: opts?.expiresAt ?? new Date(Date.now() + 60 * 60 * 1000),
+    },
+  });
 }
 
 export function jsonRequest(url: string, body: unknown, method = "POST"): Request {

@@ -6,15 +6,20 @@ import {
 } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import {
-  getAllPlaylistTracks,
-  getPlaylist,
   parseSpotifyPlaylistId,
   SpotifyError,
   type NormalizedTrack,
 } from "@/lib/spotify";
+import {
+  getAllPlaylistTracksAsConnection,
+  getPlaylistAsConnection,
+  NotConnectedError,
+  ReconnectRequiredError,
+} from "@/lib/spotify-oauth";
 import { triggerMatchInBackground } from "@/lib/youtube";
 
 const AUTO_MATCH_LIMIT_PER_IMPORT = 25;
+const CONNECT_URL = "/api/spotify/connect";
 
 export async function POST(request: Request) {
   const session = await getSession();
@@ -44,9 +49,10 @@ export async function POST(request: Request) {
   let playlistName: string;
   let allTracks: NormalizedTrack[];
   try {
-    const meta = await getPlaylist(playlistId);
-    playlistName = meta.name && meta.name.length > 0 ? meta.name : "Imported Spotify Playlist";
-    allTracks = await getAllPlaylistTracks(playlistId);
+    const meta = await getPlaylistAsConnection(playlistId);
+    playlistName =
+      meta.name && meta.name.length > 0 ? meta.name : "Imported Spotify Playlist";
+    allTracks = await getAllPlaylistTracksAsConnection(playlistId);
   } catch (err) {
     return spotifyErrorResponse(err);
   }
@@ -73,11 +79,8 @@ export async function POST(request: Request) {
   const songsImported = incomingSpotifyIds.length - songsReused;
 
   // === Step 5: Open a short transaction for DB writes only ===
-  // songIdByTrack is hoisted out of the transaction so the post-commit
-  // auto-match block (below) can reuse the mapping without re-querying.
   const songIdByTrack = new Map<string, string>();
   const playlist = await prisma.$transaction(async (tx) => {
-    // Upsert each Song by spotifyId; preserve local rows on conflict.
     for (const t of uniqueTracks) {
       const song = await tx.song.upsert({
         where: { spotifyId: t.spotifyId },
@@ -107,7 +110,6 @@ export async function POST(request: Request) {
   });
 
   // Fire-and-forget auto-match for songs that don't have a youtubeId yet.
-  // Capped at 25 per import to protect the daily YouTube quota.
   if (uniqueTracks.length > 0) {
     const allSongIds = Array.from(songIdByTrack.values());
     const needsMatch = await prisma.song.findMany({
@@ -131,11 +133,45 @@ export async function POST(request: Request) {
 }
 
 function spotifyErrorResponse(err: unknown): Response {
+  if (err instanceof NotConnectedError) {
+    return Response.json(
+      {
+        error: "Spotify is not connected",
+        code: "not_connected",
+        connectUrl: CONNECT_URL,
+      },
+      { status: 409 },
+    );
+  }
+  if (err instanceof ReconnectRequiredError) {
+    return Response.json(
+      {
+        error: "Spotify connection expired — reconnect required",
+        code: "reconnect_required",
+        connectUrl: CONNECT_URL,
+      },
+      { status: 409 },
+    );
+  }
   if (err instanceof SpotifyError) {
     if (err.httpStatus === 404) {
       return Response.json(
-        { error: "Spotify playlist not found or not public" },
+        {
+          error:
+            "Playlist not found or not visible to the connected Spotify account",
+          code: "playlist_not_found_or_private",
+        },
         { status: 404 },
+      );
+    }
+    if (err.httpStatus === 403) {
+      return Response.json(
+        {
+          error:
+            "Spotify restricts this playlist (e.g. editorial / algorithmic) for app access",
+          code: "spotify_restricted",
+        },
+        { status: 403 },
       );
     }
     if (err.httpStatus === 429) {
@@ -146,16 +182,24 @@ function spotifyErrorResponse(err: unknown): Response {
       return new Response(
         JSON.stringify({
           error: "Spotify rate limit",
+          code: "rate_limited",
           retryAfterSeconds: err.retryAfterSeconds ?? null,
         }),
         { status: 503, headers },
       );
     }
     if (err.httpStatus === 0) {
-      return Response.json({ error: err.message }, { status: 502 });
+      return Response.json(
+        { error: err.message, code: "upstream" },
+        { status: 502 },
+      );
     }
     return Response.json(
-      { error: "Spotify upstream error", upstreamStatus: err.httpStatus },
+      {
+        error: "Spotify upstream error",
+        code: "upstream",
+        upstreamStatus: err.httpStatus,
+      },
       { status: 502 },
     );
   }

@@ -18,10 +18,10 @@ export class SpotifyError extends Error {
   }
 }
 
-const TOKEN_URL = "https://accounts.spotify.com/api/token";
-const API_BASE = "https://api.spotify.com/v1";
-const REFRESH_BUFFER_MS = 60_000;
-const MAX_PLAYLIST_PAGES = 50;
+export const TOKEN_URL = "https://accounts.spotify.com/api/token";
+export const API_BASE = "https://api.spotify.com/v1";
+export const REFRESH_BUFFER_MS = 60_000;
+export const MAX_PLAYLIST_PAGES = 50;
 
 type SpotifyToken = { token: string; expiresAt: number };
 let cachedToken: SpotifyToken | null = null;
@@ -42,6 +42,15 @@ function getCreds(): { id: string; secret: string } {
   return { id, secret };
 }
 
+export async function readBodySafe(res: Response): Promise<string> {
+  try {
+    const t = await res.text();
+    return t.length > 1000 ? `${t.slice(0, 1000)}…[truncated]` : t;
+  } catch {
+    return "<unreadable body>";
+  }
+}
+
 async function getAccessToken(): Promise<string> {
   const now = Date.now();
   if (cachedToken && cachedToken.expiresAt - REFRESH_BUFFER_MS > now) {
@@ -58,6 +67,12 @@ async function getAccessToken(): Promise<string> {
     body: "grant_type=client_credentials",
   });
   if (!res.ok) {
+    const body = await readBodySafe(res);
+    console.error("[spotify] token request failed", {
+      status: res.status,
+      statusText: res.statusText,
+      body,
+    });
     throw new SpotifyError(
       res.status,
       `Spotify token request failed: ${res.status}`,
@@ -78,6 +93,10 @@ async function spotifyFetch(url: string): Promise<Response> {
   });
   if (res.status === 429) {
     const retryAfter = res.headers.get("retry-after");
+    console.error("[spotify] rate limited", {
+      url,
+      retryAfter,
+    });
     throw new SpotifyError(
       429,
       "Spotify rate limit",
@@ -85,15 +104,22 @@ async function spotifyFetch(url: string): Promise<Response> {
     );
   }
   if (!res.ok) {
+    const body = await readBodySafe(res);
+    console.error("[spotify] upstream error", {
+      url,
+      status: res.status,
+      statusText: res.statusText,
+      body,
+    });
     throw new SpotifyError(res.status, `Spotify API error: ${res.status}`);
   }
   return res;
 }
 
-type SpotifyArtistRef = { name: string };
-type SpotifyImage = { url: string; width?: number; height?: number };
-type SpotifyAlbum = { name: string; images?: SpotifyImage[] };
-type SpotifyTrack = {
+export type SpotifyArtistRef = { name: string };
+export type SpotifyImage = { url: string; width?: number; height?: number };
+export type SpotifyAlbum = { name: string; images?: SpotifyImage[] };
+export type SpotifyTrack = {
   id: string;
   name: string;
   duration_ms: number;
@@ -102,10 +128,10 @@ type SpotifyTrack = {
   is_local?: boolean;
   type?: string;
 };
-type SpotifyPlaylistItem = { track: SpotifyTrack | null };
-type SpotifyPaged<T> = { items: T[]; next: string | null };
+export type SpotifyPlaylistItem = { track: SpotifyTrack | null };
+export type SpotifyPaged<T> = { items: T[]; next: string | null };
 
-function normalize(track: SpotifyTrack): NormalizedTrack {
+export function normalize(track: SpotifyTrack): NormalizedTrack {
   const artist =
     track.artists && track.artists.length > 0
       ? track.artists.map((a) => a.name).join(", ")
@@ -124,7 +150,7 @@ function normalize(track: SpotifyTrack): NormalizedTrack {
 
 export async function searchTracks(
   q: string,
-  limit = 20,
+  limit = 10,
 ): Promise<NormalizedTrack[]> {
   const url = `${API_BASE}/search?q=${encodeURIComponent(q)}&type=track&limit=${limit}`;
   const res = await spotifyFetch(url);

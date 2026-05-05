@@ -63,3 +63,14 @@ model PlaylistSong {
   @@index([playlistId])
   @@index([songId])
 }
+
+model SpotifyConnection {
+  id             String   @id @default("singleton")
+  accessToken    String
+  refreshToken   String
+  expiresAt      DateTime
+  scope          String
+  spotifyUserId  String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
