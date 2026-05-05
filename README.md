@@ -181,6 +181,7 @@ Songs are matched to YouTube videos via the [YouTube Data API v3 search endpoint
 |---|---|---|---|
 | POST | `/api/youtube/match` | OWNER-only | body `{songId}`. Re-runs YouTube search and overwrites `youtubeId` + `youtubeAltIds`. 404 with `{error:"No YouTube match found"}` when search returns 0 items. 503 + `Retry-After` on 429. 502 on other upstream errors. |
 | POST | `/api/youtube/override` | OWNER-only | body `{songId, newYoutubeId}`. Format-validates `newYoutubeId` against `^[A-Za-z0-9_-]{11}$`. Updates `youtubeId` only; `youtubeAltIds` is untouched. **No call to YouTube** — saves quota. |
+| GET  | `/api/youtube/audio/[videoId]` | session | Streams audio extracted from YouTube via `youtubei.js` (InnerTube). Forwards the browser's `Range` header upstream (so `<audio>` seeking works → 206 Partial Content). 1-hour in-memory cache of stream URLs. 502 with `{error:"extraction_failed"}` if extraction fails. **No quota cost** — bypasses the YouTube Data API. |
 
 **Why OWNER-only:** `Song` is global shared state — every user with a song in their playlist plays the same `youtubeId`. A USER changing it would affect every other user, so manual mutation is locked to OWNER. Auto-match is fine for any session because it only fills `youtubeId` when it's null; it never overwrites an existing pick.
 
@@ -192,22 +193,37 @@ When a Song is created via `POST /api/songs` (without an explicit `youtubeId`) o
 
 > ⚠️ **MVP / local-server only.** Fire-and-forget works on `pnpm dev` / `next start` because the Node process keeps running. It will **not** work on serverless deployments (Vercel functions, AWS Lambda) — those terminate execution once the response is sent. Replace with a real durable queue (BullMQ, pg-boss, Cloud Tasks) before deploying serverlessly.
 
-### Playback requires being signed into YouTube
+### Playback
 
-YouTube has been progressively tightening anonymous embed playback. Most music videos now show **"Video unavailable — watch on YouTube"** when the iframe runs in a browser that isn't signed into any YouTube account. **Sign into a free YouTube account once in the browser you're using and playback works for the same songs.** This is a YouTube platform decision, not something we can patch around — even with the embeddability + age-restriction filter on the auto-match (see below), too many videos in our typical match set are gated.
+**Primary: server-side audio extraction.** The player bar renders an `<audio src="/api/youtube/audio/[id]">` element. The route handler uses [`youtubei.js`](https://www.npmjs.com/package/youtubei.js) (a pure-JS client for YouTube's internal InnerTube API) to resolve a direct CDN URL for the audio-only stream, then proxies the bytes through to the browser. **No YouTube login required.** Format selection prefers `audio/mp4` (Safari can play AAC; it can't play YouTube's `audio/webm` opus), falling back to any container only when no mp4 audio-only format is available. Browser-native `<audio>` controls — play/pause/seek/volume — driven by `Range` request passthrough to YouTube's CDN.
 
-The auto-match filters out the *obviously* unplayable hits before they ever land in the DB:
+> **Why proxy, not 302 redirect?** YouTube stream URLs are bound to the requesting IP. A redirect to that URL would 403 from the browser's IP. The proxy uses our server's bandwidth (fine for personal/family scale).
+
+**Fallback: YouTube iframe.** If the `<audio>` element fires `onError` (extraction broke for that video, format incompatibility, etc.), `PlayerBar` swaps in `<YouTubePlayer>` — the original `https://www.youtube.com/embed/[id]` iframe. The iframe is gated by YouTube's anonymous-embed restrictions (most music videos require the visitor be signed into a YouTube account), so it's a *deepest* fallback, not a peer.
+
+**Future: Spotify Web Playback SDK.** Captured as future work. When any one user has Spotify Premium connected (singleton OWNER model), we'd prefer the SDK over extraction for higher fidelity. Extraction stays the no-Premium-required path.
+
+The auto-match filter still removes the *obviously* unplayable hits before they ever land in the DB — even though extraction sidesteps most of these, the filter helps the iframe-fallback case:
 - Non-embeddable videos (uploader disabled third-party embedding entirely)
 - Age-restricted videos (`contentDetails.contentRating.ytRating === "ytAgeRestricted"`)
 - Private videos
 
-If all 4 candidates from a search are restricted, we fall back to the search order so the song still has *some* match — playback may still need a YouTube login.
+If all 4 candidates from a search are restricted, we fall back to the search order so the song still has *some* match — extraction usually still works on these.
 
-**For songs imported before this filter existed**, the OWNER can hit the "Re-check matches" button on the dashboard. It re-checks each song's stored `youtubeId + youtubeAltIds` (1 quota unit per song, no new searches) and promotes a playable alt if one exists.
+**For songs imported before the filter existed**, the OWNER can hit the "Re-check matches" button on the dashboard. It re-checks each song's stored `youtubeId + youtubeAltIds` (1 quota unit per song, no new searches) and promotes a playable alt if one exists.
 
-### `<YouTubePlayer videoId={...} />`
+#### Caveats
 
-Component at `src/components/YouTubePlayer.tsx`. Renders a plain YouTube embed `<iframe>`. Returns `null` for null/empty/malformed `videoId` so an unmatched song doesn't paint a broken iframe. Wired into the persistent player bar in `(app)/layout.tsx`.
+- **`youtubei.js` fragility.** Uses YouTube's reverse-engineered InnerTube API (Android client) instead of the signature-decipher path that broke `@distube/ytdl-core` for us in May 2026. More resilient historically, but still subject to YouTube changes — recovery is `pnpm update youtubei.js`. If extraction breaks for an extended period, the swap to a `yt-dlp` shell-out is a ~30-line change to `src/lib/youtube-audio.ts`. The iframe fallback covers signed-in YouTube users during the gap.
+- **YouTube ToS gray area.** Extraction is unofficial. YouTube's TOS prohibits "downloading"; they have not pursued individual users in practice. For wider deployment this needs a re-evaluation.
+- **Server bandwidth.** Audio streams scale with concurrent listeners. For 2–7 family users this is trivial.
+- **Serverless deployment.** The streaming proxy assumes a long-running Node server. Vercel functions have a short streaming timeout — would need rework before deploying serverlessly.
+
+#### Components
+
+- `src/components/YouTubeAudioPlayer.tsx` — `"use client"` `<audio controls autoPlay>` against the proxy endpoint. Calls `onError` so `PlayerBar` can fall back.
+- `src/components/YouTubePlayer.tsx` — `<iframe>` embed. Used as deepest fallback when extraction fails.
+- `src/components/PlayerBar.tsx` — wires both: `YouTubeAudioPlayer` first; on error swaps to `YouTubePlayer`. Resets the failure flag when the song changes.
 
 ## Frontend / pages
 
@@ -218,10 +234,10 @@ Dark-first UI, no theme toggle. Built with Tailwind v4 + native HTML + React Con
 | `/` | none | Redirects to `/dashboard` (with session) or `/login` (without). |
 | `/login` | none | OWNER + USER login form (toggle). |
 | `/dashboard` | session | Lists effective user's playlists; create-playlist + Spotify-import forms. OWNER without an acting USER sees a "Pick a user to start" prompt — use the header switcher. |
-| `/playlist/[id]` | session + ownership | Songs in playlist order. ▶ Play sets the persistent bottom player. Songs whose YouTube auto-match hasn't completed yet show a disabled "Matching…" button + helper text. Remove deletes the join row (the song stays in the global library). |
+| `/playlist/[id]` | session + ownership | Songs in playlist order. ▶ Play opens the persistent player strip just below the header. Songs whose YouTube auto-match hasn't completed yet show a disabled "Matching…" button + helper text. Remove deletes the join row (the song stays in the global library). |
 | `/search` | session | "Search Spotify". Results have **Save** (adds to global library) and an **+ Add to playlist…** dropdown. Duplicates are surfaced inline ("Already in this playlist"); upstream errors stay inline ("Spotify upstream error"). |
 
-Persistent header includes nav (Dashboard/Search), user identity, and — for OWNER sessions — a user switcher that calls `POST /api/auth/switch-user`. Persistent bottom player bar lives in `(app)/layout.tsx` so playback continues across page navigation.
+Persistent header includes nav (Dashboard/Search), user identity, and — for OWNER sessions — a user switcher that calls `POST /api/auth/switch-user`. The header and the player strip share a single `sticky top-0` wrapper in `(app)/layout.tsx`, so both stay pinned while content scrolls. The player strip itself only appears when a song is loaded; closing it reflows the page.
 
 ### Manual smoke test
 
@@ -230,7 +246,7 @@ Persistent header includes nav (Dashboard/Search), user identity, and — for OW
 3. Create a playlist with the form on the dashboard.
 4. Click "Search" in the nav, search for a song.
 5. Use **+ Add to playlist…** to add a result to your playlist.
-6. Click into the playlist; press ▶ Play on a song. The player bar at the bottom plays the YouTube embed and persists when you navigate to other pages.
+6. Click into the playlist; press ▶ Play on a song. The player strip appears below the header, plays the audio (extracted server-side via `/api/youtube/audio/[id]`), and persists across page navigation. Try it in an incognito window with no YouTube cookies — audio should still play.
 7. Sign in as OWNER → confirm the "Pick a user to start" prompt + the user switcher dropdown in the header.
 
 ## Tests

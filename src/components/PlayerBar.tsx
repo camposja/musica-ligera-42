@@ -1,14 +1,24 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useNowPlaying } from "@/components/PlayerProvider";
 import YouTubePlayer, { VIDEO_ID_RE } from "@/components/YouTubePlayer";
+import { YouTubeAudioPlayer } from "@/components/YouTubeAudioPlayer";
 
 export function PlayerBar() {
   const { song, stop } = useNowPlaying();
+  const [audioFailed, setAudioFailed] = useState(false);
+
+  // Reset the fallback flag whenever the playing song changes; otherwise a
+  // failure on song A would permanently force iframe mode for song B.
+  useEffect(() => {
+    setAudioFailed(false);
+  }, [song?.id]);
 
   if (!song) return null;
 
-  const playable = song.youtubeId !== null && VIDEO_ID_RE.test(song.youtubeId);
+  const videoId =
+    song.youtubeId && VIDEO_ID_RE.test(song.youtubeId) ? song.youtubeId : null;
 
   return (
     <div className="border-b border-border bg-surface px-3 py-2 sm:px-4 sm:py-3">
@@ -31,10 +41,17 @@ export function PlayerBar() {
             ×
           </button>
         </div>
-        {playable ? (
-          <div className="flex justify-center">
-            <YouTubePlayer videoId={song.youtubeId} width={320} height={180} />
-          </div>
+        {videoId ? (
+          audioFailed ? (
+            <div className="flex justify-center">
+              <YouTubePlayer videoId={videoId} width={320} height={180} />
+            </div>
+          ) : (
+            <YouTubeAudioPlayer
+              videoId={videoId}
+              onError={() => setAudioFailed(true)}
+            />
+          )
         ) : (
           <div className="rounded border border-border bg-background px-3 py-2 text-sm text-muted">
             Auto-matching YouTube video for &ldquo;{song.title}&rdquo;…
