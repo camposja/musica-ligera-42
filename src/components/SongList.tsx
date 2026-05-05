@@ -46,7 +46,7 @@ function MatchBadge({ song }: { song: Song }) {
 
 export function SongList({ playlistId, songs }: Props) {
   const router = useRouter();
-  const { playSong, song: nowPlaying } = useNowPlaying();
+  const { playQueue, song: nowPlaying } = useNowPlaying();
   const [removingId, setRemovingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -56,6 +56,18 @@ export function SongList({ playlistId, songs }: Props) {
         This playlist is empty. Use Search to add songs.
       </p>
     );
+  }
+
+  // Snapshot of all currently-playable songs in playlist order. Clicking Play
+  // on any one of them starts queue playback from that position.
+  const playableSongs = songs
+    .map(({ song }) => song)
+    .filter((song) => song.youtubeId !== null && VIDEO_ID_RE.test(song.youtubeId));
+
+  function startQueueFrom(songId: string) {
+    const idx = playableSongs.findIndex((s) => s.id === songId);
+    if (idx === -1) return;
+    playQueue(playableSongs, idx);
   }
 
   async function remove(songId: string) {
@@ -106,7 +118,7 @@ export function SongList({ playlistId, songs }: Props) {
               </div>
               <button
                 type="button"
-                onClick={() => playable && playSong(song)}
+                onClick={() => playable && startQueueFrom(song.id)}
                 disabled={!playable}
                 className="shrink-0 rounded bg-accent px-3 py-1.5 text-xs font-medium text-accent-foreground disabled:cursor-not-allowed disabled:bg-border disabled:text-muted sm:text-sm"
               >
