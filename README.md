@@ -91,7 +91,11 @@ This keeps song creation single-source and lets later tickets (Spotify import) r
 
 ## Spotify integration
 
-Search uses the Spotify [Client Credentials Flow](https://developer.spotify.com/documentation/web-api/tutorials/client-credentials-flow) (no user auth needed). **Playlist import requires OAuth Authorization Code** — the Spotify [Web API change of Nov 27 2024](https://developer.spotify.com/blog/2024-11-27-changes-to-the-web-api) removed Client-Credentials access to playlist endpoints for apps in Development Mode.
+**Search** uses the Spotify [Client Credentials Flow](https://developer.spotify.com/documentation/web-api/tutorials/client-credentials-flow) (no user auth needed).
+
+**Playlist import scrapes the public `open.spotify.com/embed/playlist/{id}` iframe** instead of using the official Web API. Reason: the [Nov 27 2024 Spotify Web API change](https://developer.spotify.com/blog/2024-11-27-changes-to-the-web-api) blocks `/playlists/{id}/tracks` for apps in Development Mode — even with OAuth, even for the user's own playlists. The embed page is what Spotify hands out for blog/site embeds and contains a `__NEXT_DATA__` JSON blob with the full track list (title, artist, spotifyId, duration). No auth required, no Spotify Dashboard registration ceremony, no per-user allowlist. The trade-off: it's not a stable contract — if Spotify changes the embed page structure, the parser in `src/lib/spotify-embed.ts` will need an update. Album name and per-track cover art aren't in the embed payload (only the playlist cover); search results still carry full metadata since search uses the official API.
+
+**OAuth Authorization Code** (`/connect`, `/callback`, `/disconnect`, `/status`) is still wired up and the `SpotifyConnection` table still exists — useful for future features that need user-private data (e.g. "import my private Spotify playlists" or "edit a playlist back to Spotify"). The import flow doesn't depend on it. Connecting in the header populates the Spotify-account badge so the OWNER can see which account is connected, which is mostly cosmetic right now.
 
 **Singleton OWNER connection model.** The OWNER connects once via the dashboard; all imports (including those triggered by USER sessions) use that connection. USERs never go through Spotify OAuth themselves. If the OWNER reconnects with a different Spotify account, every USER's imports use that new account.
 
@@ -115,7 +119,7 @@ Scopes requested: `playlist-read-private playlist-read-collaborative`. We delibe
 | GET | `/api/spotify/callback` | OWNER | verifies state cookie (cleared on every exit), exchanges code for tokens, stores singleton `SpotifyConnection` row, redirects `/dashboard?spotify=connected\|forbidden\|error` |
 | POST | `/api/spotify/disconnect` | OWNER | deletes the singleton `SpotifyConnection` row |
 | GET | `/api/spotify/status` | session | returns `{connected, spotifyUserId}` — never returns tokens |
-| POST | `/api/spotify/import-playlist` | session + effective user | body `{url}` (open.spotify.com URL, `spotify:playlist:` URI, or 22-char id); uses the OWNER's stored token (refreshing if needed). Creates a Playlist for the effective user, upserts each Song by `spotifyId`, links them in Spotify order. Returns `{playlist, songsImported, songsReused}` on 201. |
+| POST | `/api/spotify/import-playlist` | session + effective user | body `{url}` (open.spotify.com URL, `spotify:playlist:` URI, or 22-char id); scrapes the public Spotify embed iframe for the track list. Creates a Playlist for the effective user, upserts each Song by `spotifyId`, links them in Spotify order. Returns `{playlist, songsImported, songsReused}` on 201. **Does not require an OAuth connection.** |
 
 Search results: `{spotifyId, title, artist, album, durationMs, albumImageUrl}` (multiple artists joined with `, `). Search returns 502 for upstream errors and 503 (with `Retry-After`) on rate limit.
 
@@ -125,12 +129,11 @@ Search results: `{spotifyId, title, artist, album, durationMs, albumImageUrl}` (
 
 | HTTP | `code` | Meaning |
 |---|---|---|
-| 409 | `not_connected` | No `SpotifyConnection` row. Body includes `connectUrl: "/api/spotify/connect"`. UI: prompt OWNER to connect, tell USER to ask the OWNER. |
-| 409 | `reconnect_required` | Refresh token rejected by Spotify (`invalid_grant`); the row was deleted automatically. Same UI prompt. |
-| 404 | `playlist_not_found_or_private` | Spotify returned 404 — playlist doesn't exist or isn't visible to the connected account. |
-| 403 | `spotify_restricted` | Spotify returned 403 — typically Spotify-owned editorial / algorithmic playlists. **OAuth does not unlock these for Development-Mode apps.** Use a user-created playlist. |
-| 503 | `rate_limited` | Spotify returned 429. `Retry-After` header passed through. |
-| 502 | `upstream` | Other upstream Spotify errors. |
+| 404 | `playlist_not_visible_or_private` | The Spotify embed page didn't include a `trackList` (or returned malformed JSON). Usually means private, region-locked, or recently deleted playlist. |
+| 503 | `rate_limited` | Embed endpoint rate-limited us. `Retry-After` header passed through. |
+| 502 | `upstream` | Other upstream Spotify errors (5xx from the embed endpoint). |
+
+The OAuth-specific codes (`not_connected`, `reconnect_required`, `playlist_not_found_or_private`, `spotify_restricted`) are still defined in the route but won't fire from the embed-based import path. They're kept for any future OAuth-backed import code path.
 
 ### Save-a-search-result flow (two steps)
 
@@ -160,9 +163,9 @@ Imported songs start with `youtubeId: null`; YouTube auto-match runs in the back
 
 ### Caveats and security debt
 
-- **Editorial / algorithmic Spotify playlists** (`open.spotify.com/playlist/37i9dQZF1...` — "Today's Top Hits" etc.) **may still fail post-OAuth.** The Nov 2024 change restricted them at the API level for Development-Mode apps regardless of auth flow. Use a user-created public playlist to verify.
-- **Tokens are stored plaintext in Postgres.** Acceptable for a local MVP; encrypt at rest before any production deploy (future work — derive a key from `SESSION_SECRET`).
-- **Refresh-token death is handled.** If Spotify returns `invalid_grant` on refresh, the singleton `SpotifyConnection` row is deleted and the next import returns `409 reconnect_required`. The UI prompts the OWNER to reconnect.
+- **Embed scraping is unofficial.** The parser in `src/lib/spotify-embed.ts` reads the `__NEXT_DATA__` JSON from `https://open.spotify.com/embed/playlist/{id}`. Spotify could change this structure at any time and the import would break — the fallback would need a code update. (Editorial playlists like "Today's Top Hits" *do* work via this path; tested with `37i9dQZF1DXcBWIGoYBM5M`.)
+- **Imported songs lose album name and per-track cover art** — those fields aren't in the embed payload. Search results still carry them since search uses the official API.
+- **OAuth tokens (when connected) are stored plaintext in Postgres.** Acceptable for a local MVP; encrypt at rest before any production deploy (future work — derive a key from `SESSION_SECRET`).
 - **Per-USER Spotify connections** are explicit non-goals for now. The dead `User.spotifyUserId` column from Ticket 1 will be removed in a separate migration.
 
 ## YouTube playback

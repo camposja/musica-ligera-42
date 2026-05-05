@@ -32,7 +32,6 @@ import { GET as connectGET } from "@/app/api/spotify/connect/route";
 import { GET as callbackGET } from "@/app/api/spotify/callback/route";
 import { GET as statusGET } from "@/app/api/spotify/status/route";
 import { POST as disconnectPOST } from "@/app/api/spotify/disconnect/route";
-import { POST as importPOST } from "@/app/api/spotify/import-playlist/route";
 import {
   STATE_COOKIE_NAME,
   signOauthState,
@@ -247,21 +246,21 @@ describe("GET /api/spotify/callback", () => {
   });
 });
 
-// === Refresh + import ======================================================
+// === Refresh logic (lib-level — import flow no longer uses OAuth tokens) ===
+//
+// Import was pivoted to scraping the public Spotify embed iframe (see
+// spotify-embed.ts). The OAuth connection + refresh code is still in the
+// codebase for future features (e.g. reading user-private data) so we test
+// the refresh contract directly against getValidConnectionToken().
 
-describe("Refresh-on-import", () => {
-  const PLAYLIST_URL = "https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M";
-
-  it("refreshes the access token transparently when expired, persists new tokens", async () => {
+describe("Refresh logic via getValidConnectionToken()", () => {
+  it("refreshes the access token transparently when expired and persists new tokens", async () => {
     await seedSpotifyConnection({
       accessToken: "OLD",
       refreshToken: "OLD_RT",
       expiresAt: new Date(Date.now() - 10_000), // already expired
     });
-    const u = await makeUser();
-    await setUserSession(u.id);
     mockFetchSequence([
-      // refresh
       {
         status: 200,
         json: {
@@ -271,20 +270,10 @@ describe("Refresh-on-import", () => {
           refresh_token: "NEW_RT", // rotation honored
         },
       },
-      // playlist meta
-      { status: 200, json: { name: "Refreshed Mix" } },
-      // tracks
-      { status: 200, json: { items: [], next: null } },
     ]);
-
-    const res = await importPOST(
-      new Request("http://x/api/spotify/import-playlist", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ url: PLAYLIST_URL }),
-      }),
-    );
-    expect(res.status).toBe(201);
+    const { getValidConnectionToken } = await import("@/lib/spotify-oauth");
+    const tok = await getValidConnectionToken();
+    expect(tok).toBe("NEW");
     const conn = await prisma.spotifyConnection.findUnique({
       where: { id: "singleton" },
     });
@@ -298,53 +287,35 @@ describe("Refresh-on-import", () => {
       refreshToken: "ORIGINAL_RT",
       expiresAt: new Date(Date.now() - 10_000),
     });
-    const u = await makeUser();
-    await setUserSession(u.id);
     mockFetchSequence([
-      // refresh — no refresh_token returned
+      // refresh response with no refresh_token
       {
         status: 200,
         json: { access_token: "NEW", token_type: "Bearer", expires_in: 3600 },
       },
-      { status: 200, json: { name: "Mix" } },
-      { status: 200, json: { items: [], next: null } },
     ]);
-    const res = await importPOST(
-      new Request("http://x/api/spotify/import-playlist", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ url: PLAYLIST_URL }),
-      }),
-    );
-    expect(res.status).toBe(201);
+    const { getValidConnectionToken } = await import("@/lib/spotify-oauth");
+    const tok = await getValidConnectionToken();
+    expect(tok).toBe("NEW");
     const conn = await prisma.spotifyConnection.findUnique({
       where: { id: "singleton" },
     });
     expect(conn!.refreshToken).toBe("ORIGINAL_RT");
   });
 
-  it("invalid_grant on refresh deletes the connection; next call returns 409 reconnect_required", async () => {
+  it("invalid_grant on refresh deletes the connection and throws ReconnectRequiredError", async () => {
     await seedSpotifyConnection({
       accessToken: "OLD",
       refreshToken: "DEAD_RT",
       expiresAt: new Date(Date.now() - 10_000),
     });
-    const u = await makeUser();
-    await setUserSession(u.id);
-    mockFetchSequence([
-      { status: 400, json: { error: "invalid_grant" } },
-    ]);
-
-    const res = await importPOST(
-      new Request("http://x/api/spotify/import-playlist", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ url: PLAYLIST_URL }),
-      }),
+    mockFetchSequence([{ status: 400, json: { error: "invalid_grant" } }]);
+    const { getValidConnectionToken, ReconnectRequiredError } = await import(
+      "@/lib/spotify-oauth"
     );
-    expect(res.status).toBe(409);
-    const body = await res.json();
-    expect(body.code).toBe("reconnect_required");
+    await expect(getValidConnectionToken()).rejects.toBeInstanceOf(
+      ReconnectRequiredError,
+    );
     expect(await prisma.spotifyConnection.count()).toBe(0);
   });
 });

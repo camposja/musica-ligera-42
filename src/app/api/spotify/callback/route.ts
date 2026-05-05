@@ -8,9 +8,17 @@ import {
   verifyOauthStateJwt,
 } from "@/lib/spotify-oauth";
 
-function appUrl(path: string, request: Request): string {
-  const url = new URL(path, request.url);
-  return url.toString();
+// Always build the post-OAuth landing URL from SPOTIFY_REDIRECT_URI's origin,
+// not from request.url — `request.url`'s host can be whatever the browser
+// sent (0.0.0.0 from a stale terminal click, a LAN IP, etc.) and we'd
+// inherit a broken host into the redirect. SPOTIFY_REDIRECT_URI is
+// guaranteed canonical (Spotify itself redirected here using it).
+function appUrl(path: string): string {
+  const redirectUri = process.env.SPOTIFY_REDIRECT_URI;
+  const base = redirectUri
+    ? new URL(redirectUri).origin
+    : "http://127.0.0.1:3000";
+  return new URL(path, base).toString();
 }
 
 export async function GET(request: Request) {
@@ -22,7 +30,7 @@ export async function GET(request: Request) {
   // User clicked Cancel on Spotify's consent screen
   if (error === "access_denied") {
     await clearOauthStateCookie();
-    return Response.redirect(appUrl("/dashboard?spotify=forbidden", request), 302);
+    return Response.redirect(appUrl("/dashboard?spotify=forbidden"), 302);
   }
 
   // Authorization check first — even with valid params, only OWNER may connect
@@ -58,11 +66,11 @@ export async function GET(request: Request) {
     const spotifyUserId = await tryFetchSpotifyUserId(tokens.access_token);
     await upsertConnection(tokens, spotifyUserId);
     return Response.redirect(
-      appUrl("/dashboard?spotify=connected", request),
+      appUrl("/dashboard?spotify=connected"),
       302,
     );
   } catch (err) {
     console.error("[spotify-oauth] callback failure", err);
-    return Response.redirect(appUrl("/dashboard?spotify=error", request), 302);
+    return Response.redirect(appUrl("/dashboard?spotify=error"), 302);
   }
 }

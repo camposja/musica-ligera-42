@@ -41,16 +41,21 @@ export function ImportPlaylistForm() {
             : `Spotify connection expired. ${askOwner}`,
           showConnectButton: isOwner,
         };
-      case "playlist_not_found_or_private":
+      case "playlist_not_visible_or_private":
         return {
           message:
-            "Playlist not found or not visible to the connected Spotify account.",
+            "Spotify isn't sharing this playlist publicly. It may be private, region-locked, or recently deleted.",
+          showConnectButton: false,
+        };
+      case "playlist_not_found_or_private":
+        return {
+          message: "Playlist not found.",
           showConnectButton: false,
         };
       case "spotify_restricted":
         return {
           message:
-            "Spotify restricts this playlist (e.g. editorial / algorithmic). Try a user-created playlist.",
+            "Spotify restricts this playlist for app access.",
           showConnectButton: false,
         };
       case "rate_limited":

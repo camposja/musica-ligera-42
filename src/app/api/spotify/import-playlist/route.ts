@@ -10,16 +10,10 @@ import {
   SpotifyError,
   type NormalizedTrack,
 } from "@/lib/spotify";
-import {
-  getAllPlaylistTracksAsConnection,
-  getPlaylistAsConnection,
-  NotConnectedError,
-  ReconnectRequiredError,
-} from "@/lib/spotify-oauth";
+import { getPlaylistFromEmbed, PlaylistNotVisibleError } from "@/lib/spotify-embed";
 import { triggerMatchInBackground } from "@/lib/youtube";
 
 const AUTO_MATCH_LIMIT_PER_IMPORT = 25;
-const CONNECT_URL = "/api/spotify/connect";
 
 export async function POST(request: Request) {
   const session = await getSession();
@@ -45,14 +39,14 @@ export async function POST(request: Request) {
     return Response.json({ error: "Invalid Spotify playlist URL" }, { status: 400 });
   }
 
-  // === Step 1-3: All Spotify HTTP fetches happen OUTSIDE any DB transaction ===
+  // Spotify Web API blocks /playlists/{id}/tracks for Dev-Mode apps (Nov 2024
+  // policy), so we scrape the public embed iframe instead. See spotify-embed.ts.
   let playlistName: string;
   let allTracks: NormalizedTrack[];
   try {
-    const meta = await getPlaylistAsConnection(playlistId);
-    playlistName =
-      meta.name && meta.name.length > 0 ? meta.name : "Imported Spotify Playlist";
-    allTracks = await getAllPlaylistTracksAsConnection(playlistId);
+    const { name, tracks } = await getPlaylistFromEmbed(playlistId);
+    playlistName = name && name.length > 0 ? name : "Imported Spotify Playlist";
+    allTracks = tracks;
   } catch (err) {
     return spotifyErrorResponse(err);
   }
@@ -133,24 +127,14 @@ export async function POST(request: Request) {
 }
 
 function spotifyErrorResponse(err: unknown): Response {
-  if (err instanceof NotConnectedError) {
+  if (err instanceof PlaylistNotVisibleError) {
     return Response.json(
       {
-        error: "Spotify is not connected",
-        code: "not_connected",
-        connectUrl: CONNECT_URL,
+        error:
+          "Spotify isn't sharing this playlist publicly. It may be private, region-locked, or recently deleted.",
+        code: "playlist_not_visible_or_private",
       },
-      { status: 409 },
-    );
-  }
-  if (err instanceof ReconnectRequiredError) {
-    return Response.json(
-      {
-        error: "Spotify connection expired — reconnect required",
-        code: "reconnect_required",
-        connectUrl: CONNECT_URL,
-      },
-      { status: 409 },
+      { status: 404 },
     );
   }
   if (err instanceof SpotifyError) {

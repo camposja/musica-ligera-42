@@ -50,13 +50,15 @@ beforeEach(() => {
 type MockedResponse = {
   status: number;
   json?: unknown;
+  text?: string;
   headers?: Record<string, string>;
 };
 
 function makeResponse(spec: MockedResponse): Response {
   const headers = new Headers(spec.headers ?? {});
   if (!headers.has("content-type")) headers.set("content-type", "application/json");
-  return new Response(JSON.stringify(spec.json ?? {}), {
+  const body = spec.text !== undefined ? spec.text : JSON.stringify(spec.json ?? {});
+  return new Response(body, {
     status: spec.status,
     headers,
   });
@@ -87,6 +89,49 @@ function track(id: string, name = `t-${id}`, opts: { artist?: string; album?: st
       artists: [{ name: opts.artist ?? "Artist" }],
       album: { name: opts.album ?? "Album" },
     },
+  };
+}
+
+// Build a mock Spotify embed HTML page wrapping the __NEXT_DATA__ JSON
+// in the same shape spotify.com/embed/playlist/{id} returns.
+function buildEmbedHtml(opts: {
+  name?: string;
+  tracks: Array<{ id: string; title?: string; artist?: string; durationMs?: number }>;
+  omitTrackList?: boolean;
+  malformedJson?: boolean;
+}): string {
+  const trackList = opts.tracks.map((t) => ({
+    uri: `spotify:track:${t.id}`,
+    title: t.title ?? `t-${t.id}`,
+    subtitle: t.artist ?? "Artist",
+    duration: t.durationMs ?? 1000,
+    entityType: "track",
+  }));
+  const data = {
+    props: {
+      pageProps: {
+        state: {
+          data: {
+            entity: {
+              type: "playlist",
+              name: opts.name ?? "Mock Playlist",
+              ...(opts.omitTrackList ? {} : { trackList }),
+            },
+          },
+        },
+      },
+    },
+  };
+  const json = opts.malformedJson ? "{ not json" : JSON.stringify(data);
+  return `<!doctype html><html><body><script id="__NEXT_DATA__" type="application/json">${json}</script></body></html>`;
+}
+
+function mockEmbedResponse(opts: Parameters<typeof buildEmbedHtml>[0]): MockedResponse {
+  return {
+    status: 200,
+    json: undefined,
+    headers: { "content-type": "text/html" },
+    text: buildEmbedHtml(opts),
   };
 }
 
@@ -233,16 +278,11 @@ describe("POST /api/spotify/import-playlist", () => {
   });
 
   it("happy path: creates playlist + 3 songs in order", async () => {
-    await seedSpotifyConnection();
     mockFetchSequence([
-      { status: 200, json: { name: "My Mix" } },
-      {
-        status: 200,
-        json: {
-          items: [track("a"), track("b"), track("c")],
-          next: null,
-        },
-      },
+      mockEmbedResponse({
+        name: "My Mix",
+        tracks: [{ id: "a" }, { id: "b" }, { id: "c" }],
+      }),
     ]);
 
     const u = await makeUser();
@@ -286,13 +326,11 @@ describe("POST /api/spotify/import-playlist", () => {
       },
     });
 
-    await seedSpotifyConnection();
     mockFetchSequence([
-      { status: 200, json: { name: "Mix" } },
-      {
-        status: 200,
-        json: { items: [track("a"), track("b"), track("c")], next: null },
-      },
+      mockEmbedResponse({
+        name: "Mix",
+        tracks: [{ id: "a" }, { id: "b" }, { id: "c" }],
+      }),
     ]);
 
     const u = await makeUser();
@@ -317,14 +355,10 @@ describe("POST /api/spotify/import-playlist", () => {
   });
 
   it("re-importing the same playlist creates a second Playlist but reuses all songs", async () => {
-    await seedSpotifyConnection();
-    const tracks = [track("a"), track("b")];
+    const embedTracks = [{ id: "a" }, { id: "b" }];
     mockFetchSequence([
-      { status: 200, json: { name: "Mix" } },
-      { status: 200, json: { items: tracks, next: null } },
-      // Second import: cached token still valid, just playlist + tracks
-      { status: 200, json: { name: "Mix" } },
-      { status: 200, json: { items: tracks, next: null } },
+      mockEmbedResponse({ name: "Mix", tracks: embedTracks }),
+      mockEmbedResponse({ name: "Mix", tracks: embedTracks }),
     ]);
 
     const u = await makeUser();
@@ -348,9 +382,10 @@ describe("POST /api/spotify/import-playlist", () => {
     expect(await prisma.song.count()).toBe(2);
   });
 
-  it("404 with code playlist_not_found_or_private when Spotify says not found", async () => {
-    await seedSpotifyConnection();
-    mockFetchSequence([{ status: 404, json: { error: "no" } }]);
+  it("404 with code playlist_not_visible_or_private when embed has no trackList", async () => {
+    mockFetchSequence([
+      mockEmbedResponse({ name: "Private Mix", tracks: [], omitTrackList: true }),
+    ]);
     const u = await makeUser();
     await setUserSession(u.id);
     const res = await importPOST(
@@ -358,43 +393,40 @@ describe("POST /api/spotify/import-playlist", () => {
     );
     expect(res.status).toBe(404);
     const body = await res.json();
-    expect(body.code).toBe("playlist_not_found_or_private");
+    expect(body.code).toBe("playlist_not_visible_or_private");
   });
 
-  it("403 with code spotify_restricted when Spotify forbids the playlist", async () => {
-    await seedSpotifyConnection();
+  it("404 with code playlist_not_visible_or_private when embed JSON is malformed", async () => {
     mockFetchSequence([
-      { status: 200, json: { name: "Editorial Mix" } },
-      { status: 403, json: { error: { status: 403, message: "Forbidden" } } },
+      mockEmbedResponse({ tracks: [], malformedJson: true }),
     ]);
     const u = await makeUser();
     await setUserSession(u.id);
     const res = await importPOST(
       jsonRequest("http://x/api/spotify/import-playlist", { url: PLAYLIST_URL }),
     );
-    expect(res.status).toBe(403);
+    expect(res.status).toBe(404);
     const body = await res.json();
-    expect(body.code).toBe("spotify_restricted");
+    expect(body.code).toBe("playlist_not_visible_or_private");
   });
 
-  it("409 with code not_connected when no SpotifyConnection row exists", async () => {
-    // No seedSpotifyConnection(); no fetch mocks needed (no upstream call should happen).
+  it("502 with code upstream when embed endpoint returns 5xx", async () => {
+    mockFetchSequence([
+      { status: 503, text: "Service Unavailable" },
+    ]);
     const u = await makeUser();
     await setUserSession(u.id);
     const res = await importPOST(
       jsonRequest("http://x/api/spotify/import-playlist", { url: PLAYLIST_URL }),
     );
-    expect(res.status).toBe(409);
+    expect(res.status).toBe(502);
     const body = await res.json();
-    expect(body.code).toBe("not_connected");
-    expect(body.connectUrl).toBe("/api/spotify/connect");
+    expect(body.code).toBe("upstream");
   });
 
   it("empty playlist → 201 with empty Playlist row, songsImported = 0", async () => {
-    await seedSpotifyConnection();
     mockFetchSequence([
-      { status: 200, json: { name: "Empty" } },
-      { status: 200, json: { items: [], next: null } },
+      mockEmbedResponse({ name: "Empty", tracks: [] }),
     ]);
     const u = await makeUser();
     await setUserSession(u.id);
@@ -410,13 +442,11 @@ describe("POST /api/spotify/import-playlist", () => {
   });
 
   it("Spotify playlist with a duplicate track produces only one PlaylistSong row", async () => {
-    await seedSpotifyConnection();
     mockFetchSequence([
-      { status: 200, json: { name: "Dups" } },
-      {
-        status: 200,
-        json: { items: [track("a"), track("a"), track("b")], next: null },
-      },
+      mockEmbedResponse({
+        name: "Dups",
+        tracks: [{ id: "a" }, { id: "a" }, { id: "b" }],
+      }),
     ]);
     const u = await makeUser();
     await setUserSession(u.id);
@@ -434,13 +464,11 @@ describe("POST /api/spotify/import-playlist", () => {
   });
 
   it("caps auto-match triggers at 25 per import (quota guard)", async () => {
-    await seedSpotifyConnection();
     // Build a 30-track playlist; only the first 25 unmatched songs should
     // get triggerMatchInBackground called.
-    const tracks = Array.from({ length: 30 }, (_, i) => track(`t${i}`));
+    const embedTracks = Array.from({ length: 30 }, (_, i) => ({ id: `t${i}` }));
     mockFetchSequence([
-      { status: 200, json: { name: "Big Mix" } },
-      { status: 200, json: { items: tracks, next: null } },
+      mockEmbedResponse({ name: "Big Mix", tracks: embedTracks }),
     ]);
 
     const u = await makeUser();
@@ -459,10 +487,8 @@ describe("POST /api/spotify/import-playlist", () => {
   });
 
   it("falls back to 'Imported Spotify Playlist' when Spotify returns no name", async () => {
-    await seedSpotifyConnection();
     mockFetchSequence([
-      { status: 200, json: { name: "" } },
-      { status: 200, json: { items: [track("a")], next: null } },
+      mockEmbedResponse({ name: "", tracks: [{ id: "a" }] }),
     ]);
     const u = await makeUser();
     await setUserSession(u.id);
@@ -475,10 +501,8 @@ describe("POST /api/spotify/import-playlist", () => {
   });
 
   it("OWNER acting as user can import for that user", async () => {
-    await seedSpotifyConnection();
     mockFetchSequence([
-      { status: 200, json: { name: "Owned" } },
-      { status: 200, json: { items: [track("a")], next: null } },
+      mockEmbedResponse({ name: "Owned", tracks: [{ id: "a" }] }),
     ]);
     const u = await makeUser();
     await setOwnerActingSession(u.id);

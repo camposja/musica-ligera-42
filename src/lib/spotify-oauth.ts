@@ -34,6 +34,15 @@ export class ReconnectRequiredError extends Error {
   }
 }
 
+export class UserNotAllowlistedError extends Error {
+  constructor() {
+    super(
+      "The connected Spotify account is not in the app's allowlist (Development Mode)",
+    );
+    this.name = "UserNotAllowlistedError";
+  }
+}
+
 type TokenResponse = {
   access_token: string;
   token_type: string;
@@ -276,6 +285,12 @@ async function spotifyConnectionFetch(input: string): Promise<Response> {
       statusText: res.statusText,
       body,
     });
+    // Dev-Mode app + non-allowlisted user: Spotify completes OAuth but
+    // returns 403 "user is not registered" on every API call. Surface this
+    // with an actionable message instead of the generic spotify_restricted.
+    if (res.status === 403 && body.includes("user is not registered")) {
+      throw new UserNotAllowlistedError();
+    }
     throw new SpotifyError(res.status, `Spotify API error: ${res.status}`);
   }
   return res;
