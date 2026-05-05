@@ -40,7 +40,10 @@ export async function POST(request: Request) {
     if (typeof b.name !== "string" || typeof b.accessCode !== "string") {
       return Response.json({ error: "Invalid credentials" }, { status: 401 });
     }
-    const user = await prisma.user.findUnique({ where: { name: b.name } });
+    // Case-insensitive name lookup so "maria" / "Maria" / "MARIA" all work.
+    const user = await prisma.user.findFirst({
+      where: { name: { equals: b.name, mode: "insensitive" } },
+    });
     if (
       !user ||
       user.role !== "USER" ||
