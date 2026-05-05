@@ -111,7 +111,8 @@ async function makeSong(opts: { youtubeId?: string | null } = {}) {
   });
 }
 
-// === POST /api/youtube/match (OWNER-only) ==================================
+// === POST /api/youtube/match ===============================================
+// Any signed-in user can request a match; only OWNER can force-overwrite.
 
 describe("POST /api/youtube/match", () => {
   it("401 without session", async () => {
@@ -120,12 +121,27 @@ describe("POST /api/youtube/match", () => {
     expect(res.status).toBe(401);
   });
 
-  it("403 with USER session", async () => {
+  it("USER without force: 200 (matches the song)", async () => {
+    mockFetchSequence(matchPair([PAD("a")]));
     const s = await makeSong();
     const u = await makeUser();
     await setUserSession(u.id);
     const res = await matchPOST(jsonRequest("http://x", { songId: s.id }));
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.song.youtubeId).toBe(PAD("a"));
+  });
+
+  it("USER with force=true: 403 (force is OWNER-only)", async () => {
+    const s = await makeSong({ youtubeId: "EXISTINGYTID" });
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const fetchSpy = mockFetchSequence([]);
+    const res = await matchPOST(
+      jsonRequest("http://x", { songId: s.id, force: true }),
+    );
     expect(res.status).toBe(403);
+    expect(fetchSpy).not.toHaveBeenCalled();
   });
 
   it("400 missing songId", async () => {
@@ -154,15 +170,29 @@ describe("POST /api/youtube/match", () => {
     expect(body.song.youtubeMatchType).toBe("exact");
   });
 
-  it("force-overwrites an existing youtubeId", async () => {
+  it("OWNER + force=true: overwrites an existing youtubeId", async () => {
     mockFetchSequence(matchPair([PAD("n")]));
     const s = await makeSong({ youtubeId: "EXISTINGYTID" });
     await setOwnerSession();
-    const res = await matchPOST(jsonRequest("http://x", { songId: s.id }));
+    const res = await matchPOST(
+      jsonRequest("http://x", { songId: s.id, force: true }),
+    );
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.song.youtubeId).toBe(PAD("n"));
     expect(body.song.youtubeMatchType).toBe("exact");
+  });
+
+  it("short-circuits when youtubeId already set (no force, no fetch)", async () => {
+    const s = await makeSong({ youtubeId: "ALREADYMATCH" });
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const fetchSpy = mockFetchSequence([]);
+    const res = await matchPOST(jsonRequest("http://x", { songId: s.id }));
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.song.youtubeId).toBe("ALREADYMATCH");
+    expect(fetchSpy).not.toHaveBeenCalled();
   });
 
   it("404 with 'No YouTube match found' when search returns 0 items", async () => {

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ApiError, apiFetch } from "@/lib/api-client";
+import { songPayloadFromTrack } from "@/lib/song-payload";
 import type { NormalizedTrack, SongResponse } from "@/types/api";
 
 type PlaylistOption = { id: string; name: string };
@@ -25,12 +26,7 @@ export function AddToPlaylistMenu({ track, playlists }: Props) {
     try {
       const songRes = await apiFetch<SongResponse>("/api/songs", {
         method: "POST",
-        body: JSON.stringify({
-          title: track.title,
-          artist: track.artist,
-          album: track.album ?? undefined,
-          spotifyId: track.spotifyId,
-        }),
+        body: JSON.stringify(songPayloadFromTrack(track)),
       });
       try {
         await apiFetch(`/api/playlists/${playlistId}/add-song`, {
