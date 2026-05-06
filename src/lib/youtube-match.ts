@@ -27,7 +27,8 @@ export type ReasonTag =
   | "acoustic"
   | "remaster"
   | "remix"
-  | "close";
+  | "close"
+  | "manual";
 
 export type MatchType = "exact" | "loose";
 
@@ -89,13 +90,17 @@ function intersects(a: Set<string>, b: Set<string>): boolean {
   return false;
 }
 
-const PENALIZED_REASONS: ReadonlySet<ReasonTag> = new Set<ReasonTag>([
-  "live",
-  "lyric_video",
-  "acoustic",
-  "remaster",
-  "remix",
-]);
+// Per-reason penalty: live/lyric/acoustic are usually still the right song,
+// just a different rendition — keep them comfortably in loose territory.
+// Remaster/remix are more divergent (different mix, sometimes different
+// length/key) so penalize more.
+const REASON_PENALTIES: Record<string, number> = {
+  live: 20,
+  lyric_video: 20,
+  acoustic: 20,
+  remaster: 25,
+  remix: 25,
+};
 
 // --- tag detection on raw lowercase result title ---------------------------
 
@@ -224,8 +229,8 @@ export function scoreCandidate(song: SongMeta, c: Candidate): ScoreResult {
   // Pushed-down penalty for non-canonical-recording reasons. A perfect
   // title+artist+channel match WITH "(Live)" should land in loose, not exact.
   // "official_audio" is NOT penalized — it is the canonical recording.
-  if (reason && PENALIZED_REASONS.has(reason)) {
-    score -= 25;
+  if (reason && REASON_PENALTIES[reason] !== undefined) {
+    score -= REASON_PENALTIES[reason];
   }
 
   return {

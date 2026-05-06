@@ -7,10 +7,13 @@ import { useNowPlaying } from "@/components/PlayerProvider";
 import { VIDEO_ID_RE } from "@/components/YouTubePlayer";
 import type { Song } from "@/types/api";
 
+type Role = "OWNER" | "USER";
+
 type Props = {
   playlistId: string;
   songs: Array<{ order: number; song: Song }>;
   locked?: boolean;
+  role?: Role;
 };
 
 const REASON_LABELS: Record<string, string> = {
@@ -21,6 +24,7 @@ const REASON_LABELS: Record<string, string> = {
   remaster: "Remaster",
   remix: "Remix",
   close: "Close match",
+  manual: "Manual match",
 };
 
 function MatchBadge({ song }: { song: Song }) {
@@ -45,7 +49,117 @@ function MatchBadge({ song }: { song: Song }) {
   );
 }
 
-export function SongList({ playlistId, songs, locked = false }: Props) {
+function OverrideControls({
+  songId,
+  isPlayable,
+  onChanged,
+}: {
+  songId: string;
+  isPlayable: boolean;
+  onChanged: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function save() {
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await apiFetch("/api/youtube/override", {
+        method: "POST",
+        body: JSON.stringify({ songId, youtubeUrl: value.trim() }),
+      });
+      setOpen(false);
+      setValue("");
+      onChanged();
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Override failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function rematch() {
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await apiFetch("/api/youtube/match", {
+        method: "POST",
+        body: JSON.stringify({ songId, force: true }),
+      });
+      onChanged();
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Re-match failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (!open) {
+    return (
+      <div className="mt-1 flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="text-xs text-muted underline-offset-2 hover:text-accent hover:underline"
+        >
+          {isPlayable ? "Change YouTube link" : "Add YouTube link"}
+        </button>
+        {isPlayable && (
+          <button
+            type="button"
+            onClick={rematch}
+            disabled={busy}
+            className="text-xs text-muted underline-offset-2 hover:text-accent hover:underline disabled:opacity-50"
+          >
+            {busy ? "Re-matching…" : "Re-run auto-match"}
+          </button>
+        )}
+        {error && <span className="text-xs text-danger">{error}</span>}
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-1 flex flex-wrap items-center gap-2">
+      <input
+        type="url"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        placeholder="Paste YouTube URL or video id…"
+        className="min-w-0 flex-1 rounded border border-border bg-surface px-2 py-1 text-xs"
+        autoFocus
+      />
+      <button
+        type="button"
+        onClick={save}
+        disabled={busy || value.trim().length === 0}
+        className="rounded bg-accent px-2 py-1 text-xs font-medium text-accent-foreground disabled:opacity-50"
+      >
+        {busy ? "Saving…" : "Save"}
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          setOpen(false);
+          setValue("");
+          setError(null);
+        }}
+        disabled={busy}
+        className="rounded border border-border px-2 py-1 text-xs text-muted disabled:opacity-50"
+      >
+        Cancel
+      </button>
+      {error && <span className="basis-full text-xs text-danger">{error}</span>}
+    </div>
+  );
+}
+
+export function SongList({ playlistId, songs, locked = false, role }: Props) {
   const router = useRouter();
   const { playQueue, song: nowPlaying } = useNowPlaying();
   const [removingId, setRemovingId] = useState<string | null>(null);
@@ -87,6 +201,8 @@ export function SongList({ playlistId, songs, locked = false }: Props) {
     }
   }
 
+  const isOwner = role === "OWNER";
+
   return (
     <div className="flex flex-col gap-2">
       {error && <p className="text-sm text-danger">{error}</p>}
@@ -115,6 +231,13 @@ export function SongList({ playlistId, songs, locked = false }: Props) {
                   <div className="mt-0.5 text-xs text-muted">
                     YouTube match still in progress — refresh to check.
                   </div>
+                )}
+                {isOwner && (
+                  <OverrideControls
+                    songId={song.id}
+                    isPlayable={playable}
+                    onChanged={() => router.refresh()}
+                  />
                 )}
               </div>
               <button

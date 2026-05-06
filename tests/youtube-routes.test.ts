@@ -238,6 +238,40 @@ describe("POST /api/youtube/match", () => {
 describe("POST /api/youtube/override", () => {
   const VALID = "dQw4w9WgXcQ";
 
+  // The override route now validates the pasted id via /videos. Build a
+  // single-item videos.list response with a configurable title/channel so
+  // tests can assert metadata is propagated to the song row.
+  function videoDetails(opts: {
+    id?: string;
+    title?: string;
+    channel?: string;
+    isPrivate?: boolean;
+    notFound?: boolean;
+  } = {}): MockedResponse {
+    if (opts.notFound) {
+      return { status: 200, json: { items: [] } };
+    }
+    return {
+      status: 200,
+      json: {
+        items: [
+          {
+            id: opts.id ?? VALID,
+            snippet: {
+              title: opts.title ?? "Some Video Title",
+              channelTitle: opts.channel ?? "Some Channel",
+            },
+            status: {
+              embeddable: true,
+              privacyStatus: opts.isPrivate ? "private" : "public",
+            },
+            contentDetails: { duration: "PT3M30S", contentRating: {} },
+          },
+        ],
+      },
+    };
+  }
+
   it("401 without session", async () => {
     const s = await makeSong();
     const res = await overridePOST(
@@ -264,7 +298,7 @@ describe("POST /api/youtube/override", () => {
     expect(res.status).toBe(400);
   });
 
-  it("400 missing newYoutubeId", async () => {
+  it("400 when neither youtubeUrl nor newYoutubeId provided", async () => {
     const s = await makeSong();
     await setOwnerSession();
     const res = await overridePOST(jsonRequest("http://x", { songId: s.id }));
@@ -289,7 +323,31 @@ describe("POST /api/youtube/override", () => {
     expect(res.status).toBe(400);
   });
 
-  it("404 unknown song", async () => {
+  it("400 unparseable youtubeUrl", async () => {
+    const s = await makeSong();
+    await setOwnerSession();
+    const res = await overridePOST(
+      jsonRequest("http://x", {
+        songId: s.id,
+        youtubeUrl: "https://vimeo.com/123456",
+      }),
+    );
+    expect(res.status).toBe(400);
+  });
+
+  it("400 youtube shorts URL is rejected", async () => {
+    const s = await makeSong();
+    await setOwnerSession();
+    const res = await overridePOST(
+      jsonRequest("http://x", {
+        songId: s.id,
+        youtubeUrl: `https://youtube.com/shorts/${VALID}`,
+      }),
+    );
+    expect(res.status).toBe(400);
+  });
+
+  it("404 unknown song (validates input before DB lookup not relied on)", async () => {
     await setOwnerSession();
     const res = await overridePOST(
       jsonRequest("http://x", {
@@ -300,11 +358,37 @@ describe("POST /api/youtube/override", () => {
     expect(res.status).toBe(404);
   });
 
-  it("happy path: updates youtubeId, leaves youtubeAltIds untouched", async () => {
+  it("400 when YouTube reports the video does not exist", async () => {
+    mockFetchSequence([videoDetails({ notFound: true })]);
+    const s = await makeSong();
+    await setOwnerSession();
+    const res = await overridePOST(
+      jsonRequest("http://x", { songId: s.id, newYoutubeId: VALID }),
+    );
+    expect(res.status).toBe(400);
+  });
+
+  it("400 when YouTube reports the video is private", async () => {
+    mockFetchSequence([videoDetails({ isPrivate: true })]);
+    const s = await makeSong();
+    await setOwnerSession();
+    const res = await overridePOST(
+      jsonRequest("http://x", { songId: s.id, newYoutubeId: VALID }),
+    );
+    expect(res.status).toBe(400);
+  });
+
+  it("happy path with raw id: writes id, clears altIds, sets manual reason + title/channel", async () => {
+    mockFetchSequence([
+      videoDetails({
+        title: "Mango - Amore Per Te (Official Audio)",
+        channel: "Mango Official",
+      }),
+    ]);
     const s = await prisma.song.create({
       data: {
-        title: "t",
-        artist: "a",
+        title: "Amore per te",
+        artist: "Mango",
         youtubeId: "OLDOLDOLDOL",
         youtubeAltIds: ["alt1alt1alt", "alt2alt2alt"],
       },
@@ -316,7 +400,44 @@ describe("POST /api/youtube/override", () => {
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.song.youtubeId).toBe(VALID);
-    expect(body.song.youtubeAltIds).toEqual(["alt1alt1alt", "alt2alt2alt"]);
+    expect(body.song.youtubeAltIds).toEqual([]);
+    expect(body.song.youtubeMatchType).toBe("loose");
+    expect(body.song.youtubeMatchReason).toBe("manual");
+    expect(body.song.youtubeMatchTitle).toBe(
+      "Mango - Amore Per Te (Official Audio)",
+    );
+    expect(body.song.youtubeMatchChannel).toBe("Mango Official");
+  });
+
+  it("happy path with full youtube.com URL", async () => {
+    mockFetchSequence([videoDetails()]);
+    const s = await makeSong();
+    await setOwnerSession();
+    const res = await overridePOST(
+      jsonRequest("http://x", {
+        songId: s.id,
+        youtubeUrl: `https://www.youtube.com/watch?v=${VALID}&list=PL1`,
+      }),
+    );
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.song.youtubeId).toBe(VALID);
+    expect(body.song.youtubeMatchReason).toBe("manual");
+  });
+
+  it("happy path with youtu.be short URL", async () => {
+    mockFetchSequence([videoDetails()]);
+    const s = await makeSong();
+    await setOwnerSession();
+    const res = await overridePOST(
+      jsonRequest("http://x", {
+        songId: s.id,
+        youtubeUrl: `https://youtu.be/${VALID}`,
+      }),
+    );
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.song.youtubeId).toBe(VALID);
   });
 });
 

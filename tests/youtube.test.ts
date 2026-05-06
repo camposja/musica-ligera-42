@@ -17,6 +17,7 @@ import {
   flushPendingMatches,
   isValidYoutubeId,
   matchSongById,
+  parseYoutubeRef,
   searchCandidates,
   triggerMatchInBackground,
   YoutubeError,
@@ -131,6 +132,79 @@ describe("isValidYoutubeId", () => {
   it("rejects non-string input", () => {
     expect(isValidYoutubeId(null as unknown as string)).toBe(false);
     expect(isValidYoutubeId(undefined as unknown as string)).toBe(false);
+  });
+});
+
+// === parseYoutubeRef =======================================================
+
+describe("parseYoutubeRef", () => {
+  const ID = "dQw4w9WgXcQ";
+
+  it("accepts a bare 11-char id", () => {
+    expect(parseYoutubeRef(ID)).toBe(ID);
+  });
+
+  it("trims whitespace and surrounding quotes (paste artifacts)", () => {
+    expect(parseYoutubeRef(`  "https://www.youtube.com/watch?v=${ID}"\n`)).toBe(ID);
+  });
+
+  it("parses youtube.com/watch?v= URLs", () => {
+    expect(parseYoutubeRef(`https://www.youtube.com/watch?v=${ID}`)).toBe(ID);
+    expect(parseYoutubeRef(`https://youtube.com/watch?v=${ID}`)).toBe(ID);
+  });
+
+  it("ignores extra query params", () => {
+    expect(
+      parseYoutubeRef(`https://www.youtube.com/watch?v=${ID}&list=PL123&t=42s&si=abc`),
+    ).toBe(ID);
+  });
+
+  it("parses youtu.be short links", () => {
+    expect(parseYoutubeRef(`https://youtu.be/${ID}`)).toBe(ID);
+    expect(parseYoutubeRef(`https://youtu.be/${ID}?t=12`)).toBe(ID);
+  });
+
+  it("parses music.youtube.com and m.youtube.com", () => {
+    expect(parseYoutubeRef(`https://music.youtube.com/watch?v=${ID}`)).toBe(ID);
+    expect(parseYoutubeRef(`https://m.youtube.com/watch?v=${ID}`)).toBe(ID);
+  });
+
+  it("parses /embed/ and /v/ paths", () => {
+    expect(parseYoutubeRef(`https://www.youtube.com/embed/${ID}`)).toBe(ID);
+    expect(parseYoutubeRef(`https://www.youtube.com/v/${ID}`)).toBe(ID);
+  });
+
+  it("parses host without scheme", () => {
+    expect(parseYoutubeRef(`youtu.be/${ID}`)).toBe(ID);
+  });
+
+  it("rejects youtube.com/shorts/ explicitly", () => {
+    expect(parseYoutubeRef(`https://youtube.com/shorts/${ID}`)).toBeNull();
+    expect(parseYoutubeRef(`https://www.youtube.com/shorts/${ID}`)).toBeNull();
+  });
+
+  it("rejects channel/playlist URLs with no video id", () => {
+    expect(parseYoutubeRef("https://www.youtube.com/channel/UCabc")).toBeNull();
+    expect(
+      parseYoutubeRef("https://www.youtube.com/playlist?list=PL123"),
+    ).toBeNull();
+  });
+
+  it("rejects non-YouTube hosts", () => {
+    expect(parseYoutubeRef(`https://vimeo.com/${ID}`)).toBeNull();
+    expect(parseYoutubeRef(`https://example.com/watch?v=${ID}`)).toBeNull();
+  });
+
+  it("rejects garbage", () => {
+    expect(parseYoutubeRef("")).toBeNull();
+    expect(parseYoutubeRef("   ")).toBeNull();
+    expect(parseYoutubeRef("not a url at all")).toBeNull();
+    expect(parseYoutubeRef(null as unknown as string)).toBeNull();
+  });
+
+  it("rejects watch URL with malformed v param", () => {
+    expect(parseYoutubeRef("https://www.youtube.com/watch?v=tooShort")).toBeNull();
+    expect(parseYoutubeRef("https://www.youtube.com/watch")).toBeNull();
   });
 });
 

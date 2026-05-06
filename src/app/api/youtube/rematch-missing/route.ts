@@ -2,10 +2,16 @@ import { forbidden, getSession, unauthorized } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { matchSongById, YoutubeError } from "@/lib/youtube";
 
-// Cap how many songs we re-match per click. Each match call costs ~103 quota
-// units (search 100 + videos 3); 50 songs = 5,150 units, half the daily quota.
-// Leaves room for the OWNER to retry plus normal auto-match traffic.
+// Per-run caps. Each match call costs ~103 quota units (search 100 + videos 3).
+//
+// REMATCH_LIMIT is the song cap (DB query bound).
+// REMATCH_SEARCH_BUDGET is the hard quota safety: stop after this many
+// search.list invocations regardless of song count. Today each song uses
+// exactly one search, so the budget bites only as a redundant safety. If a
+// future change ever adds query fan-out per song, this cap prevents one click
+// from blowing the daily 10,000-unit free quota.
 const REMATCH_LIMIT = 50;
+const REMATCH_SEARCH_BUDGET = 80;
 
 export async function POST() {
   const session = await getSession();
@@ -23,9 +29,18 @@ export async function POST() {
   let matchedLoose = 0;
   let stillUnmatched = 0;
   let errored = 0;
+  let searchesUsed = 0;
+  let quotaCapReached = false;
 
   for (const { id } of songs) {
+    if (searchesUsed >= REMATCH_SEARCH_BUDGET) {
+      quotaCapReached = true;
+      break;
+    }
     checked += 1;
+    // matchSongById currently issues exactly one search; if that ever changes,
+    // the budget still protects the daily quota.
+    searchesUsed += 1;
     try {
       const out = await matchSongById(id);
       if (out.matched) {
@@ -70,5 +85,6 @@ export async function POST() {
     stillUnmatched,
     errored,
     capReached: songs.length >= REMATCH_LIMIT,
+    quotaCapReached,
   });
 }

@@ -33,6 +33,70 @@ export function isValidYoutubeId(id: string): boolean {
   return typeof id === "string" && VIDEO_ID_RE.test(id);
 }
 
+/**
+ * Parse a user-pasted YouTube reference into a clean 11-char video ID.
+ * Returns null for anything that isn't a recognizable video URL/ID.
+ *
+ * Accepts:
+ *   - raw 11-char ID: "dQw4w9WgXcQ"
+ *   - watch URLs: youtube.com / m.youtube.com / music.youtube.com / www.
+ *   - youtu.be short links
+ *   - embed/v paths
+ *   - extra query params (&list=, &t=, &si=) — ignored
+ *   - surrounding whitespace and quotes (paste artifacts)
+ *
+ * Rejects (returns null):
+ *   - youtube.com/shorts/<id>  — Shorts are usually not full songs
+ *   - channel/playlist-only URLs with no video id
+ *   - non-YouTube hosts
+ */
+export function parseYoutubeRef(input: string): string | null {
+  if (typeof input !== "string") return null;
+  let s = input.trim().replace(/^["']|["']$/g, "");
+  if (s.length === 0) return null;
+
+  // Bare ID (11 chars, no slashes/dots)
+  if (VIDEO_ID_RE.test(s)) return s;
+
+  // Add a scheme so URL parses bare hosts ("youtu.be/abc")
+  if (!/^https?:\/\//i.test(s)) s = `https://${s}`;
+
+  let url: URL;
+  try {
+    url = new URL(s);
+  } catch {
+    return null;
+  }
+
+  const host = url.hostname.toLowerCase().replace(/^www\./, "");
+  const path = url.pathname;
+
+  if (host === "youtu.be") {
+    // youtu.be/<id>
+    const id = path.split("/").filter(Boolean)[0];
+    return id && VIDEO_ID_RE.test(id) ? id : null;
+  }
+
+  if (
+    host === "youtube.com" ||
+    host === "m.youtube.com" ||
+    host === "music.youtube.com"
+  ) {
+    // Reject Shorts explicitly — different surface, often not the song.
+    if (path.startsWith("/shorts/")) return null;
+    if (path === "/watch") {
+      const v = url.searchParams.get("v");
+      return v && VIDEO_ID_RE.test(v) ? v : null;
+    }
+    // /embed/<id> or /v/<id>
+    const m = /^\/(?:embed|v)\/([A-Za-z0-9_-]{11})/.exec(path);
+    if (m) return m[1];
+    return null;
+  }
+
+  return null;
+}
+
 type SearchItem = { id?: { videoId?: string } | string };
 type SearchResponse = { items?: SearchItem[] };
 
