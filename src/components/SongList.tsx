@@ -85,21 +85,19 @@ function OverrideButtons({
 
   return (
     <>
-      <div className="flex items-center gap-1.5">
-        <button type="button" onClick={onOpen} className={OVERRIDE_BTN_CLASS}>
-          {isPlayable ? "Change YouTube link" : "Add YouTube link"}
+      <button type="button" onClick={onOpen} className={OVERRIDE_BTN_CLASS}>
+        {isPlayable ? "Change YouTube link" : "Add YouTube link"}
+      </button>
+      {isPlayable && (
+        <button
+          type="button"
+          onClick={rematch}
+          disabled={busy}
+          className={OVERRIDE_BTN_CLASS}
+        >
+          {busy ? "Rematching…" : "Rerun auto-match"}
         </button>
-        {isPlayable && (
-          <button
-            type="button"
-            onClick={rematch}
-            disabled={busy}
-            className={OVERRIDE_BTN_CLASS}
-          >
-            {busy ? "Rematching…" : "Rerun auto-match"}
-          </button>
-        )}
-      </div>
+      )}
       {error && <span className="text-[11px] text-danger">{error}</span>}
     </>
   );
