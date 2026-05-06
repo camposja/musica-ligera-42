@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Production builds emit `.next/standalone/` containing a self-contained
+  // server bundle. The Fly Dockerfile copies just .next/standalone, .next/static,
+  // and public/ — drops the runtime image from ~500MB to ~150MB.
+  output: "standalone",
+
   // Spotify rejects http://localhost as an OAuth redirect URI (2024 policy),
   // so we canonicalize on http://127.0.0.1:3000. Next.js 16 blocks cross-origin
   // /_next/* (HMR, bundles) by default, which breaks hydration on any host

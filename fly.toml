@@ -1,0 +1,36 @@
+# Fly.io config for Música Ligera 42 (SQLite, single machine, single volume).
+# See README "Deploy" section for first-time setup commands.
+
+app = "musica-ligera-42"
+primary_region = "dfw"
+
+[build]
+
+[env]
+  # On-disk path to the SQLite file inside the persistent volume.
+  # Not a secret — mounted at /data via the [[mounts]] block below.
+  DATABASE_URL = "file:/data/musica-ligera.sqlite"
+  NODE_ENV = "production"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  # Auto-stop saves money on idle. Cold-start is ~5-15s on the first request
+  # after stop. In-memory caches (audio resolver, etc.) reset on every wake —
+  # fine for personal use.
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+# Persistent volume — created once via `fly volumes create data --size 1 --region dfw`.
+# Plain SQLite + multiple machines = corruption. Keep this single-volume,
+# single-machine. Lock with `fly scale count 1 --max-per-region 1` after deploy.
+[[mounts]]
+  source = "data"
+  destination = "/data"
+
+[[vm]]
+  memory = "1gb"
+  cpu_kind = "shared"
+  cpus = 1

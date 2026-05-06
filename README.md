@@ -325,3 +325,119 @@ pnpm test:watch    # watch mode
 Vitest runs against a dedicated SQLite file at `prisma/test.db` (gitignored). Global setup wipes the file and reapplies migrations on each run; each test deletes from all tables in `beforeEach`, so the dev `prisma/dev.db` is never touched.
 
 `tests/helpers.ts` mocks `next/headers` cookies with an in-memory store so route handlers can be invoked directly with constructed `Request` objects — no need to spin up a real Next server.
+
+## Deploy (Fly.io + persistent SQLite)
+
+`main` deploys to a single Fly machine in `dfw` with a `/data` volume holding the SQLite file. Modeled on the Empanadas Rails app — same region, same volume name, same on-boot-migrate pattern. **Single machine only**: SQLite has one writer; multiple Fly machines against the same volume = corruption.
+
+### Image: `Dockerfile`
+
+Multi-stage build on `node:22.14-bookworm-slim` (single base, so `better-sqlite3`'s native binding compiles against the same glibc the runtime uses). Runtime stage installs:
+
+- `yt-dlp` standalone binary (pinned via `YTDLP_VERSION` ARG; bump and redeploy when a new release is needed).
+- `python3` (required by yt-dlp's standalone wrapper).
+- `sqlite3` CLI (for `fly ssh console` smoke checks).
+- Prisma CLI in an isolated `/opt/prisma-cli/` (`NODE_PATH` points there so `prisma.config.ts` can resolve `prisma/config` at boot; not installed inside `/app/node_modules` because npm 10.x trips over pnpm's symlinked layout).
+
+Next is built with `output: "standalone"` (see `next.config.ts`) so the runtime image only carries `.next/standalone/`, `.next/static/`, `public/`, and `prisma/` — ~150MB instead of ~500MB.
+
+### Boot: `bin/docker-entrypoint`
+
+```sh
+#!/bin/sh
+set -e
+mkdir -p /data
+prisma migrate deploy
+exec "$@"
+```
+
+Migrations run on every boot via `prisma migrate deploy` (idempotent — checks `_prisma_migrations`). Catches replacement-machine events that don't trigger a deploy.
+
+### First-time setup
+
+```bash
+# 1. From main with all deploy files committed.
+git checkout main && git push origin main
+
+# 2. Claim the app name. If musica-ligera-42 is taken, pick a fallback
+#    (e.g. musica-ligera-42-camposja) and update fly.toml's `app = ` line
+#    AND your Spotify Dashboard redirect URI accordingly.
+fly apps create musica-ligera-42
+
+# 3. Persistent volume in the same region as the app.
+fly volumes create data --size 1 --region dfw --yes
+
+# 4. Set secrets (NOT DATABASE_URL — that's in fly.toml [env]).
+fly secrets set \
+  SESSION_SECRET="$(openssl rand -hex 32)" \
+  OWNER_USERNAME="<your owner username>" \
+  OWNER_PASSWORD="<your owner password>" \
+  SPOTIFY_CLIENT_ID="<from Spotify dashboard>" \
+  SPOTIFY_CLIENT_SECRET="<from Spotify dashboard>" \
+  SPOTIFY_REDIRECT_URI="https://musica-ligera-42.fly.dev/api/spotify/callback" \
+  YOUTUBE_API_KEY="<from Google Cloud console>"
+
+# 5. (Optional) Piped fallback for playback.
+# fly secrets set PIPED_API_BASE_URL="https://<currently-working-piped-instance>"
+
+# 6. First deploy.
+fly deploy
+
+# 7. Lock to a single machine. Re-run after any future replacement-machine
+#    event — Fly may transient-create a second during certain deploy strategies.
+fly scale count 1 --max-per-region 1
+```
+
+**Spotify Dashboard** (one-time, manual): https://developer.spotify.com/dashboard → your app → Edit Settings → Redirect URIs → add `https://musica-ligera-42.fly.dev/api/spotify/callback` exactly. Without this, OAuth callback returns 400.
+
+### Local Docker smoke (optional, before first Fly deploy)
+
+```bash
+docker build -t musica-ligera-42 .
+mkdir -p /tmp/musica-ligera-data
+docker run --rm -p 3000:3000 \
+  -e DATABASE_URL=file:/data/musica-ligera.sqlite \
+  -e SESSION_SECRET="$(openssl rand -hex 32)" \
+  -e OWNER_USERNAME=owner \
+  -e OWNER_PASSWORD=devpassword \
+  -v /tmp/musica-ligera-data:/data \
+  musica-ligera-42
+```
+
+Open http://localhost:3000 → sign in as OWNER → confirm `/tmp/musica-ligera-data/musica-ligera.sqlite` was created.
+
+### Operations
+
+```bash
+fly status                                      # health + region
+fly logs                                        # stream container output
+fly ssh console                                 # interactive shell
+  ls -lh /data                                  # confirm SQLite file present
+  yt-dlp --version                              # confirm pinned version
+  sqlite3 /data/musica-ligera.sqlite "SELECT count(*) FROM User;"
+  exit
+fly volumes list                                # show volume id
+fly volumes snapshots create <vol-id>           # point-in-time backup (preferred)
+fly deploy                                      # subsequent deploys
+```
+
+A manual `cp /data/musica-ligera.sqlite /data/...backup.sqlite` inside the volume is a belt-and-suspenders option but doesn't survive volume failure — use Fly snapshots as the primary backup.
+
+### Adding a USER row in production
+
+The app has no UI to create USER accounts (deliberate — OWNER seeds them via SQL). Insert directly via `fly ssh console`:
+
+```sh
+sqlite3 /data/musica-ligera.sqlite \
+  "INSERT INTO User (id, name, role, accessCode, createdAt) \
+   VALUES ('00000000-0000-0000-0000-000000000010', 'Jose', 'USER', 'letmein', datetime('now'));"
+```
+
+Names preserve display casing (login is case-insensitive in JS).
+
+### Notes
+
+- **Cold start ~5-15s** after auto-stop wakes the machine on the first request. In-memory caches (audio resolver 45-min TTL, provider memoization) reset on every wake.
+- **yt-dlp version drift**: a YouTube extractor change can break the pinned version. Bump `YTDLP_VERSION` ARG in the Dockerfile and `fly deploy`. Check https://github.com/yt-dlp/yt-dlp/releases quarterly.
+- **Volume size 1 GB** vs current SQLite file (~80 KB after init) — multiple orders of magnitude of headroom. `fly volumes extend` resizes in place if you ever need it.
+- **No CI**: `fly deploy` is run manually from a clean `main` checkout for now.

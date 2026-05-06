@@ -1,0 +1,46 @@
+# Don't bake local dev/test artifacts into the image
+.git
+.github
+.gitignore
+
+# Build output
+.next
+out
+build
+coverage
+*.tsbuildinfo
+
+# Local node modules — the image installs its own
+node_modules
+.pnpm-store
+
+# SQLite dev/test databases — never copy into the image
+*.db
+*.db-journal
+dev.db
+prisma/test.db
+prisma/test.db-journal
+
+# Local env files; .env.example is fine
+.env
+.env.local
+.env.*.local
+
+# Tests + coverage — not needed at runtime
+tests
+vitest.config.ts
+
+# Docs/IDE/OS junk
+README.md
+ARCHIVED.md
+.vscode
+.idea
+.DS_Store
+
+# Docker artifacts shouldn't COPY themselves
+Dockerfile
+.dockerignore
+fly.toml
+
+# Ad-hoc scripts not part of the app
+scripts

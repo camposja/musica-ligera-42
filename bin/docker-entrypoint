@@ -1,0 +1,14 @@
+#!/bin/sh
+set -e
+
+# Make sure the volume mount has the directory we expect (Fly mounts /data
+# automatically, but on local Docker test the path needs to exist before
+# Prisma writes into it).
+mkdir -p /data
+
+# Apply pending Prisma migrations against the SQLite file at $DATABASE_URL.
+# `prisma` resolves via the PATH set in the Dockerfile (/opt/prisma-cli/...).
+# No network fetch at boot — fail fast if the binary is missing.
+prisma migrate deploy
+
+exec "$@"
