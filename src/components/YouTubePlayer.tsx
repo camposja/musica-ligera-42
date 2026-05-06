@@ -1,6 +1,6 @@
 "use client";
 
-const VIDEO_ID_RE = /^[A-Za-z0-9_-]{11}$/;
+import { YOUTUBE_ID_RE as VIDEO_ID_RE } from "@/lib/youtube-id";
 
 type Props = {
   videoId: string | null | undefined;

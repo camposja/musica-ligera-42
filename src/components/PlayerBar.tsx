@@ -4,11 +4,26 @@ import { useEffect, useRef, useState } from "react";
 import { useNowPlaying } from "@/components/PlayerProvider";
 import YouTubePlayer, { VIDEO_ID_RE } from "@/components/YouTubePlayer";
 import { YouTubeAudioPlayer } from "@/components/YouTubeAudioPlayer";
+import { getNextPlayableYoutubeId } from "@/lib/player-queue";
 
 type AudioStatus = "probing" | "ready" | "error";
 type AudioError = { code: string; detail: string };
 
 const PRELOAD_AT_REMAINING_SEC = 25;
+
+// Fire a preload of the next stream's metadata. Idempotent: shared dedupe ref
+// prevents duplicate fetches for the same (current, next) pair.
+function preloadNext(
+  pairKey: string,
+  nextId: string,
+  ref: React.MutableRefObject<string | null>,
+): void {
+  if (ref.current === pairKey) return;
+  ref.current = pairKey;
+  fetch(`/api/youtube/audio-status/${nextId}`).catch((err) => {
+    console.warn("[player] preload failed", { nextId, err });
+  });
+}
 
 export function PlayerBar() {
   const {
@@ -29,10 +44,17 @@ export function PlayerBar() {
   const [audioStatus, setAudioStatus] = useState<AudioStatus>("probing");
   const [audioError, setAudioError] = useState<AudioError | null>(null);
   const [manualFallback, setManualFallback] = useState(false);
-  const preloadedNextIdRef = useRef<string | null>(null);
+  // Pair-key dedupe ("currentSongId:nextYoutubeId") shared by both preload
+  // triggers (immediate-on-song-start and 25s-remaining). Pair key is more
+  // robust than just nextId across Prev/Next bouncing.
+  const preloadedPairRef = useRef<string | null>(null);
 
   const videoId =
     song?.youtubeId && VIDEO_ID_RE.test(song.youtubeId) ? song.youtubeId : null;
+
+  // Surface the next song's youtubeId as a derived value so the preload
+  // effect's dep array can be precise (no false fires on unrelated state).
+  const nextYoutubeId = getNextPlayableYoutubeId(queue, currentIndex);
 
   // Probe the audio-status endpoint whenever the song changes. The probe can
   // surface structured error codes (yt_dlp_missing, extract_failed, etc.); the
@@ -41,7 +63,7 @@ export function PlayerBar() {
   useEffect(() => {
     setAudioError(null);
     setManualFallback(false);
-    preloadedNextIdRef.current = null;
+    preloadedPairRef.current = null;
 
     if (!videoId) {
       setAudioStatus("error");
@@ -77,6 +99,16 @@ export function PlayerBar() {
       });
     return () => ac.abort();
   }, [videoId]);
+
+  // Immediate preload: as soon as we know the current song and the next
+  // playable song, warm the resolver cache for the next so a Next click is
+  // fast. Re-fires when the (current, next) pair shifts — which covers Next
+  // clicks, auto-advance, and shuffle toggle (shuffle rewrites queue order).
+  useEffect(() => {
+    if (!song || !nextYoutubeId) return;
+    const pairKey = `${song.id}:${nextYoutubeId}`;
+    preloadNext(pairKey, nextYoutubeId, preloadedPairRef);
+  }, [song?.id, nextYoutubeId]);
 
   // Show queue-error overlay if the queue gave up after consecutive failures.
   // It lives in the same UI slot as the per-song audioError display.
@@ -190,17 +222,9 @@ export function PlayerBar() {
             onTimeUpdate={(currentTime, duration) => {
               const remaining = duration - currentTime;
               if (remaining > PRELOAD_AT_REMAINING_SEC) return;
-              const next =
-                canNext && currentIndex + 1 < queue.length
-                  ? queue[currentIndex + 1]
-                  : null;
-              const nextId = next?.youtubeId ?? null;
-              if (!nextId || !VIDEO_ID_RE.test(nextId)) return;
-              if (preloadedNextIdRef.current === nextId) return;
-              preloadedNextIdRef.current = nextId;
-              fetch(`/api/youtube/audio-status/${nextId}`).catch((err) => {
-                console.error("[player] preload failed", { nextId, err });
-              });
+              if (!song || !nextYoutubeId) return;
+              const pairKey = `${song.id}:${nextYoutubeId}`;
+              preloadNext(pairKey, nextYoutubeId, preloadedPairRef);
             }}
           />
         ) : (

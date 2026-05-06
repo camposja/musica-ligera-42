@@ -1,9 +1,12 @@
 import { prisma } from "@/lib/prisma";
+import { isValidYoutubeId, YOUTUBE_ID_RE } from "@/lib/youtube-id";
 import {
   pickBestMatch,
   type Candidate,
   type MatchResult,
 } from "@/lib/youtube-match";
+
+export { isValidYoutubeId };
 
 export class YoutubeError extends Error {
   constructor(
@@ -18,7 +21,7 @@ export class YoutubeError extends Error {
 
 const SEARCH_URL = "https://www.googleapis.com/youtube/v3/search";
 const VIDEOS_URL = "https://www.googleapis.com/youtube/v3/videos";
-const VIDEO_ID_RE = /^[A-Za-z0-9_-]{11}$/;
+const VIDEO_ID_RE = YOUTUBE_ID_RE;
 const SEARCH_LIMIT = 10;
 
 function getApiKey(): string {
@@ -27,10 +30,6 @@ function getApiKey(): string {
     throw new YoutubeError(0, "YouTube not configured: YOUTUBE_API_KEY must be set");
   }
   return key;
-}
-
-export function isValidYoutubeId(id: string): boolean {
-  return typeof id === "string" && VIDEO_ID_RE.test(id);
 }
 
 /**

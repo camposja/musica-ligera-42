@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   clampIndex,
+  getNextPlayableYoutubeId,
   nextIndex,
   previousIndex,
   shuffleKeepingCurrent,
@@ -139,5 +140,63 @@ describe("unshuffleKeepingCurrent", () => {
     const original = songs("a", "b", "c");
     const r = unshuffleKeepingCurrent(original, "b");
     expect(r.queue).not.toBe(original);
+  });
+});
+
+// === getNextPlayableYoutubeId =============================================
+
+describe("getNextPlayableYoutubeId", () => {
+  const VALID_A = "dQw4w9WgXcQ";
+  const VALID_B = "Y-cVOswhJUU";
+
+  it("returns the next song's youtubeId when valid", () => {
+    const queue = [
+      { id: "1", youtubeId: VALID_A },
+      { id: "2", youtubeId: VALID_B },
+    ];
+    expect(getNextPlayableYoutubeId(queue, 0)).toBe(VALID_B);
+  });
+
+  it("returns null at the end of the queue", () => {
+    const queue = [
+      { id: "1", youtubeId: VALID_A },
+      { id: "2", youtubeId: VALID_B },
+    ];
+    expect(getNextPlayableYoutubeId(queue, 1)).toBeNull();
+  });
+
+  it("returns null when the next song has youtubeId: null", () => {
+    const queue = [
+      { id: "1", youtubeId: VALID_A },
+      { id: "2", youtubeId: null },
+    ];
+    expect(getNextPlayableYoutubeId(queue, 0)).toBeNull();
+  });
+
+  it("returns null when the next song's youtubeId fails the 11-char regex", () => {
+    const queue = [
+      { id: "1", youtubeId: VALID_A },
+      { id: "2", youtubeId: "tooShort" },
+    ];
+    expect(getNextPlayableYoutubeId(queue, 0)).toBeNull();
+  });
+
+  it("after shuffle, returns the shuffled-next youtubeId", () => {
+    const original = [
+      { id: "1", youtubeId: VALID_A },
+      { id: "2", youtubeId: VALID_B },
+      { id: "3", youtubeId: "AAAAAAAAAAA" },
+    ];
+    const r = shuffleKeepingCurrent(original, 0);
+    // After shuffle, current is at index 0; next is whatever ended up at 1.
+    const expected = r.queue[1].youtubeId;
+    expect(getNextPlayableYoutubeId(r.queue, 0)).toBe(expected);
+  });
+
+  it("works with empty queue / negative index", () => {
+    expect(getNextPlayableYoutubeId([], 0)).toBeNull();
+    expect(
+      getNextPlayableYoutubeId([{ id: "1", youtubeId: VALID_A }], -1),
+    ).toBe(VALID_A);
   });
 });

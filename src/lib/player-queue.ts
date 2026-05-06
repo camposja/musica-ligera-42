@@ -66,3 +66,25 @@ export function unshuffleKeepingCurrent<T extends Identified>(
     currentIndex: idx === -1 ? 0 : idx,
   };
 }
+
+/**
+ * Returns the YouTube id of the next song in the queue if it's playable, or
+ * null when:
+ *   - we're at the end of the queue
+ *   - the next song has no `youtubeId`
+ *   - the next song's `youtubeId` doesn't match the 11-char video id format
+ *
+ * Used by PlayerBar to decide whether to preload the next stream's metadata.
+ * Generic on the queue item shape so this file stays free of API types.
+ */
+import { isValidYoutubeId } from "@/lib/youtube-id";
+
+export function getNextPlayableYoutubeId(
+  queue: Array<{ youtubeId?: string | null }>,
+  currentIndex: number,
+): string | null {
+  const next = queue[currentIndex + 1];
+  if (!next) return null;
+  if (!isValidYoutubeId(next.youtubeId)) return null;
+  return next.youtubeId;
+}
