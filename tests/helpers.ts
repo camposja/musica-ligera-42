@@ -38,9 +38,16 @@ export async function setUserSession(userId: string): Promise<void> {
 }
 
 export async function truncateAll(): Promise<void> {
-  await prisma.$executeRawUnsafe(
-    `TRUNCATE TABLE "User", "Song", "Playlist", "PlaylistSong", "SpotifyConnection" RESTART IDENTITY CASCADE`,
-  );
+  // SQLite has no TRUNCATE. DELETE FROM in FK-respecting order works:
+  // children first (PlaylistSong → Playlist → Song → User), then unrelated
+  // SpotifyConnection.
+  await prisma.$transaction([
+    prisma.playlistSong.deleteMany({}),
+    prisma.playlist.deleteMany({}),
+    prisma.song.deleteMany({}),
+    prisma.user.deleteMany({}),
+    prisma.spotifyConnection.deleteMany({}),
+  ]);
 }
 
 export async function seedSpotifyConnection(opts?: {

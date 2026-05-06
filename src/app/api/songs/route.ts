@@ -1,5 +1,6 @@
 import { getSession, unauthorized } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { normalizeSong, serializeAltIds } from "@/lib/song-serialization";
 import { triggerMatchInBackground } from "@/lib/youtube";
 
 export async function GET() {
@@ -9,7 +10,7 @@ export async function GET() {
   const songs = await prisma.song.findMany({
     orderBy: { createdAt: "desc" },
   });
-  return Response.json({ songs });
+  return Response.json({ songs: songs.map(normalizeSong) });
 }
 
 export async function POST(request: Request) {
@@ -64,7 +65,7 @@ export async function POST(request: Request) {
   if (spotifyId) {
     const existing = await prisma.song.findUnique({ where: { spotifyId } });
     if (existing) {
-      return Response.json({ song: existing }, { status: 200 });
+      return Response.json({ song: normalizeSong(existing) }, { status: 200 });
     }
   }
 
@@ -76,14 +77,14 @@ export async function POST(request: Request) {
         album,
         spotifyId,
         youtubeId,
-        youtubeAltIds,
+        youtubeAltIdsJson: serializeAltIds(youtubeAltIds),
       },
     });
     // Auto-match if no explicit youtubeId was supplied. Fire-and-forget.
     if (!song.youtubeId) {
       triggerMatchInBackground(song.id);
     }
-    return Response.json({ song }, { status: 201 });
+    return Response.json({ song: normalizeSong(song) }, { status: 201 });
   } catch (err) {
     // Race-condition fallback: two concurrent POSTs with the same spotifyId
     // can both miss the findUnique above; the loser gets P2002 here.
@@ -96,7 +97,7 @@ export async function POST(request: Request) {
     ) {
       const existing = await prisma.song.findUnique({ where: { spotifyId } });
       if (existing) {
-        return Response.json({ song: existing }, { status: 200 });
+        return Response.json({ song: normalizeSong(existing) }, { status: 200 });
       }
     }
     throw err;

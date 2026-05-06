@@ -1,49 +1,53 @@
 # Música Ligera 42
 
-A music app built on Next.js + PostgreSQL + Prisma. Spotify search and playlist import, YouTube playback.
+A music app built on Next.js + SQLite + Prisma. Spotify search and playlist import, YouTube playback.
+
+> The pre-SQLite Postgres version is preserved on the `postgres-version` branch and at the `pre-sqlite-2026-05-06` tag. That branch is frozen — see its `ARCHIVED.md`.
 
 ## Stack
 
 - Next.js 16 (App Router) + React 19 + TypeScript
 - Tailwind CSS 4
-- PostgreSQL 15 (via Docker Compose)
+- SQLite via `@prisma/adapter-better-sqlite3` (native module, built at install time)
 - Prisma 7
 
 ## Dev quickstart
 
 ```bash
-docker compose up -d            # start Postgres on host port 5433
-pnpm install                    # install deps
+pnpm install                    # installs deps + builds better-sqlite3 native module
 cp .env.example .env            # then fill in .env (see below)
-pnpm prisma migrate deploy      # apply existing migrations
+pnpm prisma migrate deploy      # creates ./prisma/dev.db and applies migrations
 pnpm dev                        # http://localhost:3000
 ```
 
 `.env` keys you must set locally:
 
+- `DATABASE_URL=file:./dev.db` — SQLite file path (set in `.env.example`)
 - `OWNER_USERNAME` and `OWNER_PASSWORD` — the OWNER login credentials
 - `SESSION_SECRET` — generate with `openssl rand -hex 32`
 
 ## Layout
 
 - `src/app/` — Next.js app router (pages + API routes under `src/app/api/`)
-- `src/lib/prisma.ts` — Prisma client singleton
+- `src/lib/prisma.ts` — Prisma client singleton (better-sqlite3 adapter)
+- `src/lib/song-serialization.ts` — `youtubeAltIds` ↔ `youtubeAltIdsJson` helpers + `normalizeSong`
 - `src/lib/session.ts` — cookie/JWT primitives
 - `src/lib/auth.ts` — `getSession()` + 401/403 helpers
 - `prisma/schema.prisma` — data model
-- `docker-compose.yml` — Postgres service
 
 ## Auth — local test setup
 
 OWNER login uses env credentials; USER login validates `name` + `accessCode` against the `User` table.
 
-To verify the USER login flow, **manually insert** one test user via psql (no seed file, no CLI — that's deliberate):
+To verify the USER login flow, **manually insert** one test user via Prisma Studio or `sqlite3`:
 
 ```sh
-docker compose exec -T db psql -U postgres -d music_app -c \
-  "INSERT INTO \"User\" (id, name, role, \"accessCode\", \"createdAt\") \
-   VALUES (gen_random_uuid(), 'alice', 'USER', 'letmein', NOW());"
+sqlite3 prisma/dev.db \
+  "INSERT INTO User (id, name, role, accessCode, createdAt) \
+   VALUES ('00000000-0000-0000-0000-000000000001', 'alice', 'USER', 'letmein', datetime('now'));"
 ```
+
+`name` is stored lowercase — login lookups normalize input the same way (SQLite has no case-insensitive equality at the Prisma layer).
 
 Then sign in at [http://localhost:3000/login](http://localhost:3000/login) (toggle "User", enter `alice` / `letmein`) or via curl:
 
@@ -318,6 +322,6 @@ pnpm test          # one-shot
 pnpm test:watch    # watch mode
 ```
 
-Vitest runs against a separate `music_app_test` Postgres database in the same Docker container. Global setup creates the DB if missing and applies migrations. Each test truncates all tables in `beforeEach`, so dev data in `music_app` is never touched.
+Vitest runs against a dedicated SQLite file at `prisma/test.db` (gitignored). Global setup wipes the file and reapplies migrations on each run; each test deletes from all tables in `beforeEach`, so the dev `prisma/dev.db` is never touched.
 
 `tests/helpers.ts` mocks `next/headers` cookies with an in-memory store so route handlers can be invoked directly with constructed `Request` objects — no need to spin up a real Next server.

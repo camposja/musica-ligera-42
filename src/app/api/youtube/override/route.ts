@@ -1,5 +1,6 @@
 import { forbidden, getSession, unauthorized } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { normalizeSong, serializeAltIds } from "@/lib/song-serialization";
 import {
   fetchVideoDetails,
   isValidYoutubeId,
@@ -95,12 +96,12 @@ export async function POST(request: Request) {
     where: { id: b.songId },
     data: {
       youtubeId: videoId,
-      youtubeAltIds: [],
+      youtubeAltIdsJson: serializeAltIds([]),
       youtubeMatchType: "loose",
       youtubeMatchReason: "manual",
       youtubeMatchTitle: d.title || null,
       youtubeMatchChannel: d.channel || null,
     },
   });
-  return Response.json({ song: updated });
+  return Response.json({ song: normalizeSong(updated) });
 }

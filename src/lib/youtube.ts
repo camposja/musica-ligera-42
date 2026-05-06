@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { parseAltIds, serializeAltIds } from "@/lib/song-serialization";
 import { isValidYoutubeId, YOUTUBE_ID_RE } from "@/lib/youtube-id";
 import {
   pickBestMatch,
@@ -262,7 +263,7 @@ export async function refilterSongMatch(
   const song = await prisma.song.findUnique({ where: { id: songId } });
   if (!song || !song.youtubeId) return { changed: false, nowUnplayable: false };
 
-  const candidates = [song.youtubeId, ...song.youtubeAltIds].filter(
+  const candidates = [song.youtubeId, ...parseAltIds(song.youtubeAltIdsJson)].filter(
     isValidYoutubeId,
   );
   if (candidates.length === 0) return { changed: false, nowUnplayable: true };
@@ -278,7 +279,7 @@ export async function refilterSongMatch(
   const newAlts = embeddable.slice(1);
   await prisma.song.update({
     where: { id: songId },
-    data: { youtubeId: newBest, youtubeAltIds: newAlts },
+    data: { youtubeId: newBest, youtubeAltIdsJson: serializeAltIds(newAlts) },
   });
   return { changed: true, nowUnplayable: false };
 }
@@ -309,7 +310,7 @@ export async function matchSongById(
     where: { id: songId },
     data: {
       youtubeId: match.best,
-      youtubeAltIds: match.alternates,
+      youtubeAltIdsJson: serializeAltIds(match.alternates),
       youtubeMatchType: match.type,
       youtubeMatchReason: match.reason,
       youtubeMatchTitle: match.title,

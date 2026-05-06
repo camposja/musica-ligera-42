@@ -40,9 +40,11 @@ export async function POST(request: Request) {
     if (typeof b.name !== "string" || typeof b.accessCode !== "string") {
       return Response.json({ error: "Invalid credentials" }, { status: 401 });
     }
-    // Case-insensitive name lookup so "maria" / "Maria" / "MARIA" all work.
+    // Case-insensitive lookup. SQLite has no `mode: "insensitive"` at the
+    // Prisma layer; we normalize names to lowercase at User create/update
+    // time, so a lowercased lookup matches any casing the user types.
     const user = await prisma.user.findFirst({
-      where: { name: { equals: b.name, mode: "insensitive" } },
+      where: { name: { equals: b.name.trim().toLowerCase() } },
     });
     if (
       !user ||

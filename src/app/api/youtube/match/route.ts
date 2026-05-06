@@ -1,5 +1,6 @@
 import { forbidden, getSession, unauthorized } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { normalizeSong } from "@/lib/song-serialization";
 import { isValidYoutubeId, matchSongById, YoutubeError } from "@/lib/youtube";
 
 export async function POST(request: Request) {
@@ -35,7 +36,7 @@ export async function POST(request: Request) {
   // didn't explicitly ask to redo the match.
   if (!force && existing.youtubeId && isValidYoutubeId(existing.youtubeId)) {
     const song = await prisma.song.findUnique({ where: { id: songId } });
-    return Response.json({ song });
+    return Response.json({ song: song ? normalizeSong(song) : null });
   }
 
   try {
@@ -45,7 +46,7 @@ export async function POST(request: Request) {
   }
 
   const updated = await prisma.song.findUnique({ where: { id: songId } });
-  return Response.json({ song: updated });
+  return Response.json({ song: updated ? normalizeSong(updated) : null });
 }
 
 function youtubeErrorResponse(err: unknown): Response {

@@ -3,24 +3,22 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
 }
 
-enum Role {
-  OWNER
-  USER
-}
-
-enum PlaylistSource {
-  MANUAL
-  SPOTIFY_IMPORT
-  CLONE
-}
+// Role and PlaylistSource were Postgres enums. SQLite has no enum support,
+// so they're stored as String columns and validated via app-side string-
+// literal types (see `src/types/api.ts`). Allowed Role values:
+// "OWNER" | "USER". Allowed PlaylistSource values:
+// "MANUAL" | "SPOTIFY_IMPORT" | "CLONE".
 
 model User {
   id             String     @id @default(uuid())
+  // INVARIANT: name is stored lowercase. Login lookup compares lowercase to
+  // lowercase. SQLite has no case-insensitive equality operator at the Prisma
+  // layer, so normalization at write/read time is the simplest path.
   name           String     @unique
-  role           Role
+  role           String
   accessCode     String
   spotifyUserId  String?
   createdAt      DateTime   @default(now())
@@ -37,13 +35,17 @@ model Song {
   spotifyId      String?        @unique
 
   youtubeId      String?
-  youtubeAltIds  String[]
+  // JSON-encoded string[] of alternate YouTube ids. SQLite has no array type
+  // so we serialize at write and parse at read via helpers in
+  // `src/lib/song-serialization.ts`. API responses still expose
+  // `youtubeAltIds: string[]` via `normalizeSong`.
+  youtubeAltIdsJson String       @default("[]")
 
   // Match-quality metadata. Null on legacy matches written before
   // the looser-matching ticket (Ticket 8). New + rematched songs
   // populate these so the UI can label exact vs loose matches.
   youtubeMatchType    String?  // "exact" | "loose"
-  youtubeMatchReason  String?  // "exact" | "live" | "lyric_video" | "official_audio" | "acoustic" | "remaster" | "remix" | "close"
+  youtubeMatchReason  String?  // "exact" | "live" | "lyric_video" | "official_audio" | "acoustic" | "remaster" | "remix" | "close" | "manual"
   youtubeMatchTitle   String?  // YouTube result title at match time
   youtubeMatchChannel String?  // YouTube channel name at match time
 
@@ -60,7 +62,7 @@ model Playlist {
   songs        PlaylistSong[]
   createdAt    DateTime       @default(now())
 
-  source       PlaylistSource @default(MANUAL)
+  source       String         @default("MANUAL")
   locked       Boolean        @default(false)
   clonedFromId String?
   importedAt   DateTime?

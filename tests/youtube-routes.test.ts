@@ -390,7 +390,7 @@ describe("POST /api/youtube/override", () => {
         title: "Amore per te",
         artist: "Mango",
         youtubeId: "OLDOLDOLDOL",
-        youtubeAltIds: ["alt1alt1alt", "alt2alt2alt"],
+        youtubeAltIdsJson: JSON.stringify(["alt1alt1alt", "alt2alt2alt"]),
       },
     });
     await setOwnerSession();

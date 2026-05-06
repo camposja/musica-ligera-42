@@ -4,6 +4,7 @@ import { ClonePlaylistButton } from "@/components/ClonePlaylistButton";
 import { DeletePlaylistButton } from "@/components/DeletePlaylistButton";
 import { getEffectiveUserIdOrNull, getRequiredSession } from "@/lib/current-user";
 import { prisma } from "@/lib/prisma";
+import { normalizeSong } from "@/lib/song-serialization";
 import { SongList } from "@/components/SongList";
 
 type Params = Promise<{ id: string }>;
@@ -94,7 +95,7 @@ export default async function PlaylistPage({ params }: { params: Params }) {
         playlistId={playlist.id}
         locked={playlist.locked}
         role={session.role}
-        songs={playlist.songs.map((ps) => ({ order: ps.order, song: ps.song }))}
+        songs={playlist.songs.map((ps) => ({ order: ps.order, song: normalizeSong(ps.song) }))}
       />
     </div>
   );
