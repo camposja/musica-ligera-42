@@ -47,7 +47,7 @@ sqlite3 prisma/dev.db \
    VALUES ('00000000-0000-0000-0000-000000000001', 'alice', 'USER', 'letmein', datetime('now'));"
 ```
 
-`name` is stored lowercase — login lookups normalize input the same way (SQLite has no case-insensitive equality at the Prisma layer).
+Names preserve display casing. Login is case-sensitive — type the name exactly as inserted (SQLite has no case-insensitive equality at the Prisma layer, so we don't try to normalize).
 
 Then sign in at [http://localhost:3000/login](http://localhost:3000/login) (toggle "User", enter `alice` / `letmein`) or via curl:
 

@@ -14,9 +14,10 @@ datasource db {
 
 model User {
   id             String     @id @default(uuid())
-  // INVARIANT: name is stored lowercase. Login lookup compares lowercase to
-  // lowercase. SQLite has no case-insensitive equality operator at the Prisma
-  // layer, so normalization at write/read time is the simplest path.
+  // Names preserve display casing. SQLite has no case-insensitive equality
+  // operator at the Prisma layer, so login is case-sensitive (the user must
+  // type their name exactly as stored). For a small known-user set this is
+  // simpler than a normalization scheme.
   name           String     @unique
   role           String
   accessCode     String
