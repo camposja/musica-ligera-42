@@ -16,7 +16,7 @@ A music app built on Next.js + SQLite + Prisma. Spotify search and playlist impo
 ```bash
 pnpm install                    # installs deps + builds better-sqlite3 native module
 cp .env.example .env            # then fill in .env (see below)
-pnpm prisma migrate deploy      # creates ./prisma/dev.db and applies migrations
+pnpm prisma migrate deploy      # creates ./dev.db at the project root and applies migrations
 pnpm dev                        # http://localhost:3000
 ```
 
@@ -42,12 +42,12 @@ OWNER login uses env credentials; USER login validates `name` + `accessCode` aga
 To verify the USER login flow, **manually insert** one test user via Prisma Studio or `sqlite3`:
 
 ```sh
-sqlite3 prisma/dev.db \
+sqlite3 dev.db \
   "INSERT INTO User (id, name, role, accessCode, createdAt) \
-   VALUES ('00000000-0000-0000-0000-000000000001', 'alice', 'USER', 'letmein', datetime('now'));"
+   VALUES ('00000000-0000-0000-0000-000000000001', 'Alice', 'USER', 'letmein', datetime('now'));"
 ```
 
-Names preserve display casing. Login is case-sensitive — type the name exactly as inserted (SQLite has no case-insensitive equality at the Prisma layer, so we don't try to normalize).
+Names preserve display casing. Login is case-insensitive (`jose` / `Jose` / `JOSE` all match a stored `Jose`). SQLite has no case-insensitive equality at the Prisma layer; the route does the compare in JS — fine for a small user table.
 
 Then sign in at [http://localhost:3000/login](http://localhost:3000/login) (toggle "User", enter `alice` / `letmein`) or via curl:
 

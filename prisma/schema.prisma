@@ -14,10 +14,10 @@ datasource db {
 
 model User {
   id             String     @id @default(uuid())
-  // Names preserve display casing. SQLite has no case-insensitive equality
-  // operator at the Prisma layer, so login is case-sensitive (the user must
-  // type their name exactly as stored). For a small known-user set this is
-  // simpler than a normalization scheme.
+  // Names preserve display casing. Login lookup is case-insensitive via a
+  // JS-side compare in the login route (SQLite has no case-insensitive
+  // equality operator at the Prisma layer; the user table is tiny so a
+  // findMany + .find() is cheap).
   name           String     @unique
   role           String
   accessCode     String

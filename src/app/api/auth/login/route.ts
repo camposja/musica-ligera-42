@@ -40,12 +40,12 @@ export async function POST(request: Request) {
     if (typeof b.name !== "string" || typeof b.accessCode !== "string") {
       return Response.json({ error: "Invalid credentials" }, { status: 401 });
     }
-    // Exact-match name lookup. SQLite has no `mode: "insensitive"` at the
-    // Prisma layer, so login is case-sensitive — the user must type their
-    // name exactly as stored (preserving display casing).
-    const user = await prisma.user.findFirst({
-      where: { name: b.name.trim() },
-    });
+    // Case-insensitive name lookup against mixed-case stored names. SQLite
+    // has no `mode: "insensitive"` at the Prisma layer, so we fetch USERs
+    // and do the lowercase compare in JS. Trivial cost on a small user set.
+    const target = b.name.trim().toLowerCase();
+    const candidates = await prisma.user.findMany({ where: { role: "USER" } });
+    const user = candidates.find((u) => u.name.toLowerCase() === target) ?? null;
     if (
       !user ||
       user.role !== "USER" ||
