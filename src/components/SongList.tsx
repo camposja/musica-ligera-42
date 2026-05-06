@@ -49,16 +49,71 @@ function MatchBadge({ song }: { song: Song }) {
   );
 }
 
-function OverrideControls({
+const OVERRIDE_BTN_CLASS =
+  "shrink-0 rounded border border-border px-2 py-1 text-[11px] text-muted hover:border-accent/50 hover:text-accent disabled:opacity-50";
+
+function OverrideButtons({
   songId,
   isPlayable,
-  onChanged,
+  onOpen,
+  onRefreshed,
 }: {
   songId: string;
   isPlayable: boolean;
-  onChanged: () => void;
+  onOpen: () => void;
+  onRefreshed: () => void;
 }) {
-  const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function rematch() {
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await apiFetch("/api/youtube/match", {
+        method: "POST",
+        body: JSON.stringify({ songId, force: true }),
+      });
+      onRefreshed();
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Rematch failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <>
+      <div className="flex items-center gap-1.5">
+        <button type="button" onClick={onOpen} className={OVERRIDE_BTN_CLASS}>
+          {isPlayable ? "Change YouTube link" : "Add YouTube link"}
+        </button>
+        {isPlayable && (
+          <button
+            type="button"
+            onClick={rematch}
+            disabled={busy}
+            className={OVERRIDE_BTN_CLASS}
+          >
+            {busy ? "Rematching…" : "Rerun auto-match"}
+          </button>
+        )}
+      </div>
+      {error && <span className="text-[11px] text-danger">{error}</span>}
+    </>
+  );
+}
+
+function OverrideEditor({
+  songId,
+  onSaved,
+  onCancel,
+}: {
+  songId: string;
+  onSaved: () => void;
+  onCancel: () => void;
+}) {
   const [value, setValue] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -72,60 +127,15 @@ function OverrideControls({
         method: "POST",
         body: JSON.stringify({ songId, youtubeUrl: value.trim() }),
       });
-      setOpen(false);
-      setValue("");
-      onChanged();
+      onSaved();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Override failed");
-    } finally {
       setBusy(false);
     }
-  }
-
-  async function rematch() {
-    if (busy) return;
-    setBusy(true);
-    setError(null);
-    try {
-      await apiFetch("/api/youtube/match", {
-        method: "POST",
-        body: JSON.stringify({ songId, force: true }),
-      });
-      onChanged();
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Re-match failed");
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  if (!open) {
-    return (
-      <div className="mt-1 flex flex-wrap items-center gap-2">
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          className="text-xs text-muted underline-offset-2 hover:text-accent hover:underline"
-        >
-          {isPlayable ? "Change YouTube link" : "Add YouTube link"}
-        </button>
-        {isPlayable && (
-          <button
-            type="button"
-            onClick={rematch}
-            disabled={busy}
-            className="text-xs text-muted underline-offset-2 hover:text-accent hover:underline disabled:opacity-50"
-          >
-            {busy ? "Re-matching…" : "Re-run auto-match"}
-          </button>
-        )}
-        {error && <span className="text-xs text-danger">{error}</span>}
-      </div>
-    );
   }
 
   return (
-    <div className="mt-1 flex flex-wrap items-center gap-2">
+    <div className="flex flex-wrap items-center gap-2 border-t border-border/50 px-3 pb-3 pt-2 sm:px-4">
       <input
         type="url"
         value={value}
@@ -144,11 +154,7 @@ function OverrideControls({
       </button>
       <button
         type="button"
-        onClick={() => {
-          setOpen(false);
-          setValue("");
-          setError(null);
-        }}
+        onClick={onCancel}
         disabled={busy}
         className="rounded border border-border px-2 py-1 text-xs text-muted disabled:opacity-50"
       >
@@ -164,6 +170,9 @@ export function SongList({ playlistId, songs, locked = false, role }: Props) {
   const { playQueue, song: nowPlaying } = useNowPlaying();
   const [removingId, setRemovingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [openOverrideSongId, setOpenOverrideSongId] = useState<string | null>(
+    null,
+  );
 
   if (songs.length === 0) {
     return (
@@ -210,53 +219,71 @@ export function SongList({ playlistId, songs, locked = false, role }: Props) {
         {songs.map(({ song, order }) => {
           const playable = song.youtubeId !== null && VIDEO_ID_RE.test(song.youtubeId);
           const isPlaying = nowPlaying?.id === song.id;
+          const editorOpen = openOverrideSongId === song.id;
           return (
             <li
               key={song.id}
-              className={`flex items-center gap-2 px-3 py-3 sm:gap-3 sm:px-4 ${
-                isPlaying ? "bg-accent/10" : ""
-              }`}
+              className={`flex flex-col ${isPlaying ? "bg-accent/10" : ""}`}
             >
-              <span className="w-6 text-right text-xs text-muted">{order + 1}</span>
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                  <span className="truncate font-medium">{song.title}</span>
-                  <MatchBadge song={song} />
-                </div>
-                <div className="truncate text-sm text-muted">
-                  {song.artist}
-                  {song.album ? ` — ${song.album}` : ""}
-                </div>
-                {!playable && (
-                  <div className="mt-0.5 text-xs text-muted">
-                    YouTube match still in progress — refresh to check.
+              <div className="flex items-center gap-2 px-3 py-3 sm:gap-3 sm:px-4">
+                <span className="w-6 text-right text-xs text-muted">
+                  {order + 1}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <span className="truncate font-medium">{song.title}</span>
+                    <MatchBadge song={song} />
                   </div>
-                )}
-                {isOwner && (
-                  <OverrideControls
-                    songId={song.id}
-                    isPlayable={playable}
-                    onChanged={() => router.refresh()}
-                  />
-                )}
+                  <div className="truncate text-sm text-muted">
+                    {song.artist}
+                    {song.album ? ` — ${song.album}` : ""}
+                  </div>
+                  {!playable && (
+                    <div className="mt-0.5 text-xs text-muted">
+                      YouTube match still in progress — refresh to check.
+                    </div>
+                  )}
+                </div>
+                <div className="flex shrink-0 flex-col items-end gap-1">
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => playable && startQueueFrom(song.id)}
+                      disabled={!playable}
+                      className="shrink-0 rounded bg-accent px-3 py-1.5 text-xs font-medium text-accent-foreground disabled:cursor-not-allowed disabled:bg-border disabled:text-muted sm:text-sm"
+                    >
+                      {playable ? "▶ Play" : "Matching…"}
+                    </button>
+                    {!locked && (
+                      <button
+                        type="button"
+                        onClick={() => remove(song.id)}
+                        disabled={removingId === song.id}
+                        className="shrink-0 rounded border border-border px-2 py-1.5 text-xs text-muted hover:text-danger disabled:opacity-50 sm:text-sm"
+                      >
+                        {removingId === song.id ? "Removing…" : "Remove"}
+                      </button>
+                    )}
+                  </div>
+                  {isOwner && (
+                    <OverrideButtons
+                      songId={song.id}
+                      isPlayable={playable}
+                      onOpen={() => setOpenOverrideSongId(song.id)}
+                      onRefreshed={() => router.refresh()}
+                    />
+                  )}
+                </div>
               </div>
-              <button
-                type="button"
-                onClick={() => playable && startQueueFrom(song.id)}
-                disabled={!playable}
-                className="shrink-0 rounded bg-accent px-3 py-1.5 text-xs font-medium text-accent-foreground disabled:cursor-not-allowed disabled:bg-border disabled:text-muted sm:text-sm"
-              >
-                {playable ? "▶ Play" : "Matching…"}
-              </button>
-              {!locked && (
-                <button
-                  type="button"
-                  onClick={() => remove(song.id)}
-                  disabled={removingId === song.id}
-                  className="shrink-0 rounded border border-border px-2 py-1.5 text-xs text-muted hover:text-danger disabled:opacity-50 sm:text-sm"
-                >
-                  {removingId === song.id ? "Removing…" : "Remove"}
-                </button>
+              {isOwner && editorOpen && (
+                <OverrideEditor
+                  songId={song.id}
+                  onSaved={() => {
+                    setOpenOverrideSongId(null);
+                    router.refresh();
+                  }}
+                  onCancel={() => setOpenOverrideSongId(null)}
+                />
               )}
             </li>
           );
