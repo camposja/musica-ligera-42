@@ -42,7 +42,7 @@ function MatchBadge({ song }: { song: Song }) {
           ? `Matched: "${song.youtubeMatchTitle}" by ${song.youtubeMatchChannel}`
           : "This is a loose match — close to the song but not the canonical version"
       }
-      className="inline-flex shrink-0 items-center rounded border border-accent/40 bg-accent/10 px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-accent"
+      className="inline-flex shrink-0 items-center rounded border border-accent/40 bg-accent/10 px-1 py-[1px] text-[8px] uppercase tracking-wide text-accent sm:px-1.5 sm:py-0.5 sm:text-[10px]"
     >
       {reasonLabel}
     </span>
@@ -228,14 +228,16 @@ export function SongList({ playlistId, songs, locked = false, role }: Props) {
                   {order + 1}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                    <span className="truncate font-medium">{song.title}</span>
-                    <MatchBadge song={song} />
-                  </div>
+                  <div className="truncate font-medium">{song.title}</div>
                   <div className="truncate text-sm text-muted">
                     {song.artist}
                     {song.album ? ` — ${song.album}` : ""}
                   </div>
+                  {song.youtubeMatchType === "loose" && (
+                    <div className="mt-1">
+                      <MatchBadge song={song} />
+                    </div>
+                  )}
                   {!playable && (
                     <div className="mt-0.5 text-xs text-muted">
                       YouTube match still in progress — refresh to check.
