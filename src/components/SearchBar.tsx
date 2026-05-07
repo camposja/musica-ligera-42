@@ -5,9 +5,19 @@ import { useState } from "react";
 type Props = {
   onSearch: (q: string) => void | Promise<void>;
   disabled?: boolean;
+  placeholder?: string;
+  buttonClassName?: string;
 };
 
-export function SearchBar({ onSearch, disabled }: Props) {
+const DEFAULT_BUTTON_CLASS =
+  "rounded bg-accent px-4 py-2 font-medium text-accent-foreground disabled:opacity-50";
+
+export function SearchBar({
+  onSearch,
+  disabled,
+  placeholder = "Search artists, songs, albums…",
+  buttonClassName = DEFAULT_BUTTON_CLASS,
+}: Props) {
   const [q, setQ] = useState("");
 
   function onSubmit(e: React.FormEvent) {
@@ -23,13 +33,13 @@ export function SearchBar({ onSearch, disabled }: Props) {
         type="search"
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        placeholder="Search artists, songs, albums…"
+        placeholder={placeholder}
         className="flex-1 rounded border border-border bg-background px-3 py-2 outline-none focus:border-accent"
       />
       <button
         type="submit"
         disabled={disabled || q.trim().length === 0}
-        className="rounded bg-accent px-4 py-2 font-medium text-accent-foreground disabled:opacity-50"
+        className={buttonClassName}
       >
         {disabled ? "Searching…" : "Search"}
       </button>

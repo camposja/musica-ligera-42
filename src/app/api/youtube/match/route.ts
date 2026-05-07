@@ -2,6 +2,7 @@ import { forbidden, getSession, unauthorized } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { normalizeSong } from "@/lib/song-serialization";
 import { isValidYoutubeId, matchSongById, YoutubeError } from "@/lib/youtube";
+import { getQuotaStatus } from "@/lib/youtube-quota";
 
 export async function POST(request: Request) {
   const session = await getSession();
@@ -42,14 +43,14 @@ export async function POST(request: Request) {
   try {
     await matchSongById(songId, { force });
   } catch (err) {
-    return youtubeErrorResponse(err);
+    return await youtubeErrorResponse(err);
   }
 
   const updated = await prisma.song.findUnique({ where: { id: songId } });
   return Response.json({ song: updated ? normalizeSong(updated) : null });
 }
 
-function youtubeErrorResponse(err: unknown): Response {
+async function youtubeErrorResponse(err: unknown): Promise<Response> {
   if (err instanceof YoutubeError) {
     if (err.httpStatus === 404) {
       return Response.json(
@@ -58,6 +59,19 @@ function youtubeErrorResponse(err: unknown): Response {
       );
     }
     if (err.httpStatus === 429) {
+      // Distinguish our app-level safeguard from a real upstream rate limit.
+      if (err.message === "youtube_quota_safeguard") {
+        const quota = await getQuotaStatus();
+        return Response.json(
+          {
+            code: "youtube_quota_safeguard",
+            error: "Daily YouTube quota safeguard reached.",
+            remainingSearches: quota.remainingSearches,
+            resetsAt: quota.resetsAt,
+          },
+          { status: 429 },
+        );
+      }
       const headers = new Headers({ "content-type": "application/json" });
       if (err.retryAfterSeconds !== undefined) {
         headers.set("retry-after", String(err.retryAfterSeconds));

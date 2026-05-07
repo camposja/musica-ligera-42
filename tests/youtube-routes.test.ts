@@ -24,6 +24,7 @@ import { _resetMatchChainForTests } from "@/lib/youtube";
 import { POST as matchPOST } from "@/app/api/youtube/match/route";
 import { POST as overridePOST } from "@/app/api/youtube/override/route";
 import { POST as rematchMissingPOST } from "@/app/api/youtube/rematch-missing/route";
+import { GET as youtubeSearchGET } from "@/app/api/youtube/search/route";
 
 beforeEach(async () => {
   clearCookies();
@@ -548,5 +549,159 @@ describe("POST /api/youtube/rematch-missing", () => {
     const body = await res.json();
     expect(body.checked).toBe(0);
     expect(fetchSpy).not.toHaveBeenCalled();
+  });
+});
+
+// === GET /api/youtube/search ==============================================
+
+describe("GET /api/youtube/search", () => {
+  const ORIGINAL_SAFETY = process.env.YOUTUBE_DAILY_QUOTA_SAFETY_UNITS;
+
+  beforeEach(() => {
+    // Default to a generous cap so most tests don't trip the safeguard.
+    process.env.YOUTUBE_DAILY_QUOTA_SAFETY_UNITS = "10000";
+  });
+
+  afterEach(() => {
+    process.env.YOUTUBE_DAILY_QUOTA_SAFETY_UNITS = ORIGINAL_SAFETY;
+  });
+
+  function searchRequest(q: string | null): Request {
+    const url = q === null ? "http://x/api/youtube/search" : `http://x/api/youtube/search?q=${encodeURIComponent(q)}`;
+    return new Request(url);
+  }
+
+  it("401 without session", async () => {
+    const res = await youtubeSearchGET(searchRequest("hello"));
+    expect(res.status).toBe(401);
+  });
+
+  it("400 when q missing", async () => {
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await youtubeSearchGET(searchRequest(null));
+    expect(res.status).toBe(400);
+  });
+
+  it("400 when q is empty/whitespace", async () => {
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await youtubeSearchGET(searchRequest("   "));
+    expect(res.status).toBe(400);
+  });
+
+  it("happy path: returns rich results + quota status", async () => {
+    mockFetchSequence([
+      searchResp([PAD("a"), PAD("b")]),
+      {
+        status: 200,
+        json: {
+          items: [
+            {
+              id: PAD("a"),
+              snippet: {
+                title: "Adele - Hello",
+                channelTitle: "AdeleVEVO",
+                thumbnails: { medium: { url: "https://i.ytimg.com/vi/a/m.jpg" } },
+              },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT3M30S", contentRating: {} },
+            },
+            {
+              id: PAD("b"),
+              snippet: { title: "Other", channelTitle: "Channel" },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT2M", contentRating: {} },
+            },
+          ],
+        },
+      },
+    ]);
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await youtubeSearchGET(searchRequest("hello adele"));
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.results).toHaveLength(2);
+    expect(body.results[0]).toMatchObject({
+      youtubeId: PAD("a"),
+      title: "Adele - Hello",
+      channel: "AdeleVEVO",
+      durationSec: 210,
+      url: `https://www.youtube.com/watch?v=${PAD("a")}`,
+      thumbnailUrl: "https://i.ytimg.com/vi/a/m.jpg",
+    });
+    expect(body.quota).toMatchObject({
+      remainingSearches: expect.any(Number),
+      remainingUnits: expect.any(Number),
+      resetsAt: expect.any(String),
+    });
+    // Charged once (103 units).
+    expect(body.quota.remainingUnits).toBe(10000 - 103);
+  });
+
+  it("filters out private videos", async () => {
+    mockFetchSequence([
+      searchResp([PAD("a"), PAD("b")]),
+      {
+        status: 200,
+        json: {
+          items: [
+            {
+              id: PAD("a"),
+              snippet: { title: "x", channelTitle: "y" },
+              status: { embeddable: true, privacyStatus: "private" },
+              contentDetails: { duration: "PT3M", contentRating: {} },
+            },
+            {
+              id: PAD("b"),
+              snippet: { title: "z", channelTitle: "y" },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT3M", contentRating: {} },
+            },
+          ],
+        },
+      },
+    ]);
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await youtubeSearchGET(searchRequest("x"));
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.results.map((r: { youtubeId: string }) => r.youtubeId)).toEqual([
+      PAD("b"),
+    ]);
+  });
+
+  it("429 with code: youtube_quota_safeguard when ledger says no", async () => {
+    process.env.YOUTUBE_DAILY_QUOTA_SAFETY_UNITS = "50"; // less than one search
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await youtubeSearchGET(searchRequest("hello"));
+    expect(res.status).toBe(429);
+    const body = await res.json();
+    expect(body.code).toBe("youtube_quota_safeguard");
+    expect(body.remainingSearches).toBe(0);
+    expect(body.resetsAt).toMatch(/T00:00:00\.000Z$/);
+  });
+
+  it("429 + safeguard when YouTube returns 403 (defensive lockout)", async () => {
+    mockFetchSequence([{ status: 403, json: {} }]);
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await youtubeSearchGET(searchRequest("hello"));
+    expect(res.status).toBe(429);
+    const body = await res.json();
+    expect(body.code).toBe("youtube_quota_safeguard");
+    // After upstream 403 + markQuotaExhausted, remaining is 0.
+    expect(body.remainingSearches).toBe(0);
+  });
+
+  it("503 when YouTube returns 5xx", async () => {
+    mockFetchSequence([{ status: 502, json: {} }]);
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await youtubeSearchGET(searchRequest("x"));
+    expect(res.status).toBe(502);
   });
 });

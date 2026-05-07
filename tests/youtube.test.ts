@@ -465,9 +465,11 @@ describe("triggerMatchInBackground", () => {
     expect(after.youtubeId).toBeNull();
   });
 
-  it("a failure in one match does not poison the chain for the next", async () => {
+  it("a transient failure in one match does not poison the chain for the next", async () => {
+    // 500 is a transient upstream error; unlike 403 (which markQuotaExhausted's
+    // the day's ledger), it should not affect subsequent matches.
     mockFetchSequence([
-      { status: 403, json: {} },
+      { status: 500, json: {} },
       ...matchPair([{ id: PAD("s"), title: "Adele - Hello", channel: "AdeleVEVO" }]),
     ]);
     const s1 = await makeSong("1");

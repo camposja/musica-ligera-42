@@ -182,6 +182,45 @@ describe("POST /api/songs", () => {
     expect(r2.status).toBe(201);
     expect(await prisma.song.count()).toBe(2);
   });
+
+  it("dedupes by youtubeId when no spotifyId (YouTube save flow)", async () => {
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const payload = {
+      title: "Hello",
+      artist: "Adele",
+      youtubeId: "AbCdEfGhIjK",
+      youtubeMatchType: "loose",
+      youtubeMatchReason: "manual",
+    };
+    const r1 = await createPOST(jsonRequest("http://x/api/songs", payload));
+    expect(r1.status).toBe(201);
+    const r2 = await createPOST(jsonRequest("http://x/api/songs", payload));
+    expect(r2.status).toBe(200); // existing row returned, not duplicated
+    expect(await prisma.song.count()).toBe(1);
+  });
+
+  it("persists match metadata fields when client supplies them", async () => {
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await createPOST(
+      jsonRequest("http://x/api/songs", {
+        title: "Hello",
+        artist: "Adele",
+        youtubeId: "AbCdEfGhIjK",
+        youtubeMatchType: "loose",
+        youtubeMatchReason: "manual",
+        youtubeMatchTitle: "Adele - Hello (Official Audio)",
+        youtubeMatchChannel: "AdeleVEVO",
+      }),
+    );
+    expect(res.status).toBe(201);
+    const body = await res.json();
+    expect(body.song.youtubeMatchType).toBe("loose");
+    expect(body.song.youtubeMatchReason).toBe("manual");
+    expect(body.song.youtubeMatchTitle).toBe("Adele - Hello (Official Audio)");
+    expect(body.song.youtubeMatchChannel).toBe("AdeleVEVO");
+  });
 });
 
 describe("POST /api/songs auto-match trigger", () => {

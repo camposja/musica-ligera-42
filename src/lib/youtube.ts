@@ -2,6 +2,12 @@ import { prisma } from "@/lib/prisma";
 import { parseAltIds, serializeAltIds } from "@/lib/song-serialization";
 import { isValidYoutubeId, YOUTUBE_ID_RE } from "@/lib/youtube-id";
 import {
+  checkQuota,
+  consumeQuota,
+  markQuotaExhausted,
+  SEARCH_UNIT_COST,
+} from "@/lib/youtube-quota";
+import {
   pickBestMatch,
   type Candidate,
   type MatchResult,
@@ -100,9 +106,18 @@ export function parseYoutubeRef(input: string): string | null {
 type SearchItem = { id?: { videoId?: string } | string };
 type SearchResponse = { items?: SearchItem[] };
 
+type ThumbnailEntry = { url?: string };
 type VideoDetailsItem = {
   id: string;
-  snippet?: { title?: string; channelTitle?: string };
+  snippet?: {
+    title?: string;
+    channelTitle?: string;
+    thumbnails?: {
+      default?: ThumbnailEntry;
+      medium?: ThumbnailEntry;
+      high?: ThumbnailEntry;
+    };
+  };
   status?: { embeddable?: boolean; privacyStatus?: string };
   contentDetails?: {
     duration?: string;
@@ -119,6 +134,7 @@ export type VideoDetails = {
   ageRestricted: boolean;
   isPrivate: boolean;
   durationSec: number;
+  thumbnailUrl: string | null;
 };
 
 // Parse ISO 8601 duration like PT3M42S into seconds.
@@ -158,6 +174,10 @@ export async function fetchVideoDetails(
   }
   const json = (await res.json()) as VideosResponse;
   for (const item of json.items ?? []) {
+    const thumbs = item.snippet?.thumbnails;
+    // Prefer medium (320x180) — better for list rows; fall back to default.
+    const thumbnailUrl =
+      thumbs?.medium?.url ?? thumbs?.default?.url ?? null;
     out.set(item.id, {
       id: item.id,
       title: item.snippet?.title ?? "",
@@ -167,6 +187,7 @@ export async function fetchVideoDetails(
         item.contentDetails?.contentRating?.ytRating === "ytAgeRestricted",
       isPrivate: item.status?.privacyStatus === "private",
       durationSec: parseIsoDuration(item.contentDetails?.duration),
+      thumbnailUrl,
     });
   }
   return out;
@@ -296,8 +317,24 @@ export async function matchSongById(
   if (!song) return { matched: false };
   if (!opts?.force && song.youtubeId) return { matched: false };
 
+  // Daily-quota gate. Charge BEFORE the call; on Google 403 mark exhausted
+  // so the rest of the day's calls fail fast instead of also paying 403s.
+  const check = await checkQuota(SEARCH_UNIT_COST);
+  if (!check.ok) {
+    throw new YoutubeError(429, "youtube_quota_safeguard");
+  }
+  await consumeQuota(SEARCH_UNIT_COST);
+
   const query = `${song.artist} ${song.title}`.trim();
-  const candidates = await searchCandidates(query);
+  let candidates: Candidate[];
+  try {
+    candidates = await searchCandidates(query);
+  } catch (err) {
+    if (err instanceof YoutubeError && err.httpStatus === 403) {
+      await markQuotaExhausted();
+    }
+    throw err;
+  }
   if (candidates.length === 0) {
     throw new YoutubeError(404, "No YouTube match found");
   }

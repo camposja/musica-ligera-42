@@ -98,3 +98,18 @@ model SpotifyConnection {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }
+
+// Daily quota ledger for shared external API budgets. One row per
+// (service, day-in-UTC). Increments are application-side; we never query
+// the upstream provider for remaining quota. Used by all YouTube Data API
+// consumers (search, match, rematch-missing) so they share one budget.
+model ApiQuotaUsage {
+  id        String   @id @default(uuid())
+  service   String   // "youtube"
+  day       String   // "YYYY-MM-DD" in UTC
+  unitsUsed Int      @default(0)
+  updatedAt DateTime @updatedAt
+
+  @@unique([service, day])
+  @@index([service, day])
+}

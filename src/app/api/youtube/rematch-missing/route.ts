@@ -1,6 +1,7 @@
 import { forbidden, getSession, unauthorized } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { matchSongById, YoutubeError } from "@/lib/youtube";
+import { getQuotaStatus } from "@/lib/youtube-quota";
 
 // Per-run caps. Each match call costs ~103 quota units (search 100 + videos 3).
 //
@@ -58,8 +59,26 @@ export async function POST() {
           stillUnmatched += 1;
           continue;
         }
+        if (err.httpStatus === 429 && err.message === "youtube_quota_safeguard") {
+          // App-level safeguard hit — return partial counts cleanly.
+          const quota = await getQuotaStatus();
+          return Response.json(
+            {
+              code: "youtube_quota_safeguard",
+              error: "Daily YouTube quota safeguard reached.",
+              remainingSearches: quota.remainingSearches,
+              resetsAt: quota.resetsAt,
+              checked,
+              matchedExact,
+              matchedLoose,
+              stillUnmatched,
+              errored,
+            },
+            { status: 429 },
+          );
+        }
         if (err.httpStatus === 403) {
-          // Quota exceeded — bail early rather than burn the rest of the day.
+          // Real upstream quota — bail early rather than burn the rest of the day.
           return Response.json(
             {
               error: "YouTube quota exceeded — try again tomorrow",
@@ -78,6 +97,7 @@ export async function POST() {
     }
   }
 
+  const quota = await getQuotaStatus();
   return Response.json({
     checked,
     matchedExact,
@@ -86,5 +106,7 @@ export async function POST() {
     errored,
     capReached: songs.length >= REMATCH_LIMIT,
     quotaCapReached,
+    remainingSearches: quota.remainingSearches,
+    resetsAt: quota.resetsAt,
   });
 }

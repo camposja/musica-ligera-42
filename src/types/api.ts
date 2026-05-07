@@ -73,3 +73,25 @@ export type ImportPlaylistResponse = {
   songsImported: number;
   songsReused: number;
 };
+
+// === YouTube search ========================================================
+
+export type YoutubeSearchResult = {
+  youtubeId: string;
+  title: string;
+  channel: string;
+  durationSec: number;
+  url: string;
+  thumbnailUrl: string | null;
+};
+
+export type QuotaStatus = {
+  remainingUnits: number;
+  remainingSearches: number;
+  resetsAt: string;
+};
+
+export type YoutubeSearchResponse = {
+  results: YoutubeSearchResult[];
+  quota: QuotaStatus;
+};
