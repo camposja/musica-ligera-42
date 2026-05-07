@@ -22,6 +22,8 @@ const SPOTIFY_BUTTON =
   "rounded bg-accent px-4 py-2 font-medium text-accent-foreground disabled:opacity-50";
 const YOUTUBE_BUTTON =
   "rounded bg-[#ff0000] px-4 py-2 font-medium text-white disabled:opacity-60";
+const YOUTUBE_INPUT =
+  "flex-1 rounded border border-border bg-background px-3 py-2 outline-none focus:border-[#ff0000]";
 
 export function SearchPageClient({ playlists }: Props) {
   // Spotify
@@ -132,6 +134,7 @@ export function SearchPageClient({ playlists }: Props) {
           disabled={youtubeState === "loading" || quotaBlocked}
           placeholder={youtubePlaceholder}
           buttonClassName={YOUTUBE_BUTTON}
+          inputClassName={YOUTUBE_INPUT}
         />
         {quota && !quotaBlocked && (
           <p className="text-xs text-muted">
