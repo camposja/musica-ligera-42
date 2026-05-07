@@ -20,10 +20,15 @@ type Props = { playlists: PlaylistOption[] };
 
 const SPOTIFY_BUTTON =
   "rounded bg-accent px-4 py-2 font-medium text-accent-foreground disabled:opacity-50";
+// iOS Safari applies a native gradient/border to <button> and <input
+// type="search"> that overrides arbitrary-value background colors. Adding
+// appearance-none + explicit background/border declarations forces Safari to
+// respect our red. CSS-variable colors (bg-accent) survive without it, which
+// is why the Spotify bar doesn't need this treatment.
 const YOUTUBE_BUTTON =
-  "rounded bg-[#ff0000] px-4 py-2 font-medium text-white disabled:opacity-60";
+  "appearance-none rounded bg-[#ff0000] px-4 py-2 font-medium text-white disabled:opacity-60";
 const YOUTUBE_INPUT =
-  "flex-1 rounded border border-border bg-background px-3 py-2 outline-none focus:border-[#ff0000]";
+  "flex-1 appearance-none rounded border border-border bg-background px-3 py-2 outline-none focus:border-[#ff0000] [&::-webkit-search-cancel-button]:appearance-none";
 
 export function SearchPageClient({ playlists }: Props) {
   // Spotify

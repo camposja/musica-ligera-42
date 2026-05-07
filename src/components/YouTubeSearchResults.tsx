@@ -156,7 +156,7 @@ function ResultRow({
             type="button"
             onClick={onPlay}
             disabled={playState === "starting"}
-            className="rounded bg-[#ff0000] px-3 py-1 text-xs font-medium text-white disabled:opacity-60"
+            className="appearance-none rounded bg-[#ff0000] px-3 py-1 text-xs font-medium text-white disabled:opacity-60"
           >
             {playState === "starting" ? "Saving…" : "▶ Play"}
           </button>
