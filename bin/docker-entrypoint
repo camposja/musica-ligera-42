@@ -1,14 +1,47 @@
 #!/bin/sh
+# Boot pipeline:
+#   1. Best-effort pre-flight diagnostics (sentinel, db file size).
+#   2. HARD: prisma migrate deploy — failure aborts boot intentionally.
+#   3. Best-effort post-migration row counts.
+#   4. exec the app CMD (e.g. `node server.js`).
+#
+# Diagnostic blocks must NEVER abort boot — that's why set -e is scoped only
+# around the migration. Logs intentionally exclude env vars and secrets.
+#
+# `prisma` resolves via PATH set in the Dockerfile (/opt/prisma-cli/.bin/).
+
+DB_PATH="/data/musica-ligera.sqlite"
+SENTINEL="/data/.fly-volume-sentinel"
+
+# --- 1. Pre-flight diagnostics (best-effort) ------------------------------
+mkdir -p /data 2>/dev/null
+
+if [ -f "$SENTINEL" ]; then
+  echo "[boot] volume sentinel found, created $(cat "$SENTINEL" 2>/dev/null || echo '?')"
+else
+  echo "[boot] WARNING: volume sentinel missing — fresh volume OR your data is gone"
+  date -u +"%Y-%m-%dT%H:%M:%SZ" > "$SENTINEL" 2>/dev/null || true
+fi
+
+if [ -f "$DB_PATH" ]; then
+  size=$(stat -c%s "$DB_PATH" 2>/dev/null || stat -f%z "$DB_PATH" 2>/dev/null || echo "?")
+  echo "[boot] db file: $DB_PATH ($size bytes)"
+else
+  echo "[boot] db file: $DB_PATH (will be created)"
+fi
+
+# --- 2. Migrations (HARD failure: this aborts boot if it errors) ----------
 set -e
-
-# Make sure the volume mount has the directory we expect (Fly mounts /data
-# automatically, but on local Docker test the path needs to exist before
-# Prisma writes into it).
-mkdir -p /data
-
-# Apply pending Prisma migrations against the SQLite file at $DATABASE_URL.
-# `prisma` resolves via the PATH set in the Dockerfile (/opt/prisma-cli/...).
-# No network fetch at boot — fail fast if the binary is missing.
 prisma migrate deploy
+set +e
 
+# --- 3. Post-migration confidence check (best-effort) ---------------------
+if [ -f "$DB_PATH" ]; then
+  users=$(sqlite3 "$DB_PATH" "SELECT count(*) FROM User" 2>/dev/null || echo "?")
+  songs=$(sqlite3 "$DB_PATH" "SELECT count(*) FROM Song" 2>/dev/null || echo "?")
+  pls=$(sqlite3 "$DB_PATH" "SELECT count(*) FROM Playlist" 2>/dev/null || echo "?")
+  echo "[boot] post-migrate counts — users=$users songs=$songs playlists=$pls"
+fi
+
+# --- 4. Hand off to the app ------------------------------------------------
 exec "$@"

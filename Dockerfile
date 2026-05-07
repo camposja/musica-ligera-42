@@ -78,7 +78,8 @@ ENV NODE_PATH=/opt/prisma-cli/node_modules
 ENV PATH="/opt/prisma-cli/node_modules/.bin:$PATH"
 
 COPY bin/docker-entrypoint /usr/local/bin/docker-entrypoint
-RUN chmod +x /usr/local/bin/docker-entrypoint
+COPY bin/backup-db /usr/local/bin/backup-db
+RUN chmod +x /usr/local/bin/docker-entrypoint /usr/local/bin/backup-db
 
 EXPOSE 3000
 ENTRYPOINT ["docker-entrypoint"]

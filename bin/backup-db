@@ -1,0 +1,41 @@
+#!/bin/sh
+# Online SQLite backup for the Música Ligera DB.
+#
+# Uses SQLite's `.backup` command, which is safe to run while the app is
+# writing (unlike `cp`, which can capture a torn write mid-transaction).
+#
+# CONVENIENCE BACKUP ONLY — writes to the same Fly volume, so it survives
+# app crashes and pre-deploy "let me snapshot before this risky thing"
+# scenarios, but is USELESS if the volume itself is lost. The real
+# disaster-recovery backup is `fly volumes snapshots create <vol-id>` —
+# those live off-volume.
+#
+# Usage (from a Fly machine):
+#   fly ssh console -C "/usr/local/bin/backup-db"
+#
+# Or locally inside the running container:
+#   docker exec <container> /usr/local/bin/backup-db
+
+set -e
+
+DB="/data/musica-ligera.sqlite"
+BACKUP_DIR="/data/backups"
+TIMESTAMP=$(date -u +"%Y%m%d-%H%M%SZ")
+TARGET="$BACKUP_DIR/musica-ligera-$TIMESTAMP.sqlite"
+
+mkdir -p "$BACKUP_DIR"
+
+if [ ! -f "$DB" ]; then
+  echo "[backup-db] error: source DB does not exist at $DB"
+  exit 1
+fi
+
+sqlite3 "$DB" ".backup '$TARGET'"
+size=$(stat -c%s "$TARGET" 2>/dev/null || stat -f%z "$TARGET" 2>/dev/null || echo "?")
+echo "[backup-db] complete: $TARGET ($size bytes)"
+
+# Retain the last 14 backups; older ones get cleaned up so we don't fill
+# the volume over time. With ~100 KB DBs, 14 backups = ~1.4 MB total.
+ls -1t "$BACKUP_DIR"/musica-ligera-*.sqlite 2>/dev/null | tail -n +15 | xargs -r rm -f
+kept=$(ls -1 "$BACKUP_DIR"/musica-ligera-*.sqlite 2>/dev/null | wc -l | tr -d ' ')
+echo "[backup-db] retention: $kept files kept"

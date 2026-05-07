@@ -1,10 +1,33 @@
-# Fly.io config for Música Ligera 42 (SQLite, single machine, single volume).
-# See README "Deploy" section for first-time setup commands.
+# =============================================================================
+# Música Ligera 42 — Fly.io config (single machine, single SQLite volume).
+#
+# Operator rules — all four are load-bearing for DB persistence:
+#   1. Never run more than one machine. SQLite has one writer; multi-machine
+#      against the same volume = corruption.
+#      Lock with: fly scale count 1 --max-per-region 1
+#   2. Never run `prisma migrate reset` against /data/musica-ligera.sqlite —
+#      it drops all data. Use `prisma migrate deploy` only.
+#   3. Never delete the Fly volume named `data`. The DB lives on it.
+#   4. Back up before any risky deploy or migration:
+#        fly ssh console -C "/usr/local/bin/backup-db"        (in-volume; convenience)
+#        fly volumes snapshots create <vol-id>                (off-volume; disaster recovery)
+#
+# See README "Deploy" section for the persistence-guarantees runbook.
+# =============================================================================
 
 app = "musica-ligera-42"
 primary_region = "dfw"
 
 [build]
+
+[deploy]
+  # "immediate" replaces the running machine in place. The default "rolling"
+  # strategy can briefly run a transient second machine that contends for the
+  # /data volume — fine for stateless apps, dangerous for plain SQLite.
+  # Belt-and-suspenders ONLY: the real safety guarantee is the single-machine
+  # constraint (rule 1 above). If a future Fly CLI rejects this value,
+  # delete this block — it's not load-bearing.
+  strategy = "immediate"
 
 [env]
   # On-disk path to the SQLite file inside the persistent volume.
@@ -23,9 +46,9 @@ primary_region = "dfw"
   min_machines_running = 0
   processes = ["app"]
 
-# Persistent volume — created once via `fly volumes create data --size 1 --region dfw`.
-# Plain SQLite + multiple machines = corruption. Keep this single-volume,
-# single-machine. Lock with `fly scale count 1 --max-per-region 1` after deploy.
+# Persistent volume — created once via:
+#   fly volumes create data --size 1 --region dfw
+# Fly volumes survive `fly deploy` (machines come and go; the volume persists).
 [[mounts]]
   source = "data"
   destination = "/data"

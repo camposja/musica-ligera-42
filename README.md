@@ -343,15 +343,12 @@ Next is built with `output: "standalone"` (see `next.config.ts`) so the runtime 
 
 ### Boot: `bin/docker-entrypoint`
 
-```sh
-#!/bin/sh
-set -e
-mkdir -p /data
-prisma migrate deploy
-exec "$@"
-```
+The entrypoint runs three phases on every machine boot:
+1. **Pre-flight diagnostics** (best-effort, never aborts boot): logs whether the volume sentinel `/data/.fly-volume-sentinel` exists and the current DB file size.
+2. **Migrations** (HARD: aborts boot if it fails): `prisma migrate deploy`. Idempotent — checks `_prisma_migrations` and only applies new migrations. **Never drops data.**
+3. **Post-migration confidence check** (best-effort): logs row counts for `User`, `Song`, `Playlist` so you can see in `fly logs` that data survived the deploy.
 
-Migrations run on every boot via `prisma migrate deploy` (idempotent — checks `_prisma_migrations`). Catches replacement-machine events that don't trigger a deploy.
+Logs are intentionally free of env vars and secrets. See [Persistence guarantees](#persistence-guarantees-and-how-to-verify) for how to read them.
 
 ### First-time setup
 
@@ -409,19 +406,68 @@ Open http://localhost:3000 → sign in as OWNER → confirm `/tmp/musica-ligera-
 ### Operations
 
 ```bash
-fly status                                      # health + region
-fly logs                                        # stream container output
-fly ssh console                                 # interactive shell
-  ls -lh /data                                  # confirm SQLite file present
-  yt-dlp --version                              # confirm pinned version
+fly status                                       # health + region
+fly logs                                         # stream container output
+fly logs | grep '\[boot\]'                       # just the persistence diagnostics
+fly ssh console                                  # interactive shell
+  ls -lh /data                                   # confirm SQLite file present
+  yt-dlp --version                               # confirm pinned version
   sqlite3 /data/musica-ligera.sqlite "SELECT count(*) FROM User;"
   exit
-fly volumes list                                # show volume id
-fly volumes snapshots create <vol-id>           # point-in-time backup (preferred)
-fly deploy                                      # subsequent deploys
+fly deploy                                       # subsequent deploys
 ```
 
-A manual `cp /data/musica-ligera.sqlite /data/...backup.sqlite` inside the volume is a belt-and-suspenders option but doesn't survive volume failure — use Fly snapshots as the primary backup.
+### Persistence guarantees and how to verify
+
+**What Fly volumes actually do:** the `/data` volume persists independently of the machine. When you `fly deploy`, Fly destroys the old container, creates a new one, and re-mounts the SAME volume. The DB file at `/data/musica-ligera.sqlite` is untouched.
+
+**Four operator footguns** that CAN wipe data even with a correct config:
+1. Forgetting `fly volumes create data` before the first `fly deploy` (deploy fails; no data is lost yet, but easy to panic).
+2. Allowing more than one machine to run (each may get its own volume; SQLite corrupts under multi-writer). Lock with `fly scale count 1 --max-per-region 1`.
+3. Running `prisma migrate reset` against `/data/musica-ligera.sqlite`. Don't.
+4. Deleting the Fly volume named `data`.
+
+**Reading boot logs (`fly logs | grep '\[boot\]'`):**
+
+| Line | Means |
+|---|---|
+| `volume sentinel found, created <date>` | Same volume mounted as last boot. ✓ |
+| `WARNING: volume sentinel missing` | Fresh volume OR your data is gone. **Investigate.** |
+| `db file: /data/musica-ligera.sqlite (<N> bytes)` | DB file exists and is N bytes. Should match prior boot ± migration delta. |
+| `db file: /data/musica-ligera.sqlite (will be created)` | No DB file. Migrations will create one (correct on first deploy; **alarming after that**). |
+| `post-migrate counts — users=N1 songs=N2 playlists=N3` | Confidence check — these should match what you had before the deploy. |
+
+If a count shows `?`, the SQLite CLI couldn't read the DB at boot (likely it was momentarily locked). The app boots normally; check again with `fly ssh console`.
+
+### Backups
+
+Two backup paths, **for different scenarios**:
+
+**Primary (disaster recovery): Fly volume snapshots** — off-volume, survive volume loss.
+```bash
+fly volumes list                                  # find <vol-id>
+fly volumes snapshots create <vol-id>             # take a point-in-time snapshot
+fly volumes snapshots list <vol-id>               # see existing snapshots
+```
+
+**Convenience (pre-risky-operation): in-volume online backup** — fast, local, safe even while the app is writing (uses SQLite's `.backup` command, not `cp`). Useless if the volume itself is lost — that's why snapshots are primary.
+```bash
+fly ssh console -C "/usr/local/bin/backup-db"     # writes /data/backups/musica-ligera-<UTC-timestamp>.sqlite
+```
+Retention: last 14 in-volume backups, older ones removed.
+
+### First-deploy verification checklist
+
+After running the first-time setup commands above, work through this:
+
+1. `fly status` shows exactly one machine, started.
+2. `fly logs | grep '\[boot\]'` shows: `WARNING: volume sentinel missing` (expected — first boot ever), `db file: ... (will be created)`, `post-migrate counts — users=0 songs=0 playlists=0`.
+3. Visit https://musica-ligera-42.fly.dev/login → OWNER sign-in succeeds.
+4. Insert a USER row via `fly ssh console` (see "Adding a USER row" below).
+5. Switch to that user, create a playlist, import some Spotify tracks, play a song. Note the playlist count — call it **N**.
+6. `fly volumes snapshots create <vol-id>` → confirm in `fly volumes snapshots list <vol-id>`.
+7. **The persistence proof:** `fly deploy` again with no code change.
+8. `fly logs | grep '\[boot\]'` should now show: `volume sentinel found, created <prior timestamp>`, db file size matching, `post-migrate counts — songs=N` (or whatever your real count is). If the count drops to 0, **stop and investigate** — the volume was lost.
 
 ### Adding a USER row in production
 
