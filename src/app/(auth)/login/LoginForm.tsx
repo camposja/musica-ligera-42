@@ -55,14 +55,14 @@ export default function LoginForm({ initialMode }: { initialMode: Mode }) {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-center gap-3">
         <LogoMark />
         <span className="text-lg font-semibold tracking-tight">Musica Ligera</span>
       </div>
 
       <form onSubmit={onSubmit} className="flex flex-col gap-3">
         <label className="flex flex-col gap-1 text-sm">
-          <span className="text-muted">{mode === "OWNER" ? "Username" : "Name"}</span>
+          <span className="text-muted">{mode === "OWNER" ? "User" : "Username"}</span>
           <input
             type="text"
             autoComplete="username"
@@ -74,7 +74,7 @@ export default function LoginForm({ initialMode }: { initialMode: Mode }) {
         </label>
 
         <label className="flex flex-col gap-1 text-sm">
-          <span className="text-muted">{mode === "OWNER" ? "Password" : "Access code"}</span>
+          <span className="text-muted">{mode === "OWNER" ? "Access code" : "Password"}</span>
           <input
             type="password"
             autoComplete="current-password"
@@ -136,8 +136,8 @@ export default function LoginForm({ initialMode }: { initialMode: Mode }) {
 function LogoMark() {
   return (
     <svg
-      width="32"
-      height="32"
+      width="48"
+      height="48"
       viewBox="0 0 32 32"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
