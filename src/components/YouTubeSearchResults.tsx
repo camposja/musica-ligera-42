@@ -126,7 +126,7 @@ function ResultRow({
   return (
     <li
       className={`flex items-center gap-3 px-3 py-3 sm:px-4 ${
-        isPlaying ? "bg-[#ff0000]/10" : ""
+        isPlaying ? "bg-yt-red/10" : ""
       }`}
     >
       {result.thumbnailUrl ? (
@@ -156,7 +156,7 @@ function ResultRow({
             type="button"
             onClick={onPlay}
             disabled={playState === "starting"}
-            className="appearance-none rounded bg-[#ff0000] px-3 py-1 text-xs font-medium text-white disabled:opacity-60"
+            className="appearance-none rounded bg-muted px-3 py-1 text-xs font-medium text-background hover:bg-foreground disabled:opacity-60"
           >
             {playState === "starting" ? "Saving…" : "▶ Play"}
           </button>

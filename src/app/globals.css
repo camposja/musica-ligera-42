@@ -9,6 +9,7 @@
   --accent-foreground: #0a0a0a;
   --muted: #a1a1aa;
   --danger: #f87171;
+  --yt-red: #ff0000;
 }
 
 @theme inline {
@@ -20,6 +21,7 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-muted: var(--muted);
   --color-danger: var(--danger);
+  --color-yt-red: var(--yt-red);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
