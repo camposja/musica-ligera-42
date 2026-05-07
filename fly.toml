@@ -15,7 +15,7 @@
 # See README "Deploy" section for the persistence-guarantees runbook.
 # =============================================================================
 
-app = "musica-ligera-42"
+app = "musica-ligera"
 primary_region = "dfw"
 
 [build]
