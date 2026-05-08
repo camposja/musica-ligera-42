@@ -705,3 +705,138 @@ describe("GET /api/youtube/search", () => {
     expect(res.status).toBe(502);
   });
 });
+
+// === Pick-match flow: search → override =====================================
+// Integration coverage for Ticket 21's modal: OWNER hits the search endpoint,
+// picks a candidate by URL, hits override. Verifies the chained UX writes the
+// chosen videoId with reason="manual" and clears alt ids.
+
+describe("Pick-match flow (search → override)", () => {
+  const ORIGINAL_SAFETY = process.env.YOUTUBE_DAILY_QUOTA_SAFETY_UNITS;
+
+  beforeEach(() => {
+    process.env.YOUTUBE_DAILY_QUOTA_SAFETY_UNITS = "10000";
+  });
+
+  afterEach(() => {
+    process.env.YOUTUBE_DAILY_QUOTA_SAFETY_UNITS = ORIGINAL_SAFETY;
+  });
+
+  it("OWNER searches, picks the second candidate, override writes manual match", async () => {
+    const candA = PAD("a");
+    const candB = PAD("b");
+    const candC = PAD("c");
+    // Three sequential fetches: search.list, videos.list (search enrichment),
+    // videos.list (override validation of the picked id).
+    mockFetchSequence([
+      searchResp([candA, candB, candC]),
+      {
+        status: 200,
+        json: {
+          items: [
+            {
+              id: candA,
+              snippet: { title: "Adele - Hello", channelTitle: "AdeleVEVO" },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT3M30S", contentRating: {} },
+            },
+            {
+              id: candB,
+              snippet: { title: "Adele - Hello (Live at NRJ)", channelTitle: "NRJ" },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT4M10S", contentRating: {} },
+            },
+            {
+              id: candC,
+              snippet: { title: "Hello cover by Random User", channelTitle: "Random" },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT3M00S", contentRating: {} },
+            },
+          ],
+        },
+      },
+      {
+        status: 200,
+        json: {
+          items: [
+            {
+              id: candB,
+              snippet: { title: "Adele - Hello (Live at NRJ)", channelTitle: "NRJ" },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT4M10S", contentRating: {} },
+            },
+          ],
+        },
+      },
+    ]);
+    const song = await prisma.song.create({
+      data: {
+        title: "Hello",
+        artist: "Adele",
+        youtubeId: "OLDOLDOLDOL",
+        youtubeAltIdsJson: JSON.stringify(["alt1alt1alt"]),
+        youtubeMatchType: "loose",
+        youtubeMatchReason: "lyric_video",
+      },
+    });
+    await setOwnerSession();
+
+    const searchRes = await youtubeSearchGET(
+      new Request(
+        `http://x/api/youtube/search?q=${encodeURIComponent("Adele Hello")}`,
+      ),
+    );
+    expect(searchRes.status).toBe(200);
+    const searchBody = await searchRes.json();
+    expect(searchBody.results).toHaveLength(3);
+    const picked = searchBody.results[1];
+    expect(picked.youtubeId).toBe(candB);
+
+    const overrideRes = await overridePOST(
+      jsonRequest("http://x", { songId: song.id, youtubeUrl: picked.url }),
+    );
+    expect(overrideRes.status).toBe(200);
+    const overrideBody = await overrideRes.json();
+    expect(overrideBody.song.youtubeId).toBe(candB);
+    expect(overrideBody.song.youtubeAltIds).toEqual([]);
+    expect(overrideBody.song.youtubeMatchType).toBe("loose");
+    expect(overrideBody.song.youtubeMatchReason).toBe("manual");
+    expect(overrideBody.song.youtubeMatchTitle).toBe("Adele - Hello (Live at NRJ)");
+    expect(overrideBody.song.youtubeMatchChannel).toBe("NRJ");
+  });
+
+  it("USER cannot select via override even after a successful search", async () => {
+    const candA = PAD("a");
+    mockFetchSequence([
+      searchResp([candA]),
+      {
+        status: 200,
+        json: {
+          items: [
+            {
+              id: candA,
+              snippet: { title: "Adele - Hello", channelTitle: "AdeleVEVO" },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT3M30S", contentRating: {} },
+            },
+          ],
+        },
+      },
+    ]);
+    const song = await makeSong();
+    const u = await makeUser();
+    await setUserSession(u.id);
+
+    const searchRes = await youtubeSearchGET(
+      new Request("http://x/api/youtube/search?q=hello"),
+    );
+    expect(searchRes.status).toBe(200);
+    const searchBody = await searchRes.json();
+    const picked = searchBody.results[0];
+
+    const overrideRes = await overridePOST(
+      jsonRequest("http://x", { songId: song.id, youtubeUrl: picked.url }),
+    );
+    expect(overrideRes.status).toBe(403);
+  });
+});
