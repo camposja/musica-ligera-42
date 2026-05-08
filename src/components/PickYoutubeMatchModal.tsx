@@ -115,13 +115,17 @@ export function PickYoutubeMatchModal({
   }
 
   return (
+    // Backdrop spans the full viewport so clicks anywhere outside the dialog
+    // dismiss it. Inner padding pushes the dialog away from the navbar (top)
+    // and the music player (bottom) so vertical centering looks centered
+    // within the actual content area, not under/over chrome.
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/60 px-4 pb-24 pt-20"
       onClick={onClose}
       role="presentation"
     >
       <div
-        className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg border border-border bg-surface p-4 shadow-xl"
+        className="my-auto max-h-[calc(100vh-11rem)] w-full max-w-2xl overflow-y-auto rounded-lg border border-border bg-surface p-4 shadow-xl"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -260,6 +264,9 @@ function CandidateRow({
           )}
         </div>
         <div className="truncate text-sm text-muted">{display.artist}</div>
+        <div className="truncate text-xs text-muted/80">
+          <span className="text-muted/60">Posted by</span> {candidate.channel}
+        </div>
       </div>
       <div className="flex shrink-0 items-center gap-2">
         <button
