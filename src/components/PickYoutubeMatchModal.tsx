@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ApiError, apiFetch } from "@/lib/api-client";
 import { useNowPlaying } from "@/components/PlayerProvider";
+import { friendlyOverrideError } from "@/components/SongList";
 import type {
   Song,
   SongResponse,
@@ -109,7 +110,7 @@ export function PickYoutubeMatchModal({
       onSelected();
       onClose();
     } catch (err) {
-      setSelectError(err instanceof ApiError ? err.message : "Could not set match");
+      setSelectError(friendlyOverrideError(err));
       setSelectingId(null);
     }
   }

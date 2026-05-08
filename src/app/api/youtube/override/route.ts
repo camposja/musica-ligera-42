@@ -29,12 +29,18 @@ export async function POST(request: Request) {
 
   // Accept either a raw id or a YouTube URL. youtubeUrl wins if both present —
   // it's the more specific signal (someone pasted a link).
+  //
+  // Each error response carries a stable `code` so the client can map to
+  // friendly per-case copy without parsing the human-readable `error` string.
   let videoId: string | null = null;
   if (typeof b.youtubeUrl === "string" && b.youtubeUrl.length > 0) {
     videoId = parseYoutubeRef(b.youtubeUrl);
     if (!videoId) {
       return Response.json(
-        { error: "Could not parse a YouTube video id from youtubeUrl" },
+        {
+          code: "parse_failed",
+          error: "Could not parse a YouTube video id from youtubeUrl",
+        },
         { status: 400 },
       );
     }
@@ -43,13 +49,19 @@ export async function POST(request: Request) {
     videoId = parseYoutubeRef(b.newYoutubeId);
     if (!videoId || !isValidYoutubeId(videoId)) {
       return Response.json(
-        { error: "newYoutubeId must be an 11-character YouTube id" },
+        {
+          code: "parse_failed",
+          error: "newYoutubeId must be an 11-character YouTube id",
+        },
         { status: 400 },
       );
     }
   } else {
     return Response.json(
-      { error: "youtubeUrl or newYoutubeId required" },
+      {
+        code: "parse_failed",
+        error: "youtubeUrl or newYoutubeId required",
+      },
       { status: 400 },
     );
   }
@@ -69,23 +81,29 @@ export async function POST(request: Request) {
     details = await fetchVideoDetails([videoId]);
   } catch (err) {
     if (err instanceof YoutubeError && err.httpStatus === 0) {
-      return Response.json({ error: err.message }, { status: 502 });
+      return Response.json(
+        { code: "upstream_unreachable", error: err.message },
+        { status: 502 },
+      );
     }
     return Response.json(
-      { error: "YouTube validation failed" },
+      { code: "upstream_unreachable", error: "YouTube validation failed" },
       { status: 502 },
     );
   }
   const d = details.get(videoId);
   if (!d) {
     return Response.json(
-      { error: "YouTube video not found or unavailable" },
+      {
+        code: "not_found",
+        error: "YouTube video not found or unavailable",
+      },
       { status: 400 },
     );
   }
   if (d.isPrivate) {
     return Response.json(
-      { error: "YouTube video is private" },
+      { code: "private", error: "YouTube video is private" },
       { status: 400 },
     );
   }

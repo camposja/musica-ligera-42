@@ -57,6 +57,26 @@ function MatchBadge({ song }: { song: Song }) {
 const OVERRIDE_BTN_CLASS =
   "shrink-0 rounded border border-border px-2 py-1 text-[11px] text-muted hover:border-accent/50 hover:text-accent disabled:opacity-50";
 
+// Maps the override route's `code` field to friendly UI copy. Unknown codes
+// (or non-ApiError throws) fall back to the server's `error` message so the
+// API stays the source of truth for anything we haven't categorized yet.
+export function friendlyOverrideError(err: unknown): string {
+  if (err instanceof ApiError) {
+    switch (err.code) {
+      case "parse_failed":
+        return "That doesn't look like a YouTube link.";
+      case "not_found":
+        return "Couldn't find that video — it may have been removed.";
+      case "private":
+        return "That video is private and can't be played.";
+      case "upstream_unreachable":
+        return "Couldn't reach YouTube right now. Try again.";
+    }
+    return err.message;
+  }
+  return "Override failed";
+}
+
 function OverrideButtons({
   songId,
   isPlayable,
@@ -149,7 +169,7 @@ function OverrideEditor({
       });
       onSaved();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Override failed");
+      setError(friendlyOverrideError(err));
       setBusy(false);
     }
   }

@@ -440,6 +440,85 @@ describe("POST /api/youtube/override", () => {
     const body = await res.json();
     expect(body.song.youtubeId).toBe(VALID);
   });
+
+  // === Categorized error codes (Ticket 23c) ================================
+  // The server surfaces a stable `code` per failure mode so the client can
+  // map to friendly per-case copy without parsing the human-readable string.
+
+  it("code: parse_failed for non-YouTube URL", async () => {
+    const s = await makeSong();
+    await setOwnerSession();
+    const res = await overridePOST(
+      jsonRequest("http://x", {
+        songId: s.id,
+        youtubeUrl: "https://vimeo.com/123456",
+      }),
+    );
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.code).toBe("parse_failed");
+  });
+
+  it("code: parse_failed for invalid newYoutubeId", async () => {
+    const s = await makeSong();
+    await setOwnerSession();
+    const res = await overridePOST(
+      jsonRequest("http://x", { songId: s.id, newYoutubeId: "tooShort" }),
+    );
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.code).toBe("parse_failed");
+  });
+
+  it("code: parse_failed when neither youtubeUrl nor newYoutubeId given", async () => {
+    const s = await makeSong();
+    await setOwnerSession();
+    const res = await overridePOST(jsonRequest("http://x", { songId: s.id }));
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.code).toBe("parse_failed");
+  });
+
+  it("code: not_found when YouTube reports no item", async () => {
+    mockFetchSequence([videoDetails({ notFound: true })]);
+    const s = await makeSong();
+    await setOwnerSession();
+    const res = await overridePOST(
+      jsonRequest("http://x", { songId: s.id, newYoutubeId: VALID }),
+    );
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.code).toBe("not_found");
+  });
+
+  it("code: private when the video is private", async () => {
+    mockFetchSequence([videoDetails({ isPrivate: true })]);
+    const s = await makeSong();
+    await setOwnerSession();
+    const res = await overridePOST(
+      jsonRequest("http://x", { songId: s.id, newYoutubeId: VALID }),
+    );
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.code).toBe("private");
+  });
+
+  it("code: upstream_unreachable when YOUTUBE_API_KEY is missing", async () => {
+    const ORIGINAL = process.env.YOUTUBE_API_KEY;
+    process.env.YOUTUBE_API_KEY = "";
+    try {
+      const s = await makeSong();
+      await setOwnerSession();
+      const res = await overridePOST(
+        jsonRequest("http://x", { songId: s.id, newYoutubeId: VALID }),
+      );
+      expect(res.status).toBe(502);
+      const body = await res.json();
+      expect(body.code).toBe("upstream_unreachable");
+    } finally {
+      process.env.YOUTUBE_API_KEY = ORIGINAL;
+    }
+  });
 });
 
 // === POST /api/youtube/rematch-missing (OWNER-only) ========================
