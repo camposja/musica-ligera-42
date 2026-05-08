@@ -685,16 +685,71 @@ describe("GET /api/youtube/search", () => {
     expect(body.resetsAt).toMatch(/T00:00:00\.000Z$/);
   });
 
-  it("429 + safeguard when YouTube returns 403 (defensive lockout)", async () => {
-    mockFetchSequence([{ status: 403, json: {} }]);
+  it("429 + safeguard on 403 with reason=quotaExceeded (real daily wall)", async () => {
+    mockFetchSequence([
+      {
+        status: 403,
+        json: {
+          error: { errors: [{ reason: "quotaExceeded" }] },
+        },
+      },
+    ]);
     const u = await makeUser();
     await setUserSession(u.id);
     const res = await youtubeSearchGET(searchRequest("hello"));
     expect(res.status).toBe(429);
     const body = await res.json();
     expect(body.code).toBe("youtube_quota_safeguard");
-    // After upstream 403 + markQuotaExhausted, remaining is 0.
     expect(body.remainingSearches).toBe(0);
+    // Ledger was forced to the safety cap.
+    const today = new Date().toISOString().slice(0, 10);
+    const row = await prisma.apiQuotaUsage.findUnique({
+      where: { service_day: { service: "youtube", day: today } },
+    });
+    expect(row?.unitsUsed).toBe(10000); // env override sets cap to 10000 here
+  });
+
+  it("502 + config_error on 403 with reason=keyInvalid (NOT a daily wall)", async () => {
+    mockFetchSequence([
+      {
+        status: 403,
+        json: {
+          error: { errors: [{ reason: "keyInvalid" }] },
+        },
+      },
+    ]);
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await youtubeSearchGET(searchRequest("hello"));
+    expect(res.status).toBe(502);
+    const body = await res.json();
+    expect(body.code).toBe("youtube_config_error");
+    expect(body.reason).toBe("keyInvalid");
+    // Crucially: the ledger was NOT fast-forwarded. The day's budget is intact
+    // minus the 103 consumeQuota charge that always happens before the call.
+    const today = new Date().toISOString().slice(0, 10);
+    const row = await prisma.apiQuotaUsage.findUnique({
+      where: { service_day: { service: "youtube", day: today } },
+    });
+    expect(row?.unitsUsed).toBe(103);
+  });
+
+  it("502 + config_error on 403 with no parseable reason (fail open, don't lock)", async () => {
+    mockFetchSequence([{ status: 403, json: {} }]);
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await youtubeSearchGET(searchRequest("hello"));
+    expect(res.status).toBe(502);
+    const body = await res.json();
+    expect(body.code).toBe("youtube_config_error");
+    expect(body.reason).toBeNull();
+    // No lockout — same reasoning as keyInvalid: unknown 403s shouldn't burn
+    // the rest of the day's quota safeguard.
+    const today = new Date().toISOString().slice(0, 10);
+    const row = await prisma.apiQuotaUsage.findUnique({
+      where: { service_day: { service: "youtube", day: today } },
+    });
+    expect(row?.unitsUsed).toBe(103);
   });
 
   it("503 when YouTube returns 5xx", async () => {

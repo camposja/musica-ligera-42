@@ -467,9 +467,9 @@ describe("POST /api/spotify/import-playlist", () => {
     expect(playlist.songs.map((ps) => ps.order)).toEqual([0, 1]);
   });
 
-  it("caps auto-match triggers at 25 per import (quota guard)", async () => {
-    // Build a 30-track playlist; only the first 25 unmatched songs should
-    // get triggerMatchInBackground called.
+  it("caps auto-match triggers at 10 per import (default) (quota guard)", async () => {
+    // Build a 30-track playlist; only the first 10 unmatched songs should
+    // get triggerMatchInBackground called under the default cap.
     const embedTracks = Array.from({ length: 30 }, (_, i) => ({ id: `t${i}` }));
     mockFetchSequence([
       mockEmbedResponse({ name: "Big Mix", tracks: embedTracks }),
@@ -486,8 +486,28 @@ describe("POST /api/spotify/import-playlist", () => {
     expect(body.songsReused).toBe(0);
     expect(await prisma.song.count()).toBe(30);
 
-    // Cap kicks in: exactly 25 trigger calls, not 30.
-    expect(triggerSpy).toHaveBeenCalledTimes(25);
+    // Cap kicks in: exactly 10 trigger calls, not 30.
+    expect(triggerSpy).toHaveBeenCalledTimes(10);
+  });
+
+  it("respects SPOTIFY_IMPORT_AUTO_MATCH_LIMIT env override", async () => {
+    const ORIGINAL = process.env.SPOTIFY_IMPORT_AUTO_MATCH_LIMIT;
+    process.env.SPOTIFY_IMPORT_AUTO_MATCH_LIMIT = "3";
+    try {
+      const embedTracks = Array.from({ length: 8 }, (_, i) => ({ id: `e${i}` }));
+      mockFetchSequence([
+        mockEmbedResponse({ name: "Tiny Cap", tracks: embedTracks }),
+      ]);
+      const u = await makeUser();
+      await setUserSession(u.id);
+      const res = await importPOST(
+        jsonRequest("http://x/api/spotify/import-playlist", { url: PLAYLIST_URL }),
+      );
+      expect(res.status).toBe(201);
+      expect(triggerSpy).toHaveBeenCalledTimes(3);
+    } finally {
+      process.env.SPOTIFY_IMPORT_AUTO_MATCH_LIMIT = ORIGINAL;
+    }
   });
 
   it("falls back to 'Imported Spotify Playlist' when Spotify returns no name", async () => {

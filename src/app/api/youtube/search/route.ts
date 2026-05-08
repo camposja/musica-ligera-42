@@ -1,5 +1,5 @@
 import { getSession, unauthorized } from "@/lib/auth";
-import { YoutubeError } from "@/lib/youtube";
+import { isQuotaExhaustionReason, YoutubeError } from "@/lib/youtube";
 import { searchYoutube } from "@/lib/youtube-search";
 import {
   checkQuota,
@@ -48,17 +48,31 @@ export async function GET(request: Request) {
 async function youtubeErrorResponse(err: unknown): Promise<Response> {
   if (err instanceof YoutubeError) {
     if (err.httpStatus === 403) {
-      // Real upstream quota — defensive lockout for the rest of today.
-      await markQuotaExhausted();
-      const quota = await getQuotaStatus();
+      // Differentiate real quota walls from configuration / auth problems.
+      // Only quotaExceeded / dailyLimitExceeded should lock out the rest of
+      // the day; keyInvalid, accessNotConfigured, referrerNotAllowed, etc.
+      // are operator-fix issues that don't get better by waiting until
+      // tomorrow, so they shouldn't burn the safeguard.
+      if (isQuotaExhaustionReason(err.reason)) {
+        await markQuotaExhausted();
+        const quota = await getQuotaStatus();
+        return Response.json(
+          {
+            code: "youtube_quota_safeguard",
+            error: "YouTube upstream quota exceeded.",
+            remainingSearches: quota.remainingSearches,
+            resetsAt: quota.resetsAt,
+          },
+          { status: 429 },
+        );
+      }
       return Response.json(
         {
-          code: "youtube_quota_safeguard",
-          error: "YouTube upstream quota exceeded.",
-          remainingSearches: quota.remainingSearches,
-          resetsAt: quota.resetsAt,
+          code: "youtube_config_error",
+          error: err.message,
+          reason: err.reason ?? null,
         },
-        { status: 429 },
+        { status: 502 },
       );
     }
     if (err.httpStatus === 429) {

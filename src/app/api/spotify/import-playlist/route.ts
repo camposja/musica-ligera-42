@@ -13,7 +13,16 @@ import {
 import { getPlaylistFromEmbed, PlaylistNotVisibleError } from "@/lib/spotify-embed";
 import { triggerMatchInBackground } from "@/lib/youtube";
 
-const AUTO_MATCH_LIMIT_PER_IMPORT = 25;
+// How many newly-imported (unmatched) songs auto-match in the background per
+// import. Each match costs ~103 quota units, so this caps quota burn per
+// import. 10 is a balance between coverage and budget; bump
+// SPOTIFY_IMPORT_AUTO_MATCH_LIMIT in the environment to tune for a particular
+// import. The remaining unmatched rows wait for "Pick YT match" or a manual
+// link override.
+function importAutoMatchLimit(): number {
+  const v = Number(process.env.SPOTIFY_IMPORT_AUTO_MATCH_LIMIT);
+  return Number.isFinite(v) && v > 0 ? v : 10;
+}
 
 export async function POST(request: Request) {
   const session = await getSession();
@@ -116,7 +125,7 @@ export async function POST(request: Request) {
     const needsMatch = await prisma.song.findMany({
       where: { id: { in: allSongIds }, youtubeId: null },
       select: { id: true },
-      take: AUTO_MATCH_LIMIT_PER_IMPORT,
+      take: importAutoMatchLimit(),
     });
     for (const { id } of needsMatch) {
       triggerMatchInBackground(id);

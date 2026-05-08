@@ -31,7 +31,9 @@ function defaultDailyCap(): number {
 }
 function defaultSafetyCap(): number {
   const v = Number(process.env.YOUTUBE_DAILY_QUOTA_SAFETY_UNITS);
-  return Number.isFinite(v) && v > 0 ? v : 8_000;
+  // 8500 leaves a 1500-unit buffer below the 10K free-tier daily cap. The
+  // operator can override via env if they need a tighter or looser bound.
+  return Number.isFinite(v) && v > 0 ? v : 8_500;
 }
 
 /** Returns today's UTC date as YYYY-MM-DD. */

@@ -125,12 +125,12 @@ describe("env defaults", () => {
     delete process.env.YOUTUBE_DAILY_QUOTA_UNITS;
     delete process.env.YOUTUBE_DAILY_QUOTA_SAFETY_UNITS;
     const status = await getQuotaStatus();
-    expect(status.remainingUnits).toBe(8000); // default safety cap
+    expect(status.remainingUnits).toBe(8500); // default safety cap
   });
 
   it("ignores nonsensical env values and falls back to defaults", async () => {
     process.env.YOUTUBE_DAILY_QUOTA_SAFETY_UNITS = "not-a-number";
     const status = await getQuotaStatus();
-    expect(status.remainingUnits).toBe(8000);
+    expect(status.remainingUnits).toBe(8500);
   });
 });

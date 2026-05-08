@@ -20,9 +20,43 @@ export class YoutubeError extends Error {
     public readonly httpStatus: number,
     message: string,
     public readonly retryAfterSeconds?: number,
+    // YouTube Data API error reason from `error.errors[0].reason`. Lets callers
+    // tell `quotaExceeded` apart from `keyInvalid` / `accessNotConfigured` so
+    // a misconfigured key doesn't get treated as quota exhaustion and lock the
+    // ledger for the rest of the day.
+    public readonly reason?: string,
   ) {
     super(message);
     this.name = "YoutubeError";
+  }
+}
+
+// Quota exhaustion reasons from the YouTube Data API. `quotaExceeded` and
+// `dailyLimitExceeded` mean "you're done for the day, lock the ledger". Other
+// 403 reasons (keyInvalid, accessNotConfigured, referrerNotAllowed) are
+// configuration/auth problems — surface them but don't lock. Rate-limit reasons
+// (rateLimitExceeded, userRateLimitExceeded) are transient and shouldn't lock
+// either.
+const QUOTA_LOCK_REASONS = new Set(["quotaExceeded", "dailyLimitExceeded"]);
+
+export function isQuotaExhaustionReason(reason: string | undefined): boolean {
+  return reason !== undefined && QUOTA_LOCK_REASONS.has(reason);
+}
+
+// Parse a YouTube Data API error response and pluck `error.errors[0].reason`.
+// Uses res.clone() so the caller can still read the body if it wants. Returns
+// undefined for any parse failure or unexpected shape.
+export async function parseYoutubeErrorReason(
+  res: Response,
+): Promise<string | undefined> {
+  try {
+    const body = (await res.clone().json()) as {
+      error?: { errors?: Array<{ reason?: unknown }> };
+    };
+    const reason = body.error?.errors?.[0]?.reason;
+    return typeof reason === "string" ? reason : undefined;
+  } catch {
+    return undefined;
   }
 }
 
@@ -233,7 +267,13 @@ export async function searchCandidates(query: string): Promise<Candidate[]> {
     );
   }
   if (res.status === 403) {
-    throw new YoutubeError(403, "YouTube 403 (quota exceeded or invalid key)");
+    const reason = await parseYoutubeErrorReason(res);
+    throw new YoutubeError(
+      403,
+      reason ? `YouTube 403 (${reason})` : "YouTube 403 (no reason)",
+      undefined,
+      reason,
+    );
   }
   if (!res.ok) {
     throw new YoutubeError(res.status, `YouTube API error: ${res.status}`);
@@ -330,7 +370,14 @@ export async function matchSongById(
   try {
     candidates = await searchCandidates(query);
   } catch (err) {
-    if (err instanceof YoutubeError && err.httpStatus === 403) {
+    if (
+      err instanceof YoutubeError &&
+      err.httpStatus === 403 &&
+      isQuotaExhaustionReason(err.reason)
+    ) {
+      // Real quota wall — lock out the rest of the day so we don't keep
+      // burning 403s. Non-quota 403s (keyInvalid, accessNotConfigured) fall
+      // through and just propagate the error to the caller.
       await markQuotaExhausted();
     }
     throw err;

@@ -7,7 +7,12 @@
  * — this module just speaks to YouTube and shapes the result.
  */
 
-import { fetchVideoDetails, isValidYoutubeId, YoutubeError } from "@/lib/youtube";
+import {
+  fetchVideoDetails,
+  isValidYoutubeId,
+  parseYoutubeErrorReason,
+  YoutubeError,
+} from "@/lib/youtube";
 
 const SEARCH_URL = "https://www.googleapis.com/youtube/v3/search";
 const SEARCH_LIMIT = 10;
@@ -57,7 +62,13 @@ export async function searchYoutube(
     );
   }
   if (res.status === 403) {
-    throw new YoutubeError(403, "YouTube 403 (quota exceeded or invalid key)");
+    const reason = await parseYoutubeErrorReason(res);
+    throw new YoutubeError(
+      403,
+      reason ? `YouTube 403 (${reason})` : "YouTube 403 (no reason)",
+      undefined,
+      reason,
+    );
   }
   if (!res.ok) {
     throw new YoutubeError(res.status, `YouTube API error: ${res.status}`);
