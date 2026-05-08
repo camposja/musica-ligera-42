@@ -113,3 +113,22 @@ model ApiQuotaUsage {
   @@unique([service, day])
   @@index([service, day])
 }
+
+// Day-scoped cache of YouTube search results. Keyed by (day, normalizedQuery)
+// — the same artist+title searched twice in one UTC day reuses the cached
+// payload instead of paying another 103 quota units. Only successful,
+// non-empty payloads are cached. Force-refresh paths (e.g. "Rerun auto-match")
+// bypass the cache so a wrong cached match isn't stuck for 24 hours.
+//
+// Rows are tied to a UTC day key so cache and quota ledger turn over together.
+// GC runs piggybacked on writes (delete rows older than retention).
+model YoutubeSearchCache {
+  id              String   @id @default(uuid())
+  day             String   // "YYYY-MM-DD" in UTC, same shape as ApiQuotaUsage.day
+  normalizedQuery String   // trim + lowercase + collapse whitespace
+  payloadJson     String   // serialized YoutubeSearchResult[]
+  createdAt       DateTime @default(now())
+
+  @@unique([day, normalizedQuery])
+  @@index([createdAt])
+}

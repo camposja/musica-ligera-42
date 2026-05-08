@@ -1,17 +1,17 @@
 import { prisma } from "@/lib/prisma";
 import { parseAltIds, serializeAltIds } from "@/lib/song-serialization";
 import { isValidYoutubeId, YOUTUBE_ID_RE } from "@/lib/youtube-id";
-import {
-  checkQuota,
-  consumeQuota,
-  markQuotaExhausted,
-  SEARCH_UNIT_COST,
-} from "@/lib/youtube-quota";
+import { markQuotaExhausted } from "@/lib/youtube-quota";
 import {
   pickBestMatch,
   type Candidate,
   type MatchResult,
 } from "@/lib/youtube-match";
+// `searchYoutube` is the canonical cache-aware search; `searchCandidates`
+// here projects its output to the `Candidate` shape. The other direction
+// (youtube-search.ts importing from this file) is fine — it only pulls
+// non-circular helpers (fetchVideoDetails, YoutubeError, parseYoutubeErrorReason).
+import { searchYoutube } from "@/lib/youtube-search";
 
 export { isValidYoutubeId };
 
@@ -246,68 +246,27 @@ export async function filterEmbeddableIds(ids: string[]): Promise<string[]> {
 }
 
 /**
- * Search YouTube for `query`, fetch full details for up to 10 candidates,
- * and return them in YouTube's relevance order. Caller (the matcher) is
- * responsible for scoring + picking the best one.
+ * Search YouTube for `query` and return candidates in relevance order. Thin
+ * wrapper over `searchYoutube` (the canonical search function) that projects
+ * the rich result shape down to the `Candidate` shape the matcher needs.
  *
- * Quota: search.list = 100 units, videos.list = 3 units → 103 units per call
- * (was 102 with the old embeddability-only path; +1 for snippet).
+ * Cache-aware: passes `opts.noCache` through to `searchYoutube`. Force-refresh
+ * (e.g. `Rerun auto-match`) bypasses the day-scoped cache so a wrong cached
+ * match isn't pinned for 24 hours.
+ *
+ * Quota cost on cache miss: ~103 units. Cache hit: 0.
  */
-export async function searchCandidates(query: string): Promise<Candidate[]> {
-  const key = getApiKey();
-  const url = `${SEARCH_URL}?part=snippet&type=video&maxResults=${SEARCH_LIMIT}&q=${encodeURIComponent(query)}&key=${encodeURIComponent(key)}`;
-  const res = await fetch(url);
-
-  if (res.status === 429) {
-    const retry = res.headers.get("retry-after");
-    throw new YoutubeError(
-      429,
-      "YouTube rate limit",
-      retry ? Number(retry) : undefined,
-    );
-  }
-  if (res.status === 403) {
-    const reason = await parseYoutubeErrorReason(res);
-    throw new YoutubeError(
-      403,
-      reason ? `YouTube 403 (${reason})` : "YouTube 403 (no reason)",
-      undefined,
-      reason,
-    );
-  }
-  if (!res.ok) {
-    throw new YoutubeError(res.status, `YouTube API error: ${res.status}`);
-  }
-
-  const json = (await res.json()) as SearchResponse;
-  const items = json.items ?? [];
-  const ids: string[] = [];
-  for (const it of items) {
-    const vid =
-      typeof it.id === "string"
-        ? it.id
-        : (it.id as { videoId?: string } | undefined)?.videoId;
-    if (vid && isValidYoutubeId(vid)) ids.push(vid);
-  }
-  if (ids.length === 0) return [];
-
-  const details = await fetchVideoDetails(ids);
-  const candidates: Candidate[] = [];
-  for (const id of ids) {
-    const d = details.get(id);
-    if (!d) continue;
-    // Skip private — those literally cannot be played even by yt-dlp.
-    // Keep non-embeddable + age-restricted: yt-dlp can play them; the
-    // iframe fallback is the only thing they break.
-    if (d.isPrivate) continue;
-    candidates.push({
-      id: d.id,
-      title: d.title,
-      channel: d.channel,
-      durationSec: d.durationSec,
-    });
-  }
-  return candidates;
+export async function searchCandidates(
+  query: string,
+  opts: { noCache?: boolean } = {},
+): Promise<Candidate[]> {
+  const results = await searchYoutube(query, opts);
+  return results.map((r) => ({
+    id: r.youtubeId,
+    title: r.title,
+    channel: r.channel,
+    durationSec: r.durationSec,
+  }));
 }
 
 /**
@@ -357,18 +316,15 @@ export async function matchSongById(
   if (!song) return { matched: false };
   if (!opts?.force && song.youtubeId) return { matched: false };
 
-  // Daily-quota gate. Charge BEFORE the call; on Google 403 mark exhausted
-  // so the rest of the day's calls fail fast instead of also paying 403s.
-  const check = await checkQuota(SEARCH_UNIT_COST);
-  if (!check.ok) {
-    throw new YoutubeError(429, "youtube_quota_safeguard");
-  }
-  await consumeQuota(SEARCH_UNIT_COST);
-
+  // Quota gate + cache lookup live inside `searchCandidates` →
+  // `searchYoutube`. Cache hits skip the gate entirely; misses go through
+  // the standard check → consume → fetch flow and throw safeguard if we'd
+  // exceed the daily cap. `force: true` bypasses the cache so Rerun
+  // auto-match always re-fetches.
   const query = `${song.artist} ${song.title}`.trim();
   let candidates: Candidate[];
   try {
-    candidates = await searchCandidates(query);
+    candidates = await searchCandidates(query, { noCache: !!opts?.force });
   } catch (err) {
     if (
       err instanceof YoutubeError &&

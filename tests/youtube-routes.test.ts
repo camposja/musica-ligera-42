@@ -446,10 +446,16 @@ describe("POST /api/youtube/override", () => {
 
 describe("POST /api/youtube/rematch-missing", () => {
   // Title is plain "Hello" so it matches the canned videosResp title
-  // ("Adele - Hello ..."). Songs are distinguished by id, not title.
-  async function makeUnmatchedSong() {
+  // ("Adele - Hello ..."). Distinct optional suffix lets a test request
+  // unique songs whose normalized search queries don't collide in the
+  // YoutubeSearchCache (which is shared by query, not song id).
+  async function makeUnmatchedSong(suffix?: string) {
     return prisma.song.create({
-      data: { title: "Hello", artist: "Adele", youtubeId: null },
+      data: {
+        title: suffix ? `Hello ${suffix}` : "Hello",
+        artist: "Adele",
+        youtubeId: null,
+      },
     });
   }
 
@@ -466,8 +472,8 @@ describe("POST /api/youtube/rematch-missing", () => {
   });
 
   it("happy path: matches all unmatched songs and reports counts", async () => {
-    await makeUnmatchedSong();
-    await makeUnmatchedSong();
+    await makeUnmatchedSong("one");
+    await makeUnmatchedSong("two");
     mockFetchSequence([
       ...matchPair([PAD("a")]),
       ...matchPair([PAD("b")]),
@@ -523,11 +529,11 @@ describe("POST /api/youtube/rematch-missing", () => {
   });
 
   it("bails with 503 on YouTube 403 (quota), preserving partial counts", async () => {
-    await makeUnmatchedSong();
-    await makeUnmatchedSong();
+    await makeUnmatchedSong("alpha");
+    await makeUnmatchedSong("beta");
     mockFetchSequence([
       ...matchPair([PAD("a")]),
-      { status: 403, json: {} },
+      { status: 403, json: { error: { errors: [{ reason: "quotaExceeded" }] } } },
     ]);
     await setOwnerSession();
     const res = await rematchMissingPOST();
@@ -758,6 +764,189 @@ describe("GET /api/youtube/search", () => {
     await setUserSession(u.id);
     const res = await youtubeSearchGET(searchRequest("x"));
     expect(res.status).toBe(502);
+  });
+});
+
+// === Day-scoped search cache (Ticket 23b) ===================================
+// Same query twice in one UTC day costs 103 units, not 206. Force-refresh
+// (Rerun auto-match) bypasses the cache so a wrong cached match isn't pinned
+// for 24 hours. Errors and empty results aren't cached.
+
+describe("YouTube search cache", () => {
+  const ORIGINAL_SAFETY = process.env.YOUTUBE_DAILY_QUOTA_SAFETY_UNITS;
+
+  beforeEach(() => {
+    process.env.YOUTUBE_DAILY_QUOTA_SAFETY_UNITS = "10000";
+  });
+
+  afterEach(() => {
+    process.env.YOUTUBE_DAILY_QUOTA_SAFETY_UNITS = ORIGINAL_SAFETY;
+  });
+
+  function searchRequest(q: string): Request {
+    return new Request(`http://x/api/youtube/search?q=${encodeURIComponent(q)}`);
+  }
+
+  it("two identical queries in one day = one fetch + 103 units", async () => {
+    // Only ONE matchPair queued. The second call must hit cache, otherwise
+    // mockFetchSequence will throw "exhausted".
+    mockFetchSequence([
+      searchResp([PAD("a")]),
+      {
+        status: 200,
+        json: {
+          items: [
+            {
+              id: PAD("a"),
+              snippet: { title: "Adele - Hello", channelTitle: "AdeleVEVO" },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT3M30S", contentRating: {} },
+            },
+          ],
+        },
+      },
+    ]);
+    const u = await makeUser();
+    await setUserSession(u.id);
+
+    const first = await youtubeSearchGET(searchRequest("hello adele"));
+    expect(first.status).toBe(200);
+    const firstBody = await first.json();
+    expect(firstBody.results).toHaveLength(1);
+
+    const second = await youtubeSearchGET(searchRequest("hello adele"));
+    expect(second.status).toBe(200);
+    const secondBody = await second.json();
+    expect(secondBody.results).toEqual(firstBody.results);
+
+    // Ledger charged exactly once across both calls.
+    const today = new Date().toISOString().slice(0, 10);
+    const row = await prisma.apiQuotaUsage.findUnique({
+      where: { service_day: { service: "youtube", day: today } },
+    });
+    expect(row?.unitsUsed).toBe(103);
+  });
+
+  it("normalizes whitespace + case before keying the cache", async () => {
+    mockFetchSequence([
+      searchResp([PAD("a")]),
+      {
+        status: 200,
+        json: {
+          items: [
+            {
+              id: PAD("a"),
+              snippet: { title: "Adele - Hello", channelTitle: "AdeleVEVO" },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT3M30S", contentRating: {} },
+            },
+          ],
+        },
+      },
+    ]);
+    const u = await makeUser();
+    await setUserSession(u.id);
+
+    await youtubeSearchGET(searchRequest("Hello   Adele"));
+    // Different casing, extra whitespace → same normalized key. No second
+    // fetch — if it tried, the mock sequence would throw.
+    const second = await youtubeSearchGET(searchRequest("hello adele"));
+    expect(second.status).toBe(200);
+    const today = new Date().toISOString().slice(0, 10);
+    const row = await prisma.apiQuotaUsage.findUnique({
+      where: { service_day: { service: "youtube", day: today } },
+    });
+    expect(row?.unitsUsed).toBe(103);
+  });
+
+  it("force-refresh (matchSongById force=true) bypasses the cache", async () => {
+    // Pre-populate the cache so any non-bypassing path would hit it.
+    mockFetchSequence([
+      ...matchPair([PAD("a")]),
+      // Second matchPair represents the bypass-then-fetch.
+      ...matchPair([PAD("b")]),
+    ]);
+
+    const song = await prisma.song.create({
+      data: { title: "Hello", artist: "Adele", youtubeId: null },
+    });
+    await setOwnerSession();
+
+    // First match: populates cache and the song's youtubeId.
+    const first = await matchPOST(jsonRequest("http://x", { songId: song.id }));
+    expect(first.status).toBe(200);
+    const firstBody = await first.json();
+    expect(firstBody.song.youtubeId).toBe(PAD("a"));
+
+    // Force-refresh: same query, but force=true should skip the cache and
+    // consume the second matchPair from the mock sequence.
+    const second = await matchPOST(
+      jsonRequest("http://x", { songId: song.id, force: true }),
+    );
+    expect(second.status).toBe(200);
+    const secondBody = await second.json();
+    expect(secondBody.song.youtubeId).toBe(PAD("b"));
+  });
+
+  it("does NOT cache empty result sets (transient zero results)", async () => {
+    // search.list returns 0 items → empty results, no cache write.
+    mockFetchSequence([
+      { status: 200, json: { items: [] } },
+      // Second call should re-fetch, not hit cache.
+      searchResp([PAD("a")]),
+      {
+        status: 200,
+        json: {
+          items: [
+            {
+              id: PAD("a"),
+              snippet: { title: "X - Y", channelTitle: "Z" },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT3M", contentRating: {} },
+            },
+          ],
+        },
+      },
+    ]);
+    const u = await makeUser();
+    await setUserSession(u.id);
+
+    const first = await youtubeSearchGET(searchRequest("nothing matches"));
+    expect(first.status).toBe(200);
+    expect((await first.json()).results).toEqual([]);
+
+    const second = await youtubeSearchGET(searchRequest("nothing matches"));
+    expect(second.status).toBe(200);
+    expect((await second.json()).results).toHaveLength(1);
+  });
+
+  it("does NOT cache 403 / error responses", async () => {
+    mockFetchSequence([
+      { status: 403, json: { error: { errors: [{ reason: "keyInvalid" }] } } },
+      // Second call should re-attempt (cache miss again).
+      searchResp([PAD("a")]),
+      {
+        status: 200,
+        json: {
+          items: [
+            {
+              id: PAD("a"),
+              snippet: { title: "X - Y", channelTitle: "Z" },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT3M", contentRating: {} },
+            },
+          ],
+        },
+      },
+    ]);
+    const u = await makeUser();
+    await setUserSession(u.id);
+
+    const first = await youtubeSearchGET(searchRequest("config error query"));
+    expect(first.status).toBe(502);
+
+    const second = await youtubeSearchGET(searchRequest("config error query"));
+    expect(second.status).toBe(200);
   });
 });
 

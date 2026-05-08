@@ -2,11 +2,8 @@ import { getSession, unauthorized } from "@/lib/auth";
 import { isQuotaExhaustionReason, YoutubeError } from "@/lib/youtube";
 import { searchYoutube } from "@/lib/youtube-search";
 import {
-  checkQuota,
-  consumeQuota,
   getQuotaStatus,
   markQuotaExhausted,
-  SEARCH_UNIT_COST,
 } from "@/lib/youtube-quota";
 
 export async function GET(request: Request) {
@@ -19,23 +16,10 @@ export async function GET(request: Request) {
     return Response.json({ error: "q required" }, { status: 400 });
   }
 
-  // Daily quota safeguard. Same gate as matchSongById/rematch-missing — all
-  // YouTube Data API consumers share one ledger.
-  const check = await checkQuota(SEARCH_UNIT_COST);
-  if (!check.ok) {
-    return Response.json(
-      {
-        code: "youtube_quota_safeguard",
-        error: "Daily YouTube quota safeguard reached.",
-        remainingSearches: check.remainingSearches,
-        resetsAt: check.resetsAt,
-      },
-      { status: 429 },
-    );
-  }
-  // Charge BEFORE the call (Google bills per attempt regardless of outcome).
-  await consumeQuota(SEARCH_UNIT_COST);
-
+  // `searchYoutube` owns the cache lookup + quota gate. Cache hits skip the
+  // gate entirely (no charge). Cache misses run the standard check → consume
+  // → fetch flow and throw `youtube_quota_safeguard` if the safety cap would
+  // be exceeded.
   try {
     const results = await searchYoutube(q.trim());
     const quota = await getQuotaStatus();
@@ -76,6 +60,21 @@ async function youtubeErrorResponse(err: unknown): Promise<Response> {
       );
     }
     if (err.httpStatus === 429) {
+      // Distinguish the app-level safeguard (we threw because the daily
+      // safety cap would be exceeded) from a real upstream rate-limit
+      // (Google sent us a 429). Different status, different code.
+      if (err.message === "youtube_quota_safeguard") {
+        const quota = await getQuotaStatus();
+        return Response.json(
+          {
+            code: "youtube_quota_safeguard",
+            error: "Daily YouTube quota safeguard reached.",
+            remainingSearches: quota.remainingSearches,
+            resetsAt: quota.resetsAt,
+          },
+          { status: 429 },
+        );
+      }
       const headers = new Headers({ "content-type": "application/json" });
       if (err.retryAfterSeconds !== undefined) {
         headers.set("retry-after", String(err.retryAfterSeconds));

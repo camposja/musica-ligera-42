@@ -2,8 +2,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const ORIGINAL_KEY = process.env.YOUTUBE_API_KEY;
 
-beforeEach(() => {
+beforeEach(async () => {
   process.env.YOUTUBE_API_KEY = "test_youtube_key";
+  // searchYoutube now reads the cache + writes the quota ledger, so test
+  // isolation requires clearing both between cases or earlier-test cache
+  // entries cause later "should throw on missing key" tests to hit cache.
+  await truncateAll();
 });
 
 afterEach(() => {
@@ -11,6 +15,7 @@ afterEach(() => {
   process.env.YOUTUBE_API_KEY = ORIGINAL_KEY;
 });
 
+import { truncateAll } from "./helpers";
 import { parseYoutubeMetadata, searchYoutube } from "@/lib/youtube-search";
 
 // === parseYoutubeMetadata ==================================================
