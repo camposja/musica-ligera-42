@@ -55,14 +55,36 @@ export default function LoginForm({ initialMode }: { initialMode: Mode }) {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex items-center justify-center gap-3">
-        <LogoMark />
-        <span className="text-lg font-semibold tracking-tight">Musica Ligera</span>
+      <div className="grid grid-cols-[1fr_auto_1fr] items-center">
+        <div className="flex justify-end">
+          <LogoMark className="-translate-x-2" />
+        </div>
+        <span className="px-4 text-3xl font-semibold tracking-tight whitespace-nowrap">
+          Musica Ligera
+          {mode === "USER" && (
+            /*
+              Hidden OWNER trigger. The accessible OWNER entrypoint is
+              /login?owner=1 — this dot is a visual easter egg only, hidden
+              from assistive tech via aria-hidden + tabIndex={-1}. Keyboard
+              and screen-reader users get the documented URL path.
+            */
+            <button
+              type="button"
+              aria-hidden="true"
+              tabIndex={-1}
+              onClick={() => switchMode("OWNER")}
+              className="ml-0.5 inline-flex h-7 w-7 items-center justify-center align-middle"
+            >
+              <span className="block h-1.5 w-1.5 rounded-full bg-muted/40 hover:bg-muted" />
+            </button>
+          )}
+        </span>
+        <div aria-hidden="true" />
       </div>
 
       <form onSubmit={onSubmit} className="flex flex-col gap-3">
         <label className="flex flex-col gap-1 text-sm">
-          <span className="text-muted">{mode === "OWNER" ? "User" : "Username"}</span>
+          <span className="text-muted">{mode === "OWNER" ? "Username" : "Name"}</span>
           <input
             type="text"
             autoComplete="username"
@@ -74,7 +96,7 @@ export default function LoginForm({ initialMode }: { initialMode: Mode }) {
         </label>
 
         <label className="flex flex-col gap-1 text-sm">
-          <span className="text-muted">{mode === "OWNER" ? "Access code" : "Password"}</span>
+          <span className="text-muted">{mode === "OWNER" ? "Password" : "Access code"}</span>
           <input
             type="password"
             autoComplete="current-password"
@@ -96,8 +118,8 @@ export default function LoginForm({ initialMode }: { initialMode: Mode }) {
         </button>
       </form>
 
-      <div className="flex items-center justify-between text-xs text-muted">
-        {mode === "OWNER" ? (
+      {mode === "OWNER" && (
+        <div className="text-xs text-muted">
           <button
             type="button"
             onClick={() => {
@@ -108,36 +130,18 @@ export default function LoginForm({ initialMode }: { initialMode: Mode }) {
           >
             User sign in
           </button>
-        ) : (
-          <span />
-        )}
-        {/*
-          Hidden OWNER-mode trigger. The accessible OWNER entrypoint is
-          /login?owner=1 — the dot is a visual easter egg only. Hiding it from
-          assistive tech (aria-hidden + tabIndex={-1}) is intentional: keyboard
-          and screen-reader users get the documented URL path; sighted owners
-          get a tap target. Do not remove the URL fallback.
-        */}
-        <button
-          type="button"
-          aria-hidden="true"
-          tabIndex={-1}
-          onClick={() => switchMode("OWNER")}
-          className="-m-3 flex h-11 w-11 items-center justify-center"
-          style={{ visibility: mode === "OWNER" ? "hidden" : "visible" }}
-        >
-          <span className="block h-1.5 w-1.5 rounded-full bg-muted/40 hover:bg-muted" />
-        </button>
-      </div>
+        </div>
+      )}
     </div>
   );
 }
 
-function LogoMark() {
+function LogoMark({ className }: { className?: string }) {
   return (
     <svg
-      width="48"
-      height="48"
+      className={className}
+      width="72"
+      height="72"
       viewBox="0 0 32 32"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
