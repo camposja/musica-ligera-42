@@ -90,30 +90,36 @@ function OverrideButtons({
     }
   }
 
+  // Two button matrices, never both:
+  //   - Repair-relevant rows (unmatched / loose / picked) get Pick YT match
+  //     on top, then Change/Add link below. No Rerun — too many buttons, and
+  //     a manual override is the right tool here.
+  //   - Auto-exact rows get only Rerun auto-match. No paste-link affordance,
+  //     no Pick — the row already has the right answer.
+  if (onPickMatch) {
+    return (
+      <>
+        <button type="button" onClick={onPickMatch} className={OVERRIDE_BTN_CLASS}>
+          Pick YT match
+        </button>
+        <button type="button" onClick={onOpen} className={OVERRIDE_BTN_CLASS}>
+          {isPlayable ? "Change YouTube link" : "Add YouTube link"}
+        </button>
+        {error && <span className="text-[11px] text-danger">{error}</span>}
+      </>
+    );
+  }
+
   return (
     <>
-      <button type="button" onClick={onOpen} className={OVERRIDE_BTN_CLASS}>
-        {isPlayable ? "Change YouTube link" : "Add YouTube link"}
+      <button
+        type="button"
+        onClick={rematch}
+        disabled={busy}
+        className={OVERRIDE_BTN_CLASS}
+      >
+        {busy ? "Rematching…" : "Rerun auto-match"}
       </button>
-      {onPickMatch && (
-        <button
-          type="button"
-          onClick={onPickMatch}
-          className={OVERRIDE_BTN_CLASS}
-        >
-          Pick match
-        </button>
-      )}
-      {isPlayable && (
-        <button
-          type="button"
-          onClick={rematch}
-          disabled={busy}
-          className={OVERRIDE_BTN_CLASS}
-        >
-          {busy ? "Rematching…" : "Rerun auto-match"}
-        </button>
-      )}
       {error && <span className="text-[11px] text-danger">{error}</span>}
     </>
   );

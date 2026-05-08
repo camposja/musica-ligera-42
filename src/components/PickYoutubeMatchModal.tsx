@@ -10,7 +10,7 @@ import type {
   YoutubeSearchResult,
 } from "@/types/api";
 
-const CANDIDATE_LIMIT = 6;
+const CANDIDATE_LIMIT = 5;
 
 type Props = {
   song: Song;
@@ -120,12 +120,12 @@ export function PickYoutubeMatchModal({
     // and the music player (bottom) so vertical centering looks centered
     // within the actual content area, not under/over chrome.
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/60 px-4 pb-24 pt-20"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/60 px-4 pb-32 pt-24"
       onClick={onClose}
       role="presentation"
     >
       <div
-        className="my-auto max-h-[calc(100vh-11rem)] w-full max-w-2xl overflow-y-auto rounded-lg border border-border bg-surface p-4 shadow-xl"
+        className="my-auto max-h-[calc(100vh-15rem)] w-full max-w-2xl overflow-y-auto rounded-lg border border-border bg-surface p-4 shadow-xl"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
