@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "switch-env": "./scripts/switch-local-env.sh",
     "test": "vitest run",
     "test:watch": "vitest"
   },

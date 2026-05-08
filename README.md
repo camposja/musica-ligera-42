@@ -26,6 +26,50 @@ pnpm dev                        # http://localhost:3000
 - `OWNER_USERNAME` and `OWNER_PASSWORD` — the OWNER login credentials
 - `SESSION_SECRET` — generate with `openssl rand -hex 32`
 
+### Switching DB branches locally
+
+`main` is the SQLite branch. `postgres-version` is the archived Postgres branch.
+The schemas, migrations, and Prisma adapters are branch-specific; the branches
+are not interchangeable by only changing `DATABASE_URL`.
+
+For local convenience, use the switcher to update only the `DATABASE_URL` line in
+`.env`:
+
+```bash
+pnpm switch-env auto              # detect current branch
+pnpm switch-env main              # force SQLite
+pnpm switch-env postgres-version  # force Postgres
+```
+
+Branch mapping:
+
+- `main` and normal feature branches: `DATABASE_URL="file:./dev.db"`
+- `postgres-version`: `DATABASE_URL="postgresql://postgres:postgres@localhost:5433/music_app"`
+
+Optional: install a local post-checkout hook so branch switches update `.env`
+automatically:
+
+```bash
+scripts/install-branch-env-hook.sh
+```
+
+The hook only runs on branch checkouts, not file checkouts. It refuses to
+overwrite an existing hook. The installer copies the switch helper into
+`.git/hooks/` so the hook still works when checking out `postgres-version`,
+where the tracked helper script may not exist.
+
+If `DATABASE_URL` is exported in your shell, it overrides `.env`. Clear it with:
+
+```bash
+unset DATABASE_URL
+```
+
+After switching between the SQLite and Postgres branches, usually run:
+
+```bash
+pnpm install && pnpm prisma generate
+```
+
 ## Layout
 
 - `src/app/` — Next.js app router (pages + API routes under `src/app/api/`)
