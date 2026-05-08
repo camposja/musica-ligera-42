@@ -59,7 +59,7 @@ export default function LoginForm({ initialMode }: { initialMode: Mode }) {
         <div className="flex justify-end">
           <LogoMark className="-translate-x-2" />
         </div>
-        <span className="px-4 text-3xl font-semibold tracking-tight whitespace-nowrap">
+        <span className="px-4 text-[1.625rem] font-semibold tracking-tight whitespace-nowrap">
           Musica Ligera
           {mode === "USER" && (
             /*
