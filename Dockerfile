@@ -21,9 +21,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       build-essential python3 ca-certificates curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install deps with the lockfile only first → maximizes Docker layer cache
-# when only source changes.
-COPY package.json pnpm-lock.yaml ./
+# Install deps with the lockfile + workspace config first → maximizes Docker
+# layer cache when only source changes. pnpm-workspace.yaml carries the
+# `allowBuilds:` map and `strictDepBuilds: false` — without it inside this
+# layer, pnpm falls back to defaults and throws ERR_PNPM_IGNORED_BUILDS on
+# better-sqlite3 / Prisma, blocking the build.
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 
 COPY . .
