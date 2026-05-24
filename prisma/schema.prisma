@@ -43,7 +43,7 @@ model Song {
   // the looser-matching ticket (Ticket 8). New + rematched songs
   // populate these so the UI can label exact vs loose matches.
   youtubeMatchType    String?  // "exact" | "loose"
-  youtubeMatchReason  String?  // "exact" | "live" | "lyric_video" | "official_audio" | "acoustic" | "remaster" | "remix" | "close"
+  youtubeMatchReason  String?  // "exact" | "live" | "lyric_video" | "official_audio" | "acoustic" | "remaster" | "remix" | "close" | "manual"
   youtubeMatchTitle   String?  // YouTube result title at match time
   youtubeMatchChannel String?  // YouTube channel name at match time
 
@@ -94,4 +94,40 @@ model SpotifyConnection {
   spotifyUserId  String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+}
+
+// Daily quota ledger for shared external API budgets. One row per
+// (service, day-in-UTC). Increments are application-side; we never query
+// the upstream provider for remaining quota.
+model ApiQuotaUsage {
+  id        String   @id @default(uuid())
+  service   String   // "youtube"
+  day       String   // "YYYY-MM-DD" in UTC
+  unitsUsed Int      @default(0)
+  updatedAt DateTime @updatedAt
+
+  @@unique([service, day])
+  @@index([service, day])
+}
+
+// Day-scoped cache of YouTube search results. Keyed by (day, normalizedQuery).
+// Only successful, non-empty payloads are cached. Force-refresh paths bypass
+// the cache so a wrong cached match isn't stuck for 24 hours.
+model YoutubeSearchCache {
+  id              String   @id @default(uuid())
+  day             String   // "YYYY-MM-DD" in UTC
+  normalizedQuery String   // trim + lowercase + collapse whitespace
+  payloadJson     String   // serialized YoutubeSearchResult[]
+  createdAt       DateTime @default(now())
+
+  @@unique([day, normalizedQuery])
+  @@index([createdAt])
+}
+
+// Singleton row of app-wide settings. New flags get added as columns here.
+// Read via `getAppSettings()` which upserts the row on first access.
+model AppSetting {
+  id                     String   @id @default("singleton")
+  allowChildSpotifyLogin Boolean  @default(false)
+  updatedAt              DateTime @updatedAt
 }
