@@ -8,9 +8,15 @@ type Props = {
   isOwner: boolean;
   spotifyConnected: boolean;
   spotifyAccountId: string | null;
+  allowChildSpotifyLogin: boolean;
 };
 
-export function HeaderMenu({ isOwner, spotifyConnected, spotifyAccountId }: Props) {
+export function HeaderMenu({
+  isOwner,
+  spotifyConnected,
+  spotifyAccountId,
+  allowChildSpotifyLogin,
+}: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
@@ -76,35 +82,54 @@ export function HeaderMenu({ isOwner, spotifyConnected, spotifyAccountId }: Prop
           role="menu"
           className="absolute right-0 top-full z-40 mt-1 w-56 max-w-[calc(100vw-1rem)] overflow-hidden rounded border border-border bg-surface shadow-lg sm:w-64"
         >
-          {isOwner && (
-            <div className="border-b border-border px-4 py-3 text-xs">
-              <div className="mb-2 font-medium uppercase tracking-wide text-muted">
-                Spotify
-              </div>
-              {spotifyConnected ? (
-                <div className="flex items-center justify-between gap-2">
-                  <span className="min-w-0 truncate text-accent">
-                    Connected{spotifyAccountId ? ` as ${spotifyAccountId}` : ""}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={disconnectSpotify}
-                    disabled={disconnecting}
-                    className="shrink-0 text-muted underline hover:text-foreground disabled:opacity-50"
-                  >
-                    {disconnecting ? "…" : "Disconnect"}
-                  </button>
+          {(() => {
+            // OWNER always sees the Spotify section. USER sees it only when
+            // the owner has enabled `allowChildSpotifyLogin`. Reconnect is
+            // allowed for anyone who can connect (so an allowed USER can
+            // switch the shared account without owner intervention).
+            // Disconnect stays OWNER-only — the connection is app-wide.
+            const canConnect = isOwner || allowChildSpotifyLogin;
+            if (!canConnect) return null;
+            return (
+              <div className="border-b border-border px-4 py-3 text-xs">
+                <div className="mb-2 font-medium uppercase tracking-wide text-muted">
+                  Spotify
                 </div>
-              ) : (
-                <a
-                  href="/api/spotify/connect"
-                  className="inline-block rounded border border-accent px-2 py-1 text-accent hover:bg-accent/10"
-                >
-                  Connect Spotify
-                </a>
-              )}
-            </div>
-          )}
+                {spotifyConnected ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="min-w-0 truncate text-accent">
+                        Connected{spotifyAccountId ? ` as ${spotifyAccountId}` : ""}
+                      </span>
+                      {isOwner && (
+                        <button
+                          type="button"
+                          onClick={disconnectSpotify}
+                          disabled={disconnecting}
+                          className="shrink-0 text-muted underline hover:text-foreground disabled:opacity-50"
+                        >
+                          {disconnecting ? "…" : "Disconnect"}
+                        </button>
+                      )}
+                    </div>
+                    <a
+                      href="/api/spotify/connect"
+                      className="inline-block text-muted underline hover:text-foreground"
+                    >
+                      Reconnect
+                    </a>
+                  </div>
+                ) : (
+                  <a
+                    href="/api/spotify/connect"
+                    className="inline-block rounded border border-accent px-2 py-1 text-accent hover:bg-accent/10"
+                  >
+                    Connect Spotify
+                  </a>
+                )}
+              </div>
+            );
+          })()}
           <button
             type="button"
             role="menuitem"

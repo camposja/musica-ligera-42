@@ -5,12 +5,14 @@ import { usePathname } from "next/navigation";
 import { useSession } from "@/components/SessionProvider";
 import { UserSwitcher } from "@/components/UserSwitcher";
 import { HeaderMenu } from "@/components/HeaderMenu";
+import { KeepAliveButton } from "@/components/KeepAliveButton";
 
 type Props = {
   userName?: string;
   actingUserName?: string;
   spotifyConnected: boolean;
   spotifyAccountId: string | null;
+  allowChildSpotifyLogin: boolean;
 };
 
 export function Header({
@@ -18,6 +20,7 @@ export function Header({
   actingUserName,
   spotifyConnected,
   spotifyAccountId,
+  allowChildSpotifyLogin,
 }: Props) {
   const session = useSession();
   const pathname = usePathname();
@@ -46,6 +49,7 @@ export function Header({
         <nav className="flex items-center gap-1">
           {navLink("/dashboard", "Dashboard")}
           {navLink("/search", "Search")}
+          {session.role === "OWNER" && navLink("/settings", "Settings")}
         </nav>
         <div className="ml-auto flex min-w-0 items-center gap-2">
           {session.role === "USER" ? (
@@ -64,10 +68,12 @@ export function Header({
               <UserSwitcher currentActingUserId={session.actingUserId} />
             </>
           )}
+          <KeepAliveButton />
           <HeaderMenu
             isOwner={session.role === "OWNER"}
             spotifyConnected={spotifyConnected}
             spotifyAccountId={spotifyAccountId}
+            allowChildSpotifyLogin={allowChildSpotifyLogin}
           />
         </div>
       </div>

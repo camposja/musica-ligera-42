@@ -1,5 +1,6 @@
 import { getRequiredSession } from "@/lib/current-user";
 import { prisma } from "@/lib/prisma";
+import { getAppSettings } from "@/lib/app-settings";
 import { SessionProvider } from "@/components/SessionProvider";
 import { PlayerProvider } from "@/components/PlayerProvider";
 import { Header } from "@/components/Header";
@@ -29,6 +30,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     where: { id: "singleton" },
     select: { spotifyUserId: true },
   });
+  const { allowChildSpotifyLogin } = await getAppSettings();
 
   return (
     <SessionProvider session={session}>
@@ -40,6 +42,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               actingUserName={actingUserName}
               spotifyConnected={!!spotifyConn}
               spotifyAccountId={spotifyConn?.spotifyUserId ?? null}
+              allowChildSpotifyLogin={allowChildSpotifyLogin}
             />
             <PlayerBar />
           </div>
