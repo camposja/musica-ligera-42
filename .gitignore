@@ -46,3 +46,8 @@ next-env.d.ts
 *.db-journal
 prisma/*.db
 prisma/*.db-journal
+
+# local agent / knowledge-graph artifacts (not part of the source tree)
+/graphify-out/
+/.claude/
+/.codex/

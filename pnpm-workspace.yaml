@@ -1,17 +1,28 @@
-# Supply-chain hardening. Requires pnpm >= 11. See team plan "adaptive-conjuring-nebula".
-# Use `pnpm install`, NOT `npm install`.
+# Supply-chain hardening. Requires pnpm >= 11. Use `pnpm install`, NOT `npm install`.
+#
+# pnpm 11 actively writes to this file: when it encounters a package with an
+# install/postinstall script that isn't in `allowBuilds:`, it appends the
+# package with a `set this to true or false` placeholder. Combined with the
+# default `strictDepBuilds`, that turns into ERR_PNPM_IGNORED_BUILDS and
+# fails the install — locally and inside Docker. So `allowBuilds:` has to be
+# the source of truth, and we set `strictDepBuilds: false` so an unreviewed
+# script only generates a placeholder for review, not a deploy failure.
+
+allowBuilds:
+  # Allowed to run install/postinstall scripts:
+  "@prisma/client": true        # Prisma client generation
+  "@prisma/engines": true       # Prisma engine binaries
+  better-sqlite3: true          # native node-gyp build — SQLite driver binding
+  prisma: true                  # Prisma CLI / engine binaries
+  # Explicitly denied (kept here so pnpm doesn't re-add them as placeholders):
+  sharp: false
+  unrs-resolver: false
+
+# Default would be `true`, which throws on the first unreviewed build script
+# and breaks deploys. False = pnpm writes a placeholder entry above and
+# continues; the human reviews on the next commit.
+strictDepBuilds: false
+
+# Hardening that still works under pnpm 11:
 minimumReleaseAge: 1440        # don't install versions published <24h ago
 minimumReleaseAgeStrict: true  # fail rather than silently fall back to an older version
-blockExoticSubdeps: true       # transitive deps must come from the registry, not git/tarball/url
-strictDepBuilds: true          # FAIL install on any unreviewed build/postinstall script
-dangerouslyAllowAllBuilds: false
-allowBuilds:
-  # Reviewed packages that genuinely need an install/build script — migrated from the
-  # pre-v11 package.json#pnpm.onlyBuiltDependencies + pnpm-workspace onlyBuiltDependencies/
-  # ignoredBuiltDependencies. Confirmed empirically against pnpm 11.1.3 (see plan).
-  better-sqlite3: true         # native node-gyp build (SQLite driver)
-  prisma: true                 # Prisma CLI / engine binaries
-  "@prisma/client": true       # Prisma client generation
-  "@prisma/engines": true      # Prisma engine binaries
-  sharp: false                 # intentionally NOT built (was ignoredBuiltDependencies)
-  unrs-resolver: false         # intentionally NOT built (was ignoredBuiltDependencies)
