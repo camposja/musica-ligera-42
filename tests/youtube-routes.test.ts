@@ -24,6 +24,7 @@ import { _resetMatchChainForTests } from "@/lib/youtube";
 import { POST as matchPOST } from "@/app/api/youtube/match/route";
 import { POST as overridePOST } from "@/app/api/youtube/override/route";
 import { POST as rematchMissingPOST } from "@/app/api/youtube/rematch-missing/route";
+import { GET as youtubeSearchGET } from "@/app/api/youtube/search/route";
 
 beforeEach(async () => {
   clearCookies();
@@ -439,16 +440,101 @@ describe("POST /api/youtube/override", () => {
     const body = await res.json();
     expect(body.song.youtubeId).toBe(VALID);
   });
+
+  // === Categorized error codes (Ticket 23c) ================================
+  // The server surfaces a stable `code` per failure mode so the client can
+  // map to friendly per-case copy without parsing the human-readable string.
+
+  it("code: parse_failed for non-YouTube URL", async () => {
+    const s = await makeSong();
+    await setOwnerSession();
+    const res = await overridePOST(
+      jsonRequest("http://x", {
+        songId: s.id,
+        youtubeUrl: "https://vimeo.com/123456",
+      }),
+    );
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.code).toBe("parse_failed");
+  });
+
+  it("code: parse_failed for invalid newYoutubeId", async () => {
+    const s = await makeSong();
+    await setOwnerSession();
+    const res = await overridePOST(
+      jsonRequest("http://x", { songId: s.id, newYoutubeId: "tooShort" }),
+    );
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.code).toBe("parse_failed");
+  });
+
+  it("code: parse_failed when neither youtubeUrl nor newYoutubeId given", async () => {
+    const s = await makeSong();
+    await setOwnerSession();
+    const res = await overridePOST(jsonRequest("http://x", { songId: s.id }));
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.code).toBe("parse_failed");
+  });
+
+  it("code: not_found when YouTube reports no item", async () => {
+    mockFetchSequence([videoDetails({ notFound: true })]);
+    const s = await makeSong();
+    await setOwnerSession();
+    const res = await overridePOST(
+      jsonRequest("http://x", { songId: s.id, newYoutubeId: VALID }),
+    );
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.code).toBe("not_found");
+  });
+
+  it("code: private when the video is private", async () => {
+    mockFetchSequence([videoDetails({ isPrivate: true })]);
+    const s = await makeSong();
+    await setOwnerSession();
+    const res = await overridePOST(
+      jsonRequest("http://x", { songId: s.id, newYoutubeId: VALID }),
+    );
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.code).toBe("private");
+  });
+
+  it("code: upstream_unreachable when YOUTUBE_API_KEY is missing", async () => {
+    const ORIGINAL = process.env.YOUTUBE_API_KEY;
+    process.env.YOUTUBE_API_KEY = "";
+    try {
+      const s = await makeSong();
+      await setOwnerSession();
+      const res = await overridePOST(
+        jsonRequest("http://x", { songId: s.id, newYoutubeId: VALID }),
+      );
+      expect(res.status).toBe(502);
+      const body = await res.json();
+      expect(body.code).toBe("upstream_unreachable");
+    } finally {
+      process.env.YOUTUBE_API_KEY = ORIGINAL;
+    }
+  });
 });
 
 // === POST /api/youtube/rematch-missing (OWNER-only) ========================
 
 describe("POST /api/youtube/rematch-missing", () => {
   // Title is plain "Hello" so it matches the canned videosResp title
-  // ("Adele - Hello ..."). Songs are distinguished by id, not title.
-  async function makeUnmatchedSong() {
+  // ("Adele - Hello ..."). Distinct optional suffix lets a test request
+  // unique songs whose normalized search queries don't collide in the
+  // YoutubeSearchCache (which is shared by query, not song id).
+  async function makeUnmatchedSong(suffix?: string) {
     return prisma.song.create({
-      data: { title: "Hello", artist: "Adele", youtubeId: null },
+      data: {
+        title: suffix ? `Hello ${suffix}` : "Hello",
+        artist: "Adele",
+        youtubeId: null,
+      },
     });
   }
 
@@ -465,8 +551,8 @@ describe("POST /api/youtube/rematch-missing", () => {
   });
 
   it("happy path: matches all unmatched songs and reports counts", async () => {
-    await makeUnmatchedSong();
-    await makeUnmatchedSong();
+    await makeUnmatchedSong("one");
+    await makeUnmatchedSong("two");
     mockFetchSequence([
       ...matchPair([PAD("a")]),
       ...matchPair([PAD("b")]),
@@ -522,11 +608,11 @@ describe("POST /api/youtube/rematch-missing", () => {
   });
 
   it("bails with 503 on YouTube 403 (quota), preserving partial counts", async () => {
-    await makeUnmatchedSong();
-    await makeUnmatchedSong();
+    await makeUnmatchedSong("alpha");
+    await makeUnmatchedSong("beta");
     mockFetchSequence([
       ...matchPair([PAD("a")]),
-      { status: 403, json: {} },
+      { status: 403, json: { error: { errors: [{ reason: "quotaExceeded" }] } } },
     ]);
     await setOwnerSession();
     const res = await rematchMissingPOST();
@@ -548,5 +634,532 @@ describe("POST /api/youtube/rematch-missing", () => {
     const body = await res.json();
     expect(body.checked).toBe(0);
     expect(fetchSpy).not.toHaveBeenCalled();
+  });
+});
+
+// === GET /api/youtube/search ==============================================
+
+describe("GET /api/youtube/search", () => {
+  const ORIGINAL_SAFETY = process.env.YOUTUBE_DAILY_QUOTA_SAFETY_UNITS;
+
+  beforeEach(() => {
+    // Default to a generous cap so most tests don't trip the safeguard.
+    process.env.YOUTUBE_DAILY_QUOTA_SAFETY_UNITS = "10000";
+  });
+
+  afterEach(() => {
+    process.env.YOUTUBE_DAILY_QUOTA_SAFETY_UNITS = ORIGINAL_SAFETY;
+  });
+
+  function searchRequest(q: string | null): Request {
+    const url = q === null ? "http://x/api/youtube/search" : `http://x/api/youtube/search?q=${encodeURIComponent(q)}`;
+    return new Request(url);
+  }
+
+  it("401 without session", async () => {
+    const res = await youtubeSearchGET(searchRequest("hello"));
+    expect(res.status).toBe(401);
+  });
+
+  it("400 when q missing", async () => {
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await youtubeSearchGET(searchRequest(null));
+    expect(res.status).toBe(400);
+  });
+
+  it("400 when q is empty/whitespace", async () => {
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await youtubeSearchGET(searchRequest("   "));
+    expect(res.status).toBe(400);
+  });
+
+  it("happy path: returns rich results + quota status", async () => {
+    mockFetchSequence([
+      searchResp([PAD("a"), PAD("b")]),
+      {
+        status: 200,
+        json: {
+          items: [
+            {
+              id: PAD("a"),
+              snippet: {
+                title: "Adele - Hello",
+                channelTitle: "AdeleVEVO",
+                thumbnails: { medium: { url: "https://i.ytimg.com/vi/a/m.jpg" } },
+              },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT3M30S", contentRating: {} },
+            },
+            {
+              id: PAD("b"),
+              snippet: { title: "Other", channelTitle: "Channel" },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT2M", contentRating: {} },
+            },
+          ],
+        },
+      },
+    ]);
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await youtubeSearchGET(searchRequest("hello adele"));
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.results).toHaveLength(2);
+    expect(body.results[0]).toMatchObject({
+      youtubeId: PAD("a"),
+      title: "Adele - Hello",
+      channel: "AdeleVEVO",
+      durationSec: 210,
+      url: `https://www.youtube.com/watch?v=${PAD("a")}`,
+      thumbnailUrl: "https://i.ytimg.com/vi/a/m.jpg",
+    });
+    expect(body.quota).toMatchObject({
+      remainingSearches: expect.any(Number),
+      remainingUnits: expect.any(Number),
+      resetsAt: expect.any(String),
+    });
+    // Charged once (103 units).
+    expect(body.quota.remainingUnits).toBe(10000 - 103);
+  });
+
+  it("filters out private videos", async () => {
+    mockFetchSequence([
+      searchResp([PAD("a"), PAD("b")]),
+      {
+        status: 200,
+        json: {
+          items: [
+            {
+              id: PAD("a"),
+              snippet: { title: "x", channelTitle: "y" },
+              status: { embeddable: true, privacyStatus: "private" },
+              contentDetails: { duration: "PT3M", contentRating: {} },
+            },
+            {
+              id: PAD("b"),
+              snippet: { title: "z", channelTitle: "y" },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT3M", contentRating: {} },
+            },
+          ],
+        },
+      },
+    ]);
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await youtubeSearchGET(searchRequest("x"));
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.results.map((r: { youtubeId: string }) => r.youtubeId)).toEqual([
+      PAD("b"),
+    ]);
+  });
+
+  it("429 with code: youtube_quota_safeguard when ledger says no", async () => {
+    process.env.YOUTUBE_DAILY_QUOTA_SAFETY_UNITS = "50"; // less than one search
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await youtubeSearchGET(searchRequest("hello"));
+    expect(res.status).toBe(429);
+    const body = await res.json();
+    expect(body.code).toBe("youtube_quota_safeguard");
+    expect(body.remainingSearches).toBe(0);
+    expect(body.resetsAt).toMatch(/T00:00:00\.000Z$/);
+  });
+
+  it("429 + safeguard on 403 with reason=quotaExceeded (real daily wall)", async () => {
+    mockFetchSequence([
+      {
+        status: 403,
+        json: {
+          error: { errors: [{ reason: "quotaExceeded" }] },
+        },
+      },
+    ]);
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await youtubeSearchGET(searchRequest("hello"));
+    expect(res.status).toBe(429);
+    const body = await res.json();
+    expect(body.code).toBe("youtube_quota_safeguard");
+    expect(body.remainingSearches).toBe(0);
+    // Ledger was forced to the safety cap.
+    const today = new Date().toISOString().slice(0, 10);
+    const row = await prisma.apiQuotaUsage.findUnique({
+      where: { service_day: { service: "youtube", day: today } },
+    });
+    expect(row?.unitsUsed).toBe(10000); // env override sets cap to 10000 here
+  });
+
+  it("502 + config_error on 403 with reason=keyInvalid (NOT a daily wall)", async () => {
+    mockFetchSequence([
+      {
+        status: 403,
+        json: {
+          error: { errors: [{ reason: "keyInvalid" }] },
+        },
+      },
+    ]);
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await youtubeSearchGET(searchRequest("hello"));
+    expect(res.status).toBe(502);
+    const body = await res.json();
+    expect(body.code).toBe("youtube_config_error");
+    expect(body.reason).toBe("keyInvalid");
+    // Crucially: the ledger was NOT fast-forwarded. The day's budget is intact
+    // minus the 103 consumeQuota charge that always happens before the call.
+    const today = new Date().toISOString().slice(0, 10);
+    const row = await prisma.apiQuotaUsage.findUnique({
+      where: { service_day: { service: "youtube", day: today } },
+    });
+    expect(row?.unitsUsed).toBe(103);
+  });
+
+  it("502 + config_error on 403 with no parseable reason (fail open, don't lock)", async () => {
+    mockFetchSequence([{ status: 403, json: {} }]);
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await youtubeSearchGET(searchRequest("hello"));
+    expect(res.status).toBe(502);
+    const body = await res.json();
+    expect(body.code).toBe("youtube_config_error");
+    expect(body.reason).toBeNull();
+    // No lockout — same reasoning as keyInvalid: unknown 403s shouldn't burn
+    // the rest of the day's quota safeguard.
+    const today = new Date().toISOString().slice(0, 10);
+    const row = await prisma.apiQuotaUsage.findUnique({
+      where: { service_day: { service: "youtube", day: today } },
+    });
+    expect(row?.unitsUsed).toBe(103);
+  });
+
+  it("503 when YouTube returns 5xx", async () => {
+    mockFetchSequence([{ status: 502, json: {} }]);
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await youtubeSearchGET(searchRequest("x"));
+    expect(res.status).toBe(502);
+  });
+});
+
+// === Day-scoped search cache (Ticket 23b) ===================================
+// Same query twice in one UTC day costs 103 units, not 206. Force-refresh
+// (Rerun auto-match) bypasses the cache so a wrong cached match isn't pinned
+// for 24 hours. Errors and empty results aren't cached.
+
+describe("YouTube search cache", () => {
+  const ORIGINAL_SAFETY = process.env.YOUTUBE_DAILY_QUOTA_SAFETY_UNITS;
+
+  beforeEach(() => {
+    process.env.YOUTUBE_DAILY_QUOTA_SAFETY_UNITS = "10000";
+  });
+
+  afterEach(() => {
+    process.env.YOUTUBE_DAILY_QUOTA_SAFETY_UNITS = ORIGINAL_SAFETY;
+  });
+
+  function searchRequest(q: string): Request {
+    return new Request(`http://x/api/youtube/search?q=${encodeURIComponent(q)}`);
+  }
+
+  it("two identical queries in one day = one fetch + 103 units", async () => {
+    // Only ONE matchPair queued. The second call must hit cache, otherwise
+    // mockFetchSequence will throw "exhausted".
+    mockFetchSequence([
+      searchResp([PAD("a")]),
+      {
+        status: 200,
+        json: {
+          items: [
+            {
+              id: PAD("a"),
+              snippet: { title: "Adele - Hello", channelTitle: "AdeleVEVO" },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT3M30S", contentRating: {} },
+            },
+          ],
+        },
+      },
+    ]);
+    const u = await makeUser();
+    await setUserSession(u.id);
+
+    const first = await youtubeSearchGET(searchRequest("hello adele"));
+    expect(first.status).toBe(200);
+    const firstBody = await first.json();
+    expect(firstBody.results).toHaveLength(1);
+
+    const second = await youtubeSearchGET(searchRequest("hello adele"));
+    expect(second.status).toBe(200);
+    const secondBody = await second.json();
+    expect(secondBody.results).toEqual(firstBody.results);
+
+    // Ledger charged exactly once across both calls.
+    const today = new Date().toISOString().slice(0, 10);
+    const row = await prisma.apiQuotaUsage.findUnique({
+      where: { service_day: { service: "youtube", day: today } },
+    });
+    expect(row?.unitsUsed).toBe(103);
+  });
+
+  it("normalizes whitespace + case before keying the cache", async () => {
+    mockFetchSequence([
+      searchResp([PAD("a")]),
+      {
+        status: 200,
+        json: {
+          items: [
+            {
+              id: PAD("a"),
+              snippet: { title: "Adele - Hello", channelTitle: "AdeleVEVO" },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT3M30S", contentRating: {} },
+            },
+          ],
+        },
+      },
+    ]);
+    const u = await makeUser();
+    await setUserSession(u.id);
+
+    await youtubeSearchGET(searchRequest("Hello   Adele"));
+    // Different casing, extra whitespace → same normalized key. No second
+    // fetch — if it tried, the mock sequence would throw.
+    const second = await youtubeSearchGET(searchRequest("hello adele"));
+    expect(second.status).toBe(200);
+    const today = new Date().toISOString().slice(0, 10);
+    const row = await prisma.apiQuotaUsage.findUnique({
+      where: { service_day: { service: "youtube", day: today } },
+    });
+    expect(row?.unitsUsed).toBe(103);
+  });
+
+  it("force-refresh (matchSongById force=true) bypasses the cache", async () => {
+    // Pre-populate the cache so any non-bypassing path would hit it.
+    mockFetchSequence([
+      ...matchPair([PAD("a")]),
+      // Second matchPair represents the bypass-then-fetch.
+      ...matchPair([PAD("b")]),
+    ]);
+
+    const song = await prisma.song.create({
+      data: { title: "Hello", artist: "Adele", youtubeId: null },
+    });
+    await setOwnerSession();
+
+    // First match: populates cache and the song's youtubeId.
+    const first = await matchPOST(jsonRequest("http://x", { songId: song.id }));
+    expect(first.status).toBe(200);
+    const firstBody = await first.json();
+    expect(firstBody.song.youtubeId).toBe(PAD("a"));
+
+    // Force-refresh: same query, but force=true should skip the cache and
+    // consume the second matchPair from the mock sequence.
+    const second = await matchPOST(
+      jsonRequest("http://x", { songId: song.id, force: true }),
+    );
+    expect(second.status).toBe(200);
+    const secondBody = await second.json();
+    expect(secondBody.song.youtubeId).toBe(PAD("b"));
+  });
+
+  it("does NOT cache empty result sets (transient zero results)", async () => {
+    // search.list returns 0 items → empty results, no cache write.
+    mockFetchSequence([
+      { status: 200, json: { items: [] } },
+      // Second call should re-fetch, not hit cache.
+      searchResp([PAD("a")]),
+      {
+        status: 200,
+        json: {
+          items: [
+            {
+              id: PAD("a"),
+              snippet: { title: "X - Y", channelTitle: "Z" },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT3M", contentRating: {} },
+            },
+          ],
+        },
+      },
+    ]);
+    const u = await makeUser();
+    await setUserSession(u.id);
+
+    const first = await youtubeSearchGET(searchRequest("nothing matches"));
+    expect(first.status).toBe(200);
+    expect((await first.json()).results).toEqual([]);
+
+    const second = await youtubeSearchGET(searchRequest("nothing matches"));
+    expect(second.status).toBe(200);
+    expect((await second.json()).results).toHaveLength(1);
+  });
+
+  it("does NOT cache 403 / error responses", async () => {
+    mockFetchSequence([
+      { status: 403, json: { error: { errors: [{ reason: "keyInvalid" }] } } },
+      // Second call should re-attempt (cache miss again).
+      searchResp([PAD("a")]),
+      {
+        status: 200,
+        json: {
+          items: [
+            {
+              id: PAD("a"),
+              snippet: { title: "X - Y", channelTitle: "Z" },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT3M", contentRating: {} },
+            },
+          ],
+        },
+      },
+    ]);
+    const u = await makeUser();
+    await setUserSession(u.id);
+
+    const first = await youtubeSearchGET(searchRequest("config error query"));
+    expect(first.status).toBe(502);
+
+    const second = await youtubeSearchGET(searchRequest("config error query"));
+    expect(second.status).toBe(200);
+  });
+});
+
+// === Pick-match flow: search → override =====================================
+// Integration coverage for Ticket 21's modal: OWNER hits the search endpoint,
+// picks a candidate by URL, hits override. Verifies the chained UX writes the
+// chosen videoId with reason="manual" and clears alt ids.
+
+describe("Pick-match flow (search → override)", () => {
+  const ORIGINAL_SAFETY = process.env.YOUTUBE_DAILY_QUOTA_SAFETY_UNITS;
+
+  beforeEach(() => {
+    process.env.YOUTUBE_DAILY_QUOTA_SAFETY_UNITS = "10000";
+  });
+
+  afterEach(() => {
+    process.env.YOUTUBE_DAILY_QUOTA_SAFETY_UNITS = ORIGINAL_SAFETY;
+  });
+
+  it("OWNER searches, picks the second candidate, override writes manual match", async () => {
+    const candA = PAD("a");
+    const candB = PAD("b");
+    const candC = PAD("c");
+    // Three sequential fetches: search.list, videos.list (search enrichment),
+    // videos.list (override validation of the picked id).
+    mockFetchSequence([
+      searchResp([candA, candB, candC]),
+      {
+        status: 200,
+        json: {
+          items: [
+            {
+              id: candA,
+              snippet: { title: "Adele - Hello", channelTitle: "AdeleVEVO" },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT3M30S", contentRating: {} },
+            },
+            {
+              id: candB,
+              snippet: { title: "Adele - Hello (Live at NRJ)", channelTitle: "NRJ" },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT4M10S", contentRating: {} },
+            },
+            {
+              id: candC,
+              snippet: { title: "Hello cover by Random User", channelTitle: "Random" },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT3M00S", contentRating: {} },
+            },
+          ],
+        },
+      },
+      {
+        status: 200,
+        json: {
+          items: [
+            {
+              id: candB,
+              snippet: { title: "Adele - Hello (Live at NRJ)", channelTitle: "NRJ" },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT4M10S", contentRating: {} },
+            },
+          ],
+        },
+      },
+    ]);
+    const song = await prisma.song.create({
+      data: {
+        title: "Hello",
+        artist: "Adele",
+        youtubeId: "OLDOLDOLDOL",
+        youtubeAltIds: ["alt1alt1alt"],
+        youtubeMatchType: "loose",
+        youtubeMatchReason: "lyric_video",
+      },
+    });
+    await setOwnerSession();
+
+    const searchRes = await youtubeSearchGET(
+      new Request(
+        `http://x/api/youtube/search?q=${encodeURIComponent("Adele Hello")}`,
+      ),
+    );
+    expect(searchRes.status).toBe(200);
+    const searchBody = await searchRes.json();
+    expect(searchBody.results).toHaveLength(3);
+    const picked = searchBody.results[1];
+    expect(picked.youtubeId).toBe(candB);
+
+    const overrideRes = await overridePOST(
+      jsonRequest("http://x", { songId: song.id, youtubeUrl: picked.url }),
+    );
+    expect(overrideRes.status).toBe(200);
+    const overrideBody = await overrideRes.json();
+    expect(overrideBody.song.youtubeId).toBe(candB);
+    expect(overrideBody.song.youtubeAltIds).toEqual([]);
+    expect(overrideBody.song.youtubeMatchType).toBe("loose");
+    expect(overrideBody.song.youtubeMatchReason).toBe("manual");
+    expect(overrideBody.song.youtubeMatchTitle).toBe("Adele - Hello (Live at NRJ)");
+    expect(overrideBody.song.youtubeMatchChannel).toBe("NRJ");
+  });
+
+  it("USER cannot select via override even after a successful search", async () => {
+    const candA = PAD("a");
+    mockFetchSequence([
+      searchResp([candA]),
+      {
+        status: 200,
+        json: {
+          items: [
+            {
+              id: candA,
+              snippet: { title: "Adele - Hello", channelTitle: "AdeleVEVO" },
+              status: { embeddable: true, privacyStatus: "public" },
+              contentDetails: { duration: "PT3M30S", contentRating: {} },
+            },
+          ],
+        },
+      },
+    ]);
+    const song = await makeSong();
+    const u = await makeUser();
+    await setUserSession(u.id);
+
+    const searchRes = await youtubeSearchGET(
+      new Request("http://x/api/youtube/search?q=hello"),
+    );
+    expect(searchRes.status).toBe(200);
+    const searchBody = await searchRes.json();
+    const picked = searchBody.results[0];
+
+    const overrideRes = await overridePOST(
+      jsonRequest("http://x", { songId: song.id, youtubeUrl: picked.url }),
+    );
+    expect(overrideRes.status).toBe(403);
   });
 });

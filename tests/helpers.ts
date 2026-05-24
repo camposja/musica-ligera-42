@@ -39,7 +39,7 @@ export async function setUserSession(userId: string): Promise<void> {
 
 export async function truncateAll(): Promise<void> {
   await prisma.$executeRawUnsafe(
-    `TRUNCATE TABLE "User", "Song", "Playlist", "PlaylistSong", "SpotifyConnection" RESTART IDENTITY CASCADE`,
+    `TRUNCATE TABLE "User", "Song", "Playlist", "PlaylistSong", "SpotifyConnection", "ApiQuotaUsage", "YoutubeSearchCache", "AppSetting" RESTART IDENTITY CASCADE`,
   );
 }
 
