@@ -40,3 +40,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# sqlite (dev database files)
+*.db
+*.db-journal
+prisma/*.db
+prisma/*.db-journal
+
+# local agent / knowledge-graph artifacts (not part of the source tree)
+/graphify-out/
+/.claude/
+/.codex/

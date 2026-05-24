@@ -166,7 +166,7 @@ Imported songs start with `youtubeId: null`; YouTube auto-match runs in the back
 - **Embed scraping is unofficial.** The parser in `src/lib/spotify-embed.ts` reads the `__NEXT_DATA__` JSON from `https://open.spotify.com/embed/playlist/{id}`. Spotify could change this structure at any time and the import would break — the fallback would need a code update. (Editorial playlists like "Today's Top Hits" *do* work via this path; tested with `37i9dQZF1DXcBWIGoYBM5M`.)
 - **Imported songs lose album name and per-track cover art** — those fields aren't in the embed payload. Search results still carry them since search uses the official API.
 - **OAuth tokens (when connected) are stored plaintext in Postgres.** Acceptable for a local MVP; encrypt at rest before any production deploy (future work — derive a key from `SESSION_SECRET`).
-- **Per-USER Spotify connections** are explicit non-goals for now. The dead `User.spotifyUserId` column from Ticket 1 will be removed in a separate migration.
+- **Per-USER Spotify identities** are explicit non-goals. There's still only one shared `SpotifyConnection` row. What changed: the OWNER can now toggle "Allow users to connect Spotify" in `/settings`. When on, a USER can initiate the OAuth flow themselves — but the result still writes the same singleton row that the whole app uses. Disconnect remains OWNER-only. See [Owner settings](#owner-settings).
 
 ## YouTube playback
 
@@ -300,6 +300,21 @@ Dark-first UI, no theme toggle. Built with Tailwind v4 + native HTML + React Con
 | `/search` | session | "Search Spotify". Results have **Save** (adds to global library) and an **+ Add to playlist…** dropdown. Duplicates are surfaced inline ("Already in this playlist"); upstream errors stay inline ("Spotify upstream error"). |
 
 Persistent header includes nav (Dashboard/Search), user identity, and — for OWNER sessions — a user switcher that calls `POST /api/auth/switch-user`. The header and the player strip share a single `sticky top-0` wrapper in `(app)/layout.tsx`, so both stay pinned while content scrolls. The player strip itself only appears when a song is loaded; closing it reflows the page.
+
+## Owner settings
+
+OWNER only. Route: `/settings` (404 for any USER). Single-table store: `AppSetting` is a singleton row read via `getAppSettings()` (upsert-on-read).
+
+Current flags:
+- `allowChildSpotifyLogin` (default `false`) — when `true`, a USER can see and use the Spotify Connect / Reconnect buttons in the header. The OAuth flow writes the shared `SpotifyConnection` row. Disconnect remains OWNER-only.
+
+API: `GET /api/settings` and `PATCH /api/settings` (both OWNER-only). `PATCH` returns the new state so the client doesn't need a follow-up `GET`. Server-side enforcement is mandatory at both `/api/spotify/connect` and `/api/spotify/callback` — the callback re-checks the flag so a mid-flow toggle-off can't slip through.
+
+## Keep-alive
+
+Header has a `Keep awake` button (any signed-in user). On click, pings `GET /api/keep-alive` every ~3 minutes (±10s jitter) for 1 hour, persisted in `localStorage`. Best-effort while the tab is open — background-tab throttling and locked phones can pause the timer; the visibility / pageshow handler catches up on resume. Cross-tab sync via the `storage` event: starting/extending/stopping in one tab is reflected in others.
+
+The endpoint is auth-gated and DB-free (pure traffic generator). Whether it has any deployment effect depends on the runtime — on a Fly machine with `auto_stop_machines`, it keeps the machine warm; on any other host it's a no-op.
 
 ### Manual smoke test
 
