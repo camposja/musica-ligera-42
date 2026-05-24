@@ -49,6 +49,7 @@ export async function truncateAll(): Promise<void> {
     prisma.spotifyConnection.deleteMany({}),
     prisma.apiQuotaUsage.deleteMany({}),
     prisma.youtubeSearchCache.deleteMany({}),
+    prisma.appSetting.deleteMany({}),
   ]);
 }
 

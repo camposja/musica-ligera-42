@@ -11,6 +11,15 @@ A music app built on Next.js + SQLite + Prisma. Spotify search and playlist impo
 - SQLite via `@prisma/adapter-better-sqlite3` (native module, built at install time)
 - Prisma 7
 
+## Package manager
+
+> **pnpm 11+ — supply-chain hardening.** Use `pnpm install`, **not** `npm install`.
+> Pinned to `pnpm@11.1.3` via `packageManager`; `pnpm-workspace.yaml` enforces a 24h
+> minimum release age, blocks exotic transitive deps, and hard-fails any unreviewed
+> dependency build/postinstall script. Only `better-sqlite3` + Prisma packages are
+> allow-listed to run build scripts (verified); `sharp`/`unrs-resolver` stay disabled.
+> Docker pins the same pnpm version via Corepack.
+
 ## Dev quickstart
 
 ```bash
@@ -373,6 +382,12 @@ Vitest runs against a dedicated SQLite file at `prisma/test.db` (gitignored). Gl
 ## Deploy (Fly.io + persistent SQLite)
 
 `main` deploys to a single Fly machine in `dfw` with a `/data` volume holding the SQLite file. Modeled on the Empanadas Rails app — same region, same volume name, same on-boot-migrate pattern. **Single machine only**: SQLite has one writer; multiple Fly machines against the same volume = corruption.
+
+### Keep-alive vs always-on
+
+The header has a `Keep awake` button that pings `GET /api/keep-alive` every ~3 minutes (with ±10s jitter) for 1 hour, keeping the Fly machine warm while the tab is open. Best-effort only: backgrounded mobile tabs and locked phones throttle or stop the timer. Endpoint is auth-gated; no DB access.
+
+For unconditional always-on, set `min_machines_running = 1` in `fly.toml`. Safe under the single-machine rule (`min=1, max=1` stays single-writer) and cheaper than worrying about cold-starts, at the cost of running one shared-cpu-1x 24/7.
 
 ### Image: `Dockerfile`
 

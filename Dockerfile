@@ -3,7 +3,7 @@
 # Node 22.14+ ships an updated corepack signing key; older 22.x fails to verify
 # pnpm's signature and exits with `Cannot find matching keyid`.
 ARG NODE_VERSION=22.14.0
-ARG PNPM_VERSION=10.33.2
+ARG PNPM_VERSION=11.1.3
 ARG PRISMA_VERSION=7.8.0
 ARG YTDLP_VERSION=2026.03.17
 

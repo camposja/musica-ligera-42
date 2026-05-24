@@ -83,11 +83,26 @@ describe("GET /api/spotify/connect", () => {
     expect(res.status).toBe(401);
   });
 
-  it("403 for USER session", async () => {
+  it("403 for USER when allowChildSpotifyLogin is off (default)", async () => {
     const u = await makeUser();
     await setUserSession(u.id);
     const res = await connectGET();
     expect(res.status).toBe(403);
+  });
+
+  it("redirects USER to Spotify authorize URL when allowChildSpotifyLogin is on", async () => {
+    const u = await makeUser();
+    await setUserSession(u.id);
+    await prisma.appSetting.upsert({
+      where: { id: "singleton" },
+      create: { id: "singleton", allowChildSpotifyLogin: true },
+      update: { allowChildSpotifyLogin: true },
+    });
+    const res = await connectGET();
+    expect(res.status).toBe(302);
+    expect(res.headers.get("location") ?? "").toContain(
+      "https://accounts.spotify.com/authorize?",
+    );
   });
 
   it("redirects OWNER to Spotify authorize URL and sets state cookie", async () => {
@@ -130,11 +145,36 @@ describe("GET /api/spotify/callback", () => {
     expect(await prisma.spotifyConnection.count()).toBe(0);
   });
 
-  it("403 + clears state cookie when not OWNER", async () => {
+  it("403 + clears state cookie when USER and allowChildSpotifyLogin is off", async () => {
     const u = await makeUser();
     await setUserSession(u.id);
     const { state, jwt } = await signOauthState();
     await setOauthStateCookie(jwt);
+    const res = await callbackGET(
+      new Request(callbackUrl({ code: "abc", state })),
+    );
+    expect(res.status).toBe(403);
+    const cookie = await readCookieValue(STATE_COOKIE_NAME);
+    expect(cookie ?? "").toBe("");
+    expect(await prisma.spotifyConnection.count()).toBe(0);
+  });
+
+  it("403 + clears state cookie when USER started OAuth and owner flipped flag off mid-flow", async () => {
+    const u = await makeUser();
+    await setUserSession(u.id);
+    // User started OAuth while the flag was true; cookie was set.
+    await prisma.appSetting.upsert({
+      where: { id: "singleton" },
+      create: { id: "singleton", allowChildSpotifyLogin: true },
+      update: { allowChildSpotifyLogin: true },
+    });
+    const { state, jwt } = await signOauthState();
+    await setOauthStateCookie(jwt);
+    // Owner flips it off before the user comes back.
+    await prisma.appSetting.update({
+      where: { id: "singleton" },
+      data: { allowChildSpotifyLogin: false },
+    });
     const res = await callbackGET(
       new Request(callbackUrl({ code: "abc", state })),
     );
@@ -199,6 +239,46 @@ describe("GET /api/spotify/callback", () => {
     expect(conn!.accessToken).toBe("AT");
     expect(conn!.refreshToken).toBe("RT");
     expect(conn!.spotifyUserId).toBe("spotify_user_42");
+  });
+
+  it("USER happy path with allowChildSpotifyLogin=true writes the shared connection", async () => {
+    const u = await makeUser();
+    await setUserSession(u.id);
+    await prisma.appSetting.upsert({
+      where: { id: "singleton" },
+      create: { id: "singleton", allowChildSpotifyLogin: true },
+      update: { allowChildSpotifyLogin: true },
+    });
+    const { state, jwt } = await signOauthState();
+    await setOauthStateCookie(jwt);
+    mockFetchSequence([
+      {
+        status: 200,
+        json: {
+          access_token: "AT_user",
+          token_type: "Bearer",
+          expires_in: 3600,
+          refresh_token: "RT_user",
+          scope: "playlist-read-private playlist-read-collaborative",
+        },
+      },
+      { status: 200, json: { id: "spotify_user_from_child" } },
+    ]);
+    const res = await callbackGET(
+      new Request(callbackUrl({ code: "abc", state })),
+    );
+    expect(res.status).toBe(302);
+    expect(res.headers.get("location") ?? "").toContain("/dashboard?spotify=connected");
+    // The shared singleton row reflects the USER's Spotify identity — that
+    // is the whole point of the feature: one app-wide connection, anyone
+    // permitted can set it.
+    const conn = await prisma.spotifyConnection.findUnique({
+      where: { id: "singleton" },
+    });
+    expect(conn).not.toBeNull();
+    expect(conn!.accessToken).toBe("AT_user");
+    expect(conn!.refreshToken).toBe("RT_user");
+    expect(conn!.spotifyUserId).toBe("spotify_user_from_child");
   });
 
   it("stores null spotifyUserId when /v1/me fails (no extra scope added)", async () => {

@@ -99,6 +99,15 @@ model SpotifyConnection {
   updatedAt      DateTime @updatedAt
 }
 
+// Singleton row of app-wide settings. New flags get added as columns here.
+// Read via `getAppSettings()` which upserts the row on first access so we
+// never have to special-case "row missing" elsewhere in the app.
+model AppSetting {
+  id                     String   @id @default("singleton")
+  allowChildSpotifyLogin Boolean  @default(false)
+  updatedAt              DateTime @updatedAt
+}
+
 // Daily quota ledger for shared external API budgets. One row per
 // (service, day-in-UTC). Increments are application-side; we never query
 // the upstream provider for remaining quota. Used by all YouTube Data API
