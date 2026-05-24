@@ -40,9 +40,14 @@ export async function POST(request: Request) {
     if (typeof b.name !== "string" || typeof b.accessCode !== "string") {
       return Response.json({ error: "Invalid credentials" }, { status: 401 });
     }
-    // Case-insensitive name lookup so "maria" / "Maria" / "MARIA" all work.
+    // Case-insensitive name lookup against mixed-case stored names. Postgres
+    // supports this directly at the Prisma layer; display casing on the
+    // returned row is preserved exactly as stored.
     const user = await prisma.user.findFirst({
-      where: { name: { equals: b.name, mode: "insensitive" } },
+      where: {
+        role: "USER",
+        name: { equals: b.name.trim(), mode: "insensitive" },
+      },
     });
     if (
       !user ||

@@ -1,4 +1,5 @@
 import { getSession } from "@/lib/auth";
+import { getAppSettings } from "@/lib/app-settings";
 import {
   clearOauthStateCookie,
   exchangeCodeForToken,
@@ -33,11 +34,20 @@ export async function GET(request: Request) {
     return Response.redirect(appUrl("/dashboard?spotify=forbidden"), 302);
   }
 
-  // Authorization check first — even with valid params, only OWNER may connect
+  // Authorization check first — re-check the flag here, not just at start,
+  // so a USER who began OAuth while permitted can't complete it after the
+  // owner flipped the toggle off mid-flow.
   const session = await getSession();
-  if (!session || session.role !== "OWNER") {
+  if (!session) {
     await clearOauthStateCookie();
     return Response.json({ error: "Forbidden" }, { status: 403 });
+  }
+  if (session.role !== "OWNER") {
+    const { allowChildSpotifyLogin } = await getAppSettings();
+    if (!allowChildSpotifyLogin) {
+      await clearOauthStateCookie();
+      return Response.json({ error: "Forbidden" }, { status: 403 });
+    }
   }
 
   if (!code || !state) {

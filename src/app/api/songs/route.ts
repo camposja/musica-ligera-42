@@ -1,5 +1,6 @@
 import { getSession, unauthorized } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { normalizeSong } from "@/lib/song-serialization";
 import { triggerMatchInBackground } from "@/lib/youtube";
 
 export async function GET() {
@@ -9,7 +10,7 @@ export async function GET() {
   const songs = await prisma.song.findMany({
     orderBy: { createdAt: "desc" },
   });
-  return Response.json({ songs });
+  return Response.json({ songs: songs.map(normalizeSong) });
 }
 
 export async function POST(request: Request) {
@@ -58,13 +59,37 @@ export async function POST(request: Request) {
     youtubeAltIds = b.youtubeAltIds as string[];
   }
 
+  // Optional match-metadata fields. Used by the YouTube search save flow to
+  // mark a row as a manual loose-match (so the UI shows the "Manual match"
+  // badge). Spotify imports/searches leave these unset and rely on the
+  // background matcher to fill them in.
+  const youtubeMatchType =
+    typeof b.youtubeMatchType === "string" ? b.youtubeMatchType : null;
+  const youtubeMatchReason =
+    typeof b.youtubeMatchReason === "string" ? b.youtubeMatchReason : null;
+  const youtubeMatchTitle =
+    typeof b.youtubeMatchTitle === "string" ? b.youtubeMatchTitle : null;
+  const youtubeMatchChannel =
+    typeof b.youtubeMatchChannel === "string" ? b.youtubeMatchChannel : null;
+
   // Dedupe by spotifyId when provided: if a Song with that spotifyId already
   // exists, return it (200) instead of creating a duplicate. find-then-create
   // is intentional — no prisma.upsert, no createdAt heuristic.
   if (spotifyId) {
     const existing = await prisma.song.findUnique({ where: { spotifyId } });
     if (existing) {
-      return Response.json({ song: existing }, { status: 200 });
+      return Response.json({ song: normalizeSong(existing) }, { status: 200 });
+    }
+  } else if (youtubeId) {
+    // Best-effort idempotency for YouTube-sourced saves (no spotifyId). The
+    // youtubeId column is NOT @unique — the matcher legitimately writes the
+    // same youtubeId to multiple Songs (live versions, remasters, duplicate
+    // Spotify entries that map to one YT video). So we use findFirst, accept
+    // a small race window, and skip the P2002 catch path. In practice the
+    // user clicks Save once; the race only matters for double-click.
+    const existing = await prisma.song.findFirst({ where: { youtubeId } });
+    if (existing) {
+      return Response.json({ song: normalizeSong(existing) }, { status: 200 });
     }
   }
 
@@ -77,13 +102,17 @@ export async function POST(request: Request) {
         spotifyId,
         youtubeId,
         youtubeAltIds,
+        youtubeMatchType,
+        youtubeMatchReason,
+        youtubeMatchTitle,
+        youtubeMatchChannel,
       },
     });
     // Auto-match if no explicit youtubeId was supplied. Fire-and-forget.
     if (!song.youtubeId) {
       triggerMatchInBackground(song.id);
     }
-    return Response.json({ song }, { status: 201 });
+    return Response.json({ song: normalizeSong(song) }, { status: 201 });
   } catch (err) {
     // Race-condition fallback: two concurrent POSTs with the same spotifyId
     // can both miss the findUnique above; the loser gets P2002 here.
@@ -96,7 +125,7 @@ export async function POST(request: Request) {
     ) {
       const existing = await prisma.song.findUnique({ where: { spotifyId } });
       if (existing) {
-        return Response.json({ song: existing }, { status: 200 });
+        return Response.json({ song: normalizeSong(existing) }, { status: 200 });
       }
     }
     throw err;
