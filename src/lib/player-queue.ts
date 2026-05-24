@@ -79,8 +79,8 @@ export function unshuffleKeepingCurrent<T extends Identified>(
  */
 import { isValidYoutubeId } from "@/lib/youtube-id";
 
-export function getNextPlayableYoutubeId(
-  queue: Array<{ youtubeId?: string | null }>,
+export function getNextPlayableYoutubeId<T extends { youtubeId?: string | null }>(
+  queue: T[],
   currentIndex: number,
 ): string | null {
   const next = queue[currentIndex + 1];
