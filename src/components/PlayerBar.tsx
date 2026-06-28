@@ -61,6 +61,8 @@ export function PlayerBar() {
   // browser <audio onError> can't read response bodies so without the probe
   // the user would only see a generic media error.
   useEffect(() => {
+    // Intentional reset + re-probe whenever the song/videoId changes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setAudioError(null);
     setManualFallback(false);
     preloadedPairRef.current = null;

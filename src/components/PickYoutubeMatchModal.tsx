@@ -39,6 +39,9 @@ export function PickYoutubeMatchModal({
   const [selectError, setSelectError] = useState<string | null>(null);
 
   // Reset transient state when the modal closes/reopens for a different song.
+  // Intentional cross-render reset on prop change — the rule's perf concern
+  // doesn't apply here.
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (!open) {
       setSelectingId(null);
@@ -48,12 +51,15 @@ export function PickYoutubeMatchModal({
     setResults(cachedResults);
     setErrorMsg(null);
   }, [open, cachedResults]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   // Fetch candidates once per song-session (cache hit short-circuits).
   useEffect(() => {
     if (!open) return;
     if (results) return;
     let cancelled = false;
+    // Loading/error reset is the intended kickoff for the fetch below.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     setErrorMsg(null);
     const q = encodeURIComponent(`${song.artist} ${song.title}`);

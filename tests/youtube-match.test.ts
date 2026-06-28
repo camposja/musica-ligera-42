@@ -15,13 +15,13 @@ const PAD = (s: string) => (s + "X".repeat(11)).slice(0, 11);
 function cand(opts: {
   id?: string;
   title: string;
-  channel: string;
+  channel?: string;
   durationSec?: number;
 }): Candidate {
   return {
     id: opts.id ?? PAD("a"),
     title: opts.title,
-    channel: opts.channel,
+    channel: opts.channel ?? "",
     durationSec: opts.durationSec ?? 240,
   };
 }

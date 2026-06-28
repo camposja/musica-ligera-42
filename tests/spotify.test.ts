@@ -127,7 +127,7 @@ describe("getAccessToken caching (via searchTracks)", () => {
     await searchTracks("b");
 
     expect(spy).toHaveBeenCalledTimes(3);
-    const tokenCalls = spy.mock.calls.filter((c) =>
+    const tokenCalls = spy.mock.calls.filter((c: unknown[]) =>
       String(c[0]).includes("accounts.spotify.com/api/token"),
     );
     expect(tokenCalls).toHaveLength(1);
@@ -153,7 +153,7 @@ describe("getAccessToken caching (via searchTracks)", () => {
     await searchTracks("a");
     await searchTracks("b");
 
-    const tokenCalls = spy.mock.calls.filter((c) =>
+    const tokenCalls = spy.mock.calls.filter((c: unknown[]) =>
       String(c[0]).includes("accounts.spotify.com/api/token"),
     );
     expect(tokenCalls).toHaveLength(2);
