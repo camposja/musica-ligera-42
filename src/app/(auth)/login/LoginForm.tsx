@@ -86,7 +86,7 @@ export default function LoginForm({ initialMode }: { initialMode: Mode }) {
 
       <form onSubmit={onSubmit} className="flex flex-col gap-3">
         <label className="flex flex-col gap-1 text-sm">
-          <span className="text-muted">{mode === "OWNER" ? "Username" : "Name"}</span>
+          <span className="text-muted">{mode === "OWNER" ? "Name" : "Username"}</span>
           <input
             type="text"
             autoComplete="username"
@@ -98,7 +98,7 @@ export default function LoginForm({ initialMode }: { initialMode: Mode }) {
         </label>
 
         <label className="flex flex-col gap-1 text-sm">
-          <span className="text-muted">{mode === "OWNER" ? "Password" : "Access code"}</span>
+          <span className="text-muted">{mode === "OWNER" ? "Access code" : "Password"}</span>
           <div className="relative">
             <input
               type={revealed ? "text" : "password"}
