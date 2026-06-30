@@ -1,4 +1,4 @@
-import { forbidden, getSession, unauthorized } from "@/lib/auth";
+import { getSession, unauthorized } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { normalizeSong } from "@/lib/song-serialization";
 import { isValidYoutubeId, matchSongById, YoutubeError } from "@/lib/youtube";
@@ -21,8 +21,10 @@ export async function POST(request: Request) {
   if (typeof songId !== "string" || songId.length === 0) {
     return Response.json({ error: "songId required" }, { status: 400 });
   }
+  // Forced rematch is available to any authenticated session (USER or OWNER):
+  // users repairing their own playlists need to redo a bad match. The quota
+  // safeguard below still bounds how much external budget this can spend.
   const force = (body as Record<string, unknown>).force === true;
-  if (force && session.role !== "OWNER") return forbidden();
 
   const existing = await prisma.song.findUnique({
     where: { id: songId },

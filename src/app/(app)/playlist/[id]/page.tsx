@@ -94,7 +94,6 @@ export default async function PlaylistPage({ params }: { params: Params }) {
       <SongList
         playlistId={playlist.id}
         locked={playlist.locked}
-        role={session.role}
         songs={playlist.songs.map((ps) => ({ order: ps.order, song: normalizeSong(ps.song) }))}
       />
     </div>

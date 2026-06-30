@@ -1,4 +1,4 @@
-import { forbidden, getSession, unauthorized } from "@/lib/auth";
+import { getSession, unauthorized } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { normalizeSong, serializeAltIds } from "@/lib/song-serialization";
 import {
@@ -9,9 +9,13 @@ import {
 } from "@/lib/youtube";
 
 export async function POST(request: Request) {
+  // Any authenticated session may repair a song's YouTube match — regular USERs
+  // are the ones listening and noticing wrong/missing matches. Song rows are
+  // global shared state, so an override affects every playlist referencing this
+  // song; that's an accepted tradeoff for this app (the picker/inline form copy
+  // signals it). Auth model itself is unchanged: still just session-gated.
   const session = await getSession();
   if (!session) return unauthorized();
-  if (session.role !== "OWNER") return forbidden();
 
   let body: unknown;
   try {

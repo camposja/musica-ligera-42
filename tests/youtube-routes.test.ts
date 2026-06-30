@@ -113,7 +113,8 @@ async function makeSong(opts: { youtubeId?: string | null } = {}) {
 }
 
 // === POST /api/youtube/match ===============================================
-// Any signed-in user can request a match; only OWNER can force-overwrite.
+// Any signed-in user can request a match, including a forced rematch — USERs
+// repair their own playlists. The quota safeguard still bounds spend.
 
 describe("POST /api/youtube/match", () => {
   it("401 without session", async () => {
@@ -133,16 +134,17 @@ describe("POST /api/youtube/match", () => {
     expect(body.song.youtubeId).toBe(PAD("a"));
   });
 
-  it("USER with force=true: 403 (force is OWNER-only)", async () => {
+  it("USER with force=true: 200 (forced rematch is allowed for USERs)", async () => {
+    mockFetchSequence(matchPair([PAD("n")]));
     const s = await makeSong({ youtubeId: "EXISTINGYTID" });
     const u = await makeUser();
     await setUserSession(u.id);
-    const fetchSpy = mockFetchSequence([]);
     const res = await matchPOST(
       jsonRequest("http://x", { songId: s.id, force: true }),
     );
-    expect(res.status).toBe(403);
-    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.song.youtubeId).toBe(PAD("n"));
   });
 
   it("400 missing songId", async () => {
@@ -234,7 +236,7 @@ describe("POST /api/youtube/match", () => {
   });
 });
 
-// === POST /api/youtube/override (OWNER-only) ===============================
+// === POST /api/youtube/override (any authenticated session) ================
 
 describe("POST /api/youtube/override", () => {
   const VALID = "dQw4w9WgXcQ";
@@ -281,14 +283,57 @@ describe("POST /api/youtube/override", () => {
     expect(res.status).toBe(401);
   });
 
-  it("403 with USER session", async () => {
+  it("USER session can override (200) and update youtubeId + manual metadata", async () => {
+    mockFetchSequence([videoDetails()]);
     const s = await makeSong();
     const u = await makeUser();
     await setUserSession(u.id);
     const res = await overridePOST(
       jsonRequest("http://x", { songId: s.id, newYoutubeId: VALID }),
     );
-    expect(res.status).toBe(403);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.song.youtubeId).toBe(VALID);
+    expect(body.song.youtubeMatchType).toBe("loose");
+    expect(body.song.youtubeMatchReason).toBe("manual");
+  });
+
+  it("USER gets the same parse_failed as OWNER for a non-YouTube URL", async () => {
+    const s = await makeSong();
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await overridePOST(
+      jsonRequest("http://x", {
+        songId: s.id,
+        youtubeUrl: "https://vimeo.com/123456",
+      }),
+    );
+    expect(res.status).toBe(400);
+    expect((await res.json()).code).toBe("parse_failed");
+  });
+
+  it("USER gets the same not_found as OWNER for a missing video", async () => {
+    mockFetchSequence([videoDetails({ notFound: true })]);
+    const s = await makeSong();
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await overridePOST(
+      jsonRequest("http://x", { songId: s.id, newYoutubeId: VALID }),
+    );
+    expect(res.status).toBe(400);
+    expect((await res.json()).code).toBe("not_found");
+  });
+
+  it("USER gets the same private as OWNER for a private video", async () => {
+    mockFetchSequence([videoDetails({ isPrivate: true })]);
+    const s = await makeSong();
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await overridePOST(
+      jsonRequest("http://x", { songId: s.id, newYoutubeId: VALID }),
+    );
+    expect(res.status).toBe(400);
+    expect((await res.json()).code).toBe("private");
   });
 
   it("400 missing songId", async () => {
@@ -1128,24 +1173,24 @@ describe("Pick-match flow (search → override)", () => {
     expect(overrideBody.song.youtubeMatchChannel).toBe("NRJ");
   });
 
-  it("USER cannot select via override even after a successful search", async () => {
+  it("USER can select via override after a successful search", async () => {
     const candA = PAD("a");
-    mockFetchSequence([
-      searchResp([candA]),
-      {
-        status: 200,
-        json: {
-          items: [
-            {
-              id: candA,
-              snippet: { title: "Adele - Hello", channelTitle: "AdeleVEVO" },
-              status: { embeddable: true, privacyStatus: "public" },
-              contentDetails: { duration: "PT3M30S", contentRating: {} },
-            },
-          ],
-        },
+    // Three sequential fetches: search.list, videos.list (search enrichment),
+    // videos.list (override validation of the picked id).
+    const candAVideos = {
+      status: 200,
+      json: {
+        items: [
+          {
+            id: candA,
+            snippet: { title: "Adele - Hello", channelTitle: "AdeleVEVO" },
+            status: { embeddable: true, privacyStatus: "public" },
+            contentDetails: { duration: "PT3M30S", contentRating: {} },
+          },
+        ],
       },
-    ]);
+    };
+    mockFetchSequence([searchResp([candA]), candAVideos, candAVideos]);
     const song = await makeSong();
     const u = await makeUser();
     await setUserSession(u.id);
@@ -1160,6 +1205,9 @@ describe("Pick-match flow (search → override)", () => {
     const overrideRes = await overridePOST(
       jsonRequest("http://x", { songId: song.id, youtubeUrl: picked.url }),
     );
-    expect(overrideRes.status).toBe(403);
+    expect(overrideRes.status).toBe(200);
+    const overrideBody = await overrideRes.json();
+    expect(overrideBody.song.youtubeId).toBe(candA);
+    expect(overrideBody.song.youtubeMatchReason).toBe("manual");
   });
 });

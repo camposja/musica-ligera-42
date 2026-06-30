@@ -8,13 +8,10 @@ import { VIDEO_ID_RE } from "@/components/YouTubePlayer";
 import { PickYoutubeMatchModal } from "@/components/PickYoutubeMatchModal";
 import type { Song, YoutubeSearchResult } from "@/types/api";
 
-type Role = "OWNER" | "USER";
-
 type Props = {
   playlistId: string;
   songs: Array<{ order: number; song: Song }>;
   locked?: boolean;
-  role?: Role;
 };
 
 const REASON_LABELS: Record<string, string> = {
@@ -110,36 +107,31 @@ function OverrideButtons({
     }
   }
 
-  // Two button matrices, never both:
-  //   - Repair-relevant rows (unmatched / loose / picked) get Pick YT match
-  //     on top, then Change/Add link below. No Rerun — too many buttons, and
-  //     a manual override is the right tool here.
-  //   - Auto-exact rows get only Rerun auto-match. No paste-link affordance,
-  //     no Pick — the row already has the right answer.
-  if (onPickMatch) {
-    return (
-      <>
+  // Every row exposes the manual repair tools — Pick YT match + Change/Add link
+  // — because even an "exact" auto-match can be wrong and the listener is the
+  // one who notices. Playable rows additionally get Rerun auto-match. Unmatched
+  // rows omit Rerun (they're already auto-matching in the background; the row
+  // shows "Matching…"). Buttons stack vertically (parent is items-end flex-col).
+  return (
+    <>
+      {onPickMatch && (
         <button type="button" onClick={onPickMatch} className={OVERRIDE_BTN_CLASS}>
           Pick YT match
         </button>
-        <button type="button" onClick={onOpen} className={OVERRIDE_BTN_CLASS}>
-          {isPlayable ? "Change YouTube link" : "Add YouTube link"}
-        </button>
-        {error && <span className="text-[11px] text-danger">{error}</span>}
-      </>
-    );
-  }
-
-  return (
-    <>
-      <button
-        type="button"
-        onClick={rematch}
-        disabled={busy}
-        className={OVERRIDE_BTN_CLASS}
-      >
-        {busy ? "Rematching…" : "Rerun auto-match"}
+      )}
+      <button type="button" onClick={onOpen} className={OVERRIDE_BTN_CLASS}>
+        {isPlayable ? "Change YouTube link" : "Add YouTube link"}
       </button>
+      {isPlayable && (
+        <button
+          type="button"
+          onClick={rematch}
+          disabled={busy}
+          className={OVERRIDE_BTN_CLASS}
+        >
+          {busy ? "Rematching…" : "Rerun auto-match"}
+        </button>
+      )}
       {error && <span className="text-[11px] text-danger">{error}</span>}
     </>
   );
@@ -205,7 +197,7 @@ function OverrideEditor({
   );
 }
 
-export function SongList({ playlistId, songs, locked = false, role }: Props) {
+export function SongList({ playlistId, songs, locked = false }: Props) {
   const router = useRouter();
   const { playQueue, song: nowPlaying } = useNowPlaying();
   const [removingId, setRemovingId] = useState<string | null>(null);
@@ -256,8 +248,6 @@ export function SongList({ playlistId, songs, locked = false, role }: Props) {
       setRemovingId(null);
     }
   }
-
-  const isOwner = role === "OWNER";
 
   return (
     <div className="flex flex-col gap-2">
@@ -314,24 +304,16 @@ export function SongList({ playlistId, songs, locked = false, role }: Props) {
                       </button>
                     )}
                   </div>
-                  {isOwner && (
-                    <OverrideButtons
-                      songId={song.id}
-                      isPlayable={playable}
-                      onOpen={() => setOpenOverrideSongId(song.id)}
-                      onPickMatch={
-                        // Repair tool, not a search affordance: only show on
-                        // unmatched / loose-matched rows where it actually helps.
-                        !playable || song.youtubeMatchType === "loose"
-                          ? () => setPickModalSongId(song.id)
-                          : undefined
-                      }
-                      onRefreshed={() => router.refresh()}
-                    />
-                  )}
+                  <OverrideButtons
+                    songId={song.id}
+                    isPlayable={playable}
+                    onOpen={() => setOpenOverrideSongId(song.id)}
+                    onPickMatch={() => setPickModalSongId(song.id)}
+                    onRefreshed={() => router.refresh()}
+                  />
                 </div>
               </div>
-              {isOwner && editorOpen && (
+              {editorOpen && (
                 <OverrideEditor
                   songId={song.id}
                   onSaved={() => {
@@ -345,7 +327,7 @@ export function SongList({ playlistId, songs, locked = false, role }: Props) {
           );
         })}
       </ul>
-      {isOwner && pickModalSongId && (() => {
+      {pickModalSongId && (() => {
         const target = songs.find((s) => s.song.id === pickModalSongId);
         if (!target) return null;
         return (
