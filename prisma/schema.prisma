@@ -141,3 +141,20 @@ model YoutubeSearchCache {
   @@unique([day, normalizedQuery])
   @@index([createdAt])
 }
+
+// LRCLIB lyrics cache. One row per normalized (artist, title) pair. Caches both
+// hits and misses so we don't re-hit LRCLIB for every play. 3-state so an
+// "instrumental" result stays distinct from a plain miss (see src/lib/lyrics).
+// Retention is per-status and enforced at read time + pruned opportunistically
+// on write: found 30d, instrumental 30d, not_found 2d (a not_found may gain
+// lyrics later, so it's rechecked sooner; an explicit instrumental flag is
+// stable). `lyrics` is only populated when status="found".
+model LyricsCache {
+  id        String   @id @default(uuid())
+  cacheKey  String   @unique // "<artist>|<title>", diacritic-folded + lowercased + collapsed
+  status    String   // "found" | "instrumental" | "not_found"
+  lyrics    String   @default("")
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}

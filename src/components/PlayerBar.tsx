@@ -49,6 +49,12 @@ export function PlayerBar() {
   // robust than just nextId across Prev/Next bouncing.
   const preloadedPairRef = useRef<string | null>(null);
 
+  // Lyrics panel (opt-in). Closed by default and only fetches while open. A bump
+  // of lyricsRetry re-runs the fetch effect (used by the error-state retry).
+  const [lyricsOpen, setLyricsOpen] = useState(false);
+  const [lyricsState, setLyricsState] = useState<LyricsUiState>({ kind: "idle" });
+  const [lyricsRetry, setLyricsRetry] = useState(0);
+
   const videoId =
     song?.youtubeId && VIDEO_ID_RE.test(song.youtubeId) ? song.youtubeId : null;
 
@@ -111,6 +117,43 @@ export function PlayerBar() {
     const pairKey = `${song.id}:${nextYoutubeId}`;
     preloadNext(pairKey, nextYoutubeId, preloadedPairRef);
   }, [song?.id, nextYoutubeId]);
+
+  // Fetch lyrics whenever the panel is open and the song changes. Closed panel =
+  // no fetch (lyrics are opt-in and must never block playback). A stale request
+  // is aborted when the song changes or the panel closes, so a slow lookup for a
+  // previous song can't overwrite the current one.
+  useEffect(() => {
+    if (!lyricsOpen) return;
+    if (!song) {
+      // Intentional reset when the panel is open but nothing is playing.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setLyricsState({ kind: "idle" });
+      return;
+    }
+    const ac = new AbortController();
+    // Intentional kickoff of the fetch below — the loading state is the point.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLyricsState({ kind: "loading" });
+    fetch(`/api/lyrics?songId=${encodeURIComponent(song.id)}`, { signal: ac.signal })
+      .then(async (res) => {
+        const body = (await res.json().catch(() => null)) as
+          | { state: "found"; lyrics: string }
+          | { state: "instrumental" }
+          | { state: "not_found" }
+          | { state: "error"; error: string }
+          | null;
+        if (ac.signal.aborted) return;
+        if (body?.state === "found") setLyricsState({ kind: "found", lyrics: body.lyrics });
+        else if (body?.state === "instrumental") setLyricsState({ kind: "instrumental" });
+        else if (body?.state === "not_found") setLyricsState({ kind: "not_found" });
+        else setLyricsState({ kind: "error" });
+      })
+      .catch(() => {
+        if (ac.signal.aborted) return;
+        setLyricsState({ kind: "error" });
+      });
+    return () => ac.abort();
+  }, [lyricsOpen, song?.id, lyricsRetry]);
 
   // Show queue-error overlay if the queue gave up after consecutive failures.
   // It lives in the same UI slot as the per-song audioError display.
@@ -189,6 +232,19 @@ export function PlayerBar() {
             </button>
             <button
               type="button"
+              onClick={() => setLyricsOpen((o) => !o)}
+              aria-pressed={lyricsOpen}
+              aria-label={lyricsOpen ? "Hide lyrics" : "Show lyrics"}
+              className={`rounded border px-2 py-1.5 text-xs sm:text-sm ${
+                lyricsOpen
+                  ? "border-accent text-accent"
+                  : "border-border text-muted hover:text-foreground"
+              }`}
+            >
+              Lyrics
+            </button>
+            <button
+              type="button"
               onClick={stop}
               aria-label="Close player"
               className="rounded border border-border px-2 py-1 text-sm leading-none text-muted hover:text-foreground"
@@ -244,6 +300,78 @@ export function PlayerBar() {
               className="self-start rounded border border-border px-3 py-1.5 text-xs text-muted hover:text-foreground"
             >
               Try YouTube embed
+            </button>
+          </div>
+        )}
+        {lyricsOpen && (
+          <LyricsPanel
+            state={lyricsState}
+            onRetry={() => setLyricsRetry((n) => n + 1)}
+            onClose={() => setLyricsOpen(false)}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+type LyricsUiState =
+  | { kind: "idle" }
+  | { kind: "loading" }
+  | { kind: "found"; lyrics: string }
+  | { kind: "instrumental" }
+  | { kind: "not_found" }
+  | { kind: "error" };
+
+// Expandable lyrics panel that lives below the player controls. Player controls
+// stay visible above it; the panel scrolls internally so a long song doesn't
+// shove the page. Render is gated by the caller on `lyricsOpen`.
+function LyricsPanel({
+  state,
+  onRetry,
+  onClose,
+}: {
+  state: LyricsUiState;
+  onRetry: () => void;
+  onClose: () => void;
+}) {
+  return (
+    <div className="rounded border border-border bg-background">
+      <div className="flex items-center justify-between border-b border-border/50 px-3 py-1.5">
+        <span className="text-[10px] uppercase tracking-wide text-muted">Lyrics</span>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close lyrics"
+          className="rounded px-1 text-sm leading-none text-muted hover:text-foreground"
+        >
+          ×
+        </button>
+      </div>
+      <div className="max-h-64 overflow-y-auto px-3 py-2 text-sm">
+        {(state.kind === "idle" || state.kind === "loading") && (
+          <p className="text-muted">Loading lyrics…</p>
+        )}
+        {state.kind === "found" && (
+          <pre className="whitespace-pre-wrap break-words font-sans leading-relaxed">
+            {state.lyrics}
+          </pre>
+        )}
+        {state.kind === "instrumental" && (
+          <p className="text-muted">Instrumental — no lyrics.</p>
+        )}
+        {state.kind === "not_found" && (
+          <p className="text-muted">Lyrics not found.</p>
+        )}
+        {state.kind === "error" && (
+          <div className="flex flex-col items-start gap-2">
+            <p className="text-danger">Couldn&rsquo;t load lyrics.</p>
+            <button
+              type="button"
+              onClick={onRetry}
+              className="rounded border border-border px-2 py-1 text-xs text-muted hover:text-foreground"
+            >
+              Retry
             </button>
           </div>
         )}
