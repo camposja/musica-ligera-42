@@ -1,16 +1,16 @@
 # Graph Report - musica-ligera-42  (2026-07-01)
 
 ## Corpus Check
-- 140 files · ~64,927 words
+- 153 files · ~70,959 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 826 nodes · 1670 edges · 49 communities (40 shown, 9 thin omitted)
-- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 5 edges (avg confidence: 0.8)
+- 895 nodes · 1843 edges · 49 communities (40 shown, 9 thin omitted)
+- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 7 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `5ab4fe14`
+- Built from commit: `2236a100`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -57,42 +57,42 @@
 - [[_COMMUNITY_Community 48|Community 48]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `getSession()` - 58 edges
-2. `unauthorized()` - 51 edges
-3. `forbidden()` - 34 edges
-4. `ApiError` - 18 edges
-5. `apiFetch()` - 17 edges
-6. `effectiveUserId()` - 17 edges
-7. `compilerOptions` - 16 edges
-8. `setUserSession()` - 14 edges
-9. `searchYoutube()` - 14 edges
-10. `truncateAll()` - 13 edges
+1. `getSession()` - 61 edges
+2. `unauthorized()` - 54 edges
+3. `forbidden()` - 38 edges
+4. `effectiveUserId()` - 21 edges
+5. `ApiError` - 18 edges
+6. `apiFetch()` - 18 edges
+7. `setUserSession()` - 17 edges
+8. `GET()` - 17 edges
+9. `compilerOptions` - 16 edges
+10. `truncateAll()` - 16 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `setSession()` --calls--> `signSession()`  [EXTRACTED]
   tests/helpers.ts → src/lib/session.ts
+- `asUser()` --calls--> `setUserSession()`  [EXTRACTED]
+  tests/lyrics.test.ts → tests/helpers.ts
+- `makeUserSession()` --calls--> `setUserSession()`  [EXTRACTED]
+  tests/youtube-audio.test.ts → tests/helpers.ts
 - `enablePiped()` --calls--> `resetPlaybackProvidersForTests()`  [EXTRACTED]
   tests/youtube-audio.test.ts → src/lib/playback/resolver.ts
 - `diagnose()` --calls--> `pickBestMatch()`  [EXTRACTED]
   scripts/diag-match.ts → src/lib/youtube-match.ts
-- `diagnose()` --calls--> `scoreCandidate()`  [EXTRACTED]
-  scripts/diag-match.ts → src/lib/youtube-match.ts
-- `GET()` --calls--> `spotifyErrorResponse()`  [EXTRACTED]
-  src/app/api/youtube/search/route.ts → src/app/api/spotify/search/route.ts
 
 ## Communities (49 total, 9 thin omitted)
 
 ### Community 0 - "Community 0"
-Cohesion: 0.11
-Nodes (30): isStatus(), lookup(), prune(), record(), Status, toLookup(), TTL_MS, bestMatch() (+22 more)
+Cohesion: 0.1
+Nodes (31): isStatus(), lookup(), prune(), record(), Status, toLookup(), TTL_MS, bestMatch() (+23 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.08
-Nodes (52): Ctx, POST(), Home(), Ctx, POST(), POST(), Ctx, DELETE() (+44 more)
+Cohesion: 0.1
+Nodes (42): Ctx, POST(), Home(), Ctx, POST(), POST(), Ctx, DELETE() (+34 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.05
-Nodes (31): clearCookies(), emptyRequest(), jsonRequest(), mockCookieStore, ParamCtx, seedSpotifyConnection(), setOwnerActingSession(), setOwnerSession() (+23 more)
+Nodes (46): clearSessionCookie(), getSecret(), isSession(), readSessionCookie(), setSessionCookie(), signSession(), verifySessionToken(), POST() (+38 more)
 
 ### Community 3 - "Community 3"
 Cohesion: 0.07
@@ -100,35 +100,35 @@ Nodes (27): cache, evictAudioCache(), getPlaybackProviders(), resetPlaybackProvi
 
 ### Community 4 - "Community 4"
 Cohesion: 0.05
-Nodes (59): appUrl(), GET(), GET(), importAutoMatchLimit(), POST(), spotifyErrorResponse(), EmbedTrack, findKey() (+51 more)
+Nodes (57): appUrl(), GET(), GET(), importAutoMatchLimit(), POST(), spotifyErrorResponse(), EmbedTrack, findKey() (+49 more)
 
 ### Community 5 - "Community 5"
 Cohesion: 0.07
-Nodes (39): Candidate, contentTokens(), COVER_PATTERNS, coverage(), detectReason(), HARD_REJECT_PATTERNS, intersects(), MatchResult (+31 more)
+Nodes (44): RankablePlaylist, RankableSong, scorePlaylist(), scoreSong(), tier(), tokenCoverage(), Candidate, contentTokens() (+36 more)
 
 ### Community 6 - "Community 6"
 Cohesion: 0.06
 Nodes (32): dependencies, better-sqlite3, jose, next, @prisma/adapter-better-sqlite3, @prisma/client, react, react-dom (+24 more)
 
 ### Community 7 - "Community 7"
-Cohesion: 0.15
-Nodes (18): Ctx, EMPTY, PlayerCtx, PlayerProvider(), State, clampIndex(), getNextPlayableYoutubeId(), Identified (+10 more)
+Cohesion: 0.16
+Nodes (16): Ctx, EMPTY, PlayerCtx, PlayerProvider(), State, clampIndex(), Identified, nextIndex() (+8 more)
 
 ### Community 8 - "Community 8"
 Cohesion: 0.07
 Nodes (26): Already captured / not a separate ticket, API authorization changes, Cache model, code:ts (type LyricsResponse =), code:prisma (model LyricsCache {), code:sh (pnpm exec tsc --noEmit), code:sh (graphify update .), Context (+18 more)
 
 ### Community 9 - "Community 9"
-Cohesion: 0.22
-Nodes (11): AddToPlaylistMenu(), PlaylistOption, Props, Status, PlaylistOption, PlayStatus, Props, SaveStatus (+3 more)
+Cohesion: 0.18
+Nodes (13): AddToPlaylistMenu(), PlaylistOption, Props, Status, PlaylistOption, PlayStatus, Props, ResultRow() (+5 more)
 
 ### Community 10 - "Community 10"
-Cohesion: 0.06
-Nodes (44): AppLayout(), ClonePlaylistButton(), Props, Status, UserOption, CreatePlaylistForm(), DeletePlaylistButton(), Props (+36 more)
+Cohesion: 0.05
+Nodes (52): AppLayout(), ClonePlaylistButton(), Props, Status, UserOption, CreatePlaylistForm(), DeletePlaylistButton(), Props (+44 more)
 
 ### Community 11 - "Community 11"
 Cohesion: 0.05
-Nodes (51): chain, flushPendingMatches(), getApiKey(), isQuotaExhaustionReason(), MatchOutcome, matchSongById(), parseIsoDuration(), parseYoutubeErrorReason() (+43 more)
+Nodes (60): canRepairSongMatch(), normalizeSong(), parseAltIds(), serializeAltIds(), chain, fetchVideoDetails(), filterEmbeddableIds(), flushPendingMatches() (+52 more)
 
 ### Community 12 - "Community 12"
 Cohesion: 0.1
@@ -136,7 +136,7 @@ Nodes (19): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModu
 
 ### Community 13 - "Community 13"
 Cohesion: 0.14
-Nodes (15): CandidateRow(), formatDuration(), parseMetadata(), PickYoutubeMatchModal(), Props, PlayerBar(), useNowPlaying(), ResultRow() (+7 more)
+Nodes (14): CandidateRow(), formatDuration(), parseMetadata(), PickYoutubeMatchModal(), Props, friendlyOverrideError(), Props, REASON_LABELS (+6 more)
 
 ### Community 14 - "Community 14"
 Cohesion: 0.13
@@ -151,8 +151,8 @@ Cohesion: 0.24
 Nodes (9): CopyStatus, formatDuration(), parseYoutubeMetadata(), PlaylistOption, Props, ResultRow(), SaveStatus, songPayloadFromYoutube() (+1 more)
 
 ### Community 17 - "Community 17"
-Cohesion: 0.18
-Nodes (9): Props, SearchBar(), SearchResults(), LoadState, PlaylistOption, Props, SearchPageClient(), QuotaStatus (+1 more)
+Cohesion: 0.11
+Nodes (23): LibrarySearchResults(), Props, useNowPlaying(), Props, RecentSearches(), Props, SearchBar(), LoadState (+15 more)
 
 ### Community 18 - "Community 18"
 Cohesion: 0.2
@@ -163,8 +163,8 @@ Cohesion: 0.18
 Nodes (10): Adding a manual song to a playlist (two-step flow), code:bash (pnpm test          # one-shot), Frontend / pages, Layout, Manual smoke test, Música Ligera 42, Package manager, Playlists & songs API (+2 more)
 
 ### Community 20 - "Community 20"
-Cohesion: 0.2
-Nodes (9): PlaylistList(), Props, ListPlaylistsResponse, MeResponse, PlaylistResponse, PlaylistSource, PlaylistWithCount, PlaylistWithSongs (+1 more)
+Cohesion: 0.1
+Nodes (20): Context, Existing implementation to inspect, Expected behavior, Final verification, Goal, Goal, Hard guardrails, Implementation ideas to evaluate (+12 more)
 
 ### Community 21 - "Community 21"
 Cohesion: 0.29
@@ -195,36 +195,36 @@ Cohesion: 0.67
 Nodes (3): Backups, code:bash (fly volumes list                                  # find <vo), code:bash (fly ssh console -C "/usr/local/bin/backup-db"     # writes /)
 
 ### Community 45 - "Community 45"
-Cohesion: 0.28
-Nodes (10): clearSessionCookie(), getSecret(), isSession(), readSessionCookie(), setSessionCookie(), signSession(), verifySessionToken(), POST() (+2 more)
+Cohesion: 0.36
+Nodes (11): clearHistory(), deleteSearch(), isSearchSurface(), listRecent(), recordSearch(), SEARCH_SURFACES, normalizeQuery(), DELETE() (+3 more)
 
 ### Community 47 - "Community 47"
-Cohesion: 0.18
-Nodes (6): AudioError, AudioStatus, LyricsUiState, Props, YouTubeAudioPlayer(), Props
+Cohesion: 0.15
+Nodes (8): AudioError, AudioStatus, LyricsUiState, PlayerBar(), Props, YouTubeAudioPlayer(), Props, getNextPlayableYoutubeId()
 
 ### Community 48 - "Community 48"
 Cohesion: 0.4
 Nodes (4): DONE, Side Bar: iOS-specific or lower-value for web, TODO, Web/iOS Parity Master List
 
 ## Knowledge Gaps
-- **285 isolated node(s):** `config`, `name`, `version`, `private`, `packageManager` (+280 more)
+- **310 isolated node(s):** `config`, `name`, `version`, `private`, `packageManager` (+305 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **9 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `getSession()` connect `Community 1` to `Community 3`, `Community 4`, `Community 10`, `Community 11`, `Community 45`?**
-  _High betweenness centrality (0.044) - this node is a cross-community bridge._
-- **Why does `unauthorized()` connect `Community 1` to `Community 3`, `Community 11`, `Community 4`?**
+- **Why does `getSession()` connect `Community 1` to `Community 2`, `Community 3`, `Community 4`, `Community 10`, `Community 11`, `Community 45`?**
+  _High betweenness centrality (0.045) - this node is a cross-community bridge._
+- **Why does `unauthorized()` connect `Community 1` to `Community 3`, `Community 11`, `Community 4`, `Community 45`?**
+  _High betweenness centrality (0.025) - this node is a cross-community bridge._
+- **Why does `truncateAll()` connect `Community 2` to `Community 0`, `Community 3`, `Community 11`, `Community 45`?**
   _High betweenness centrality (0.019) - this node is a cross-community bridge._
-- **Why does `isValidYoutubeId()` connect `Community 7` to `Community 3`, `Community 1`, `Community 11`?**
-  _High betweenness centrality (0.017) - this node is a cross-community bridge._
 - **What connects `config`, `name`, `version` to the rest of the system?**
-  _285 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _310 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
-  _Cohesion score 0.11 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.1 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
-  _Cohesion score 0.08 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.1 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**
   _Cohesion score 0.05 - nodes in this community are weakly interconnected._
