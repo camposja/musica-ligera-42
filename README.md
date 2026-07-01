@@ -385,7 +385,9 @@ Vitest runs against a dedicated SQLite file at `prisma/test.db` (gitignored). Gl
 
 ### Keep-alive vs always-on
 
-The header has a `Keep awake` button that pings `GET /api/keep-alive` every ~3 minutes (with ±10s jitter) for 1 hour, keeping the Fly machine warm while the tab is open. Best-effort only: backgrounded mobile tabs and locked phones throttle or stop the timer. Endpoint is auth-gated; no DB access.
+The header has a user-controlled `Keep awake` button. Starting it opens a **temporary 60-minute warm window**: while the tab is open and awake, it pings `GET /api/keep-alive` every ~3 minutes (±10s jitter), which counts as real Fly traffic and resets the idle auto-stop timer. The UI is honest about state — it shows **Connecting…** until the first ping actually succeeds (never claims "Awake" on a dead endpoint), then **Awake · Nm left**, and a clear retrying/error state if pings fail. **Extend** resets the window to a fresh 60 minutes; **Stop** cancels all future pings, clears stored state, and prevents any retry/focus/visibility catch-up from resuming. When it's off, nothing pings and Fly is free to auto-stop the machine as normal.
+
+Honest limits: this only keeps Fly warm **while an active browser tab can make requests**. It **cannot** keep the app warm once the browser/device is asleep or the tab is closed — backgrounded mobile tabs and locked phones throttle or suspend timers (the button catches up on focus/visibility/online/bfcache resume, but a suspended device sends nothing). Endpoint is auth-gated, uncached (`no-store`), and does no DB work.
 
 For unconditional always-on, set `min_machines_running = 1` in `fly.toml`. Safe under the single-machine rule (`min=1, max=1` stays single-writer) and cheaper than worrying about cold-starts, at the cost of running one shared-cpu-1x 24/7.
 
