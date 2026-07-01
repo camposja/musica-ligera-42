@@ -1,5 +1,6 @@
-import { getSession, unauthorized } from "@/lib/auth";
+import { forbidden, getSession, unauthorized } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { canRepairSongMatch } from "@/lib/song-permissions";
 import { normalizeSong } from "@/lib/song-serialization";
 import { isValidYoutubeId, matchSongById, YoutubeError } from "@/lib/youtube";
 import { getQuotaStatus } from "@/lib/youtube-quota";
@@ -21,9 +22,9 @@ export async function POST(request: Request) {
   if (typeof songId !== "string" || songId.length === 0) {
     return Response.json({ error: "songId required" }, { status: 400 });
   }
-  // Forced rematch is available to any authenticated session (USER or OWNER):
-  // users repairing their own playlists need to redo a bad match. The quota
-  // safeguard below still bounds how much external budget this can spend.
+  // Matching (incl. forced rematch) is available to USER and OWNER; the quota
+  // safeguard below still bounds external budget. USERs are scoped to songs in
+  // their own playlists (checked after the existence lookup); OWNER is not.
   const force = (body as Record<string, unknown>).force === true;
 
   const existing = await prisma.song.findUnique({
@@ -33,6 +34,10 @@ export async function POST(request: Request) {
   if (!existing) {
     return Response.json({ error: "Song not found" }, { status: 404 });
   }
+
+  // The song exists; a USER may only mutate it if it's in one of their
+  // playlists. Return 403 (not 404) so we don't leak whether the song exists.
+  if (!(await canRepairSongMatch(session, songId))) return forbidden();
 
   // Short-circuit: a background match (or an earlier explicit one) may have
   // already filled youtubeId. Return without burning quota when the caller

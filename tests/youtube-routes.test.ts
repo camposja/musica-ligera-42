@@ -112,6 +112,17 @@ async function makeSong(opts: { youtubeId?: string | null } = {}) {
   });
 }
 
+// Give `userId` repair permission over `songId` by putting the song in a
+// playlist they own. USER match/override is scoped to songs in the caller's own
+// playlists, so USER-success tests must seed ownership first.
+async function addSongToUserPlaylist(userId: string, songId: string, name = "p") {
+  const playlist = await prisma.playlist.create({ data: { name, userId } });
+  await prisma.playlistSong.create({
+    data: { playlistId: playlist.id, songId, order: 0 },
+  });
+  return playlist;
+}
+
 // === POST /api/youtube/match ===============================================
 // Any signed-in user can request a match, including a forced rematch — USERs
 // repair their own playlists. The quota safeguard still bounds spend.
@@ -123,10 +134,11 @@ describe("POST /api/youtube/match", () => {
     expect(res.status).toBe(401);
   });
 
-  it("USER without force: 200 (matches the song)", async () => {
+  it("USER without force: 200 for a song in their playlist", async () => {
     mockFetchSequence(matchPair([PAD("a")]));
     const s = await makeSong();
     const u = await makeUser();
+    await addSongToUserPlaylist(u.id, s.id);
     await setUserSession(u.id);
     const res = await matchPOST(jsonRequest("http://x", { songId: s.id }));
     expect(res.status).toBe(200);
@@ -134,10 +146,11 @@ describe("POST /api/youtube/match", () => {
     expect(body.song.youtubeId).toBe(PAD("a"));
   });
 
-  it("USER with force=true: 200 (forced rematch is allowed for USERs)", async () => {
+  it("USER force=true: 200 for a song in their playlist", async () => {
     mockFetchSequence(matchPair([PAD("n")]));
     const s = await makeSong({ youtubeId: "EXISTINGYTID" });
     const u = await makeUser();
+    await addSongToUserPlaylist(u.id, s.id);
     await setUserSession(u.id);
     const res = await matchPOST(
       jsonRequest("http://x", { songId: s.id, force: true }),
@@ -145,6 +158,30 @@ describe("POST /api/youtube/match", () => {
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.song.youtubeId).toBe(PAD("n"));
+  });
+
+  it("USER force=true: 403 for a song only in ANOTHER user's playlist", async () => {
+    const s = await makeSong({ youtubeId: "EXISTINGYTID" });
+    const other = await makeUser("bob");
+    await addSongToUserPlaylist(other.id, s.id);
+    const u = await makeUser("alice");
+    await setUserSession(u.id);
+    const fetchSpy = mockFetchSequence([]);
+    const res = await matchPOST(
+      jsonRequest("http://x", { songId: s.id, force: true }),
+    );
+    expect(res.status).toBe(403);
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it("USER: 403 for a global song in no playlist", async () => {
+    const s = await makeSong();
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const fetchSpy = mockFetchSequence([]);
+    const res = await matchPOST(jsonRequest("http://x", { songId: s.id }));
+    expect(res.status).toBe(403);
+    expect(fetchSpy).not.toHaveBeenCalled();
   });
 
   it("400 missing songId", async () => {
@@ -189,6 +226,7 @@ describe("POST /api/youtube/match", () => {
   it("short-circuits when youtubeId already set (no force, no fetch)", async () => {
     const s = await makeSong({ youtubeId: "ALREADYMATCH" });
     const u = await makeUser();
+    await addSongToUserPlaylist(u.id, s.id);
     await setUserSession(u.id);
     const fetchSpy = mockFetchSequence([]);
     const res = await matchPOST(jsonRequest("http://x", { songId: s.id }));
@@ -283,10 +321,11 @@ describe("POST /api/youtube/override", () => {
     expect(res.status).toBe(401);
   });
 
-  it("USER session can override (200) and update youtubeId + manual metadata", async () => {
+  it("USER can override a song in their playlist (200) + manual metadata", async () => {
     mockFetchSequence([videoDetails()]);
     const s = await makeSong();
     const u = await makeUser();
+    await addSongToUserPlaylist(u.id, s.id);
     await setUserSession(u.id);
     const res = await overridePOST(
       jsonRequest("http://x", { songId: s.id, newYoutubeId: VALID }),
@@ -296,6 +335,28 @@ describe("POST /api/youtube/override", () => {
     expect(body.song.youtubeId).toBe(VALID);
     expect(body.song.youtubeMatchType).toBe("loose");
     expect(body.song.youtubeMatchReason).toBe("manual");
+  });
+
+  it("USER cannot override a song only in ANOTHER user's playlist (403)", async () => {
+    const s = await makeSong();
+    const other = await makeUser("bob");
+    await addSongToUserPlaylist(other.id, s.id);
+    const u = await makeUser("alice");
+    await setUserSession(u.id);
+    const res = await overridePOST(
+      jsonRequest("http://x", { songId: s.id, newYoutubeId: VALID }),
+    );
+    expect(res.status).toBe(403);
+  });
+
+  it("USER cannot override a global song in no playlist (403)", async () => {
+    const s = await makeSong();
+    const u = await makeUser();
+    await setUserSession(u.id);
+    const res = await overridePOST(
+      jsonRequest("http://x", { songId: s.id, newYoutubeId: VALID }),
+    );
+    expect(res.status).toBe(403);
   });
 
   it("USER gets the same parse_failed as OWNER for a non-YouTube URL", async () => {
@@ -316,6 +377,7 @@ describe("POST /api/youtube/override", () => {
     mockFetchSequence([videoDetails({ notFound: true })]);
     const s = await makeSong();
     const u = await makeUser();
+    await addSongToUserPlaylist(u.id, s.id);
     await setUserSession(u.id);
     const res = await overridePOST(
       jsonRequest("http://x", { songId: s.id, newYoutubeId: VALID }),
@@ -328,6 +390,7 @@ describe("POST /api/youtube/override", () => {
     mockFetchSequence([videoDetails({ isPrivate: true })]);
     const s = await makeSong();
     const u = await makeUser();
+    await addSongToUserPlaylist(u.id, s.id);
     await setUserSession(u.id);
     const res = await overridePOST(
       jsonRequest("http://x", { songId: s.id, newYoutubeId: VALID }),
@@ -1193,6 +1256,7 @@ describe("Pick-match flow (search → override)", () => {
     mockFetchSequence([searchResp([candA]), candAVideos, candAVideos]);
     const song = await makeSong();
     const u = await makeUser();
+    await addSongToUserPlaylist(u.id, song.id);
     await setUserSession(u.id);
 
     const searchRes = await youtubeSearchGET(

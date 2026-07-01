@@ -1,5 +1,6 @@
-import { getSession, unauthorized } from "@/lib/auth";
+import { forbidden, getSession, unauthorized } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { canRepairSongMatch } from "@/lib/song-permissions";
 import { normalizeSong, serializeAltIds } from "@/lib/song-serialization";
 import {
   fetchVideoDetails,
@@ -9,11 +10,10 @@ import {
 } from "@/lib/youtube";
 
 export async function POST(request: Request) {
-  // Any authenticated session may repair a song's YouTube match — regular USERs
-  // are the ones listening and noticing wrong/missing matches. Song rows are
-  // global shared state, so an override affects every playlist referencing this
-  // song; that's an accepted tradeoff for this app (the picker/inline form copy
-  // signals it). Auth model itself is unchanged: still just session-gated.
+  // Regular USERs may repair matches (they're the ones noticing wrong/missing
+  // ones), but Song rows are global shared state, so a USER is scoped to songs
+  // in their own playlists; OWNER may repair any song. The ownership check runs
+  // after the song-exists lookup below. Auth model itself is unchanged.
   const session = await getSession();
   if (!session) return unauthorized();
 
@@ -77,6 +77,10 @@ export async function POST(request: Request) {
   if (!exists) {
     return Response.json({ error: "Song not found" }, { status: 404 });
   }
+
+  // The song exists; a USER may only mutate it if it's in one of their
+  // playlists. Return 403 (not 404) so we don't leak whether the song exists.
+  if (!(await canRepairSongMatch(session, b.songId))) return forbidden();
 
   // Validate the pasted video actually exists and is playable. Cheap (3 quota
   // units) and prevents typos / dead links from being persisted forever.
