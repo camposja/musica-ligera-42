@@ -8,6 +8,11 @@ type Props = {
   placeholder?: string;
   buttonClassName?: string;
   inputClassName?: string;
+  // Optional controlled mode: pass both to let a parent drive the input (e.g. to
+  // populate it when a recent search is clicked). Omit both to keep the bar
+  // self-contained (its previous, uncontrolled behavior).
+  value?: string;
+  onChange?: (v: string) => void;
 };
 
 const DEFAULT_BUTTON_CLASS =
@@ -22,8 +27,16 @@ export function SearchBar({
   placeholder = "Search artists, songs, albums…",
   buttonClassName = DEFAULT_BUTTON_CLASS,
   inputClassName = DEFAULT_INPUT_CLASS,
+  value,
+  onChange,
 }: Props) {
-  const [q, setQ] = useState("");
+  const [internal, setInternal] = useState("");
+  const controlled = value !== undefined;
+  const q = controlled ? value : internal;
+  const setQ = (v: string) => {
+    if (controlled) onChange?.(v);
+    else setInternal(v);
+  };
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();

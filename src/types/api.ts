@@ -95,3 +95,23 @@ export type YoutubeSearchResponse = {
   results: YoutubeSearchResult[];
   quota: QuotaStatus;
 };
+
+// === Local library search ==================================================
+// Searches the effective user's saved library (their playlists + the songs in
+// them). Local results ARE Song rows — do not map them onto NormalizedTrack
+// (which requires a spotifyId that a YouTube-sourced/manual song lacks).
+
+export type LibraryPlaylistRef = { id: string; name: string };
+
+// A saved Song plus which of the caller's playlists contain it (for linking).
+export type LibrarySearchResult = Song & { playlists: LibraryPlaylistRef[] };
+
+export type LibrarySearchResponse = {
+  songs: LibrarySearchResult[];
+  playlists: LibraryPlaylistRef[];
+};
+
+// === Search history ========================================================
+// One of the three web search surfaces. Kept here (no Prisma import) so client
+// components can reference it without bundling the server-only helper.
+export type SearchSurface = "library" | "spotify" | "youtube";

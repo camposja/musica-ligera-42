@@ -2,13 +2,19 @@
 
 import { useState } from "react";
 import { ApiError, apiFetch } from "@/lib/api-client";
+import { LibrarySearchResults } from "@/components/LibrarySearchResults";
+import { RecentSearches } from "@/components/RecentSearches";
 import { SearchBar } from "@/components/SearchBar";
 import { SearchResults } from "@/components/SearchResults";
 import { YouTubeSearchResults } from "@/components/YouTubeSearchResults";
 import type {
+  LibraryPlaylistRef,
+  LibrarySearchResponse,
+  LibrarySearchResult,
   NormalizedTrack,
   QuotaStatus,
   SearchResponse,
+  SearchSurface,
   YoutubeSearchResponse,
   YoutubeSearchResult,
 } from "@/types/api";
@@ -31,6 +37,15 @@ const YOUTUBE_INPUT =
   "flex-1 appearance-none rounded border border-border bg-background px-3 py-2 outline-none focus:border-yt-red [&::-webkit-search-cancel-button]:appearance-none";
 
 export function SearchPageClient({ playlists }: Props) {
+  // Library (local saved songs + playlists)
+  const [librarySongs, setLibrarySongs] = useState<LibrarySearchResult[]>([]);
+  const [libraryPlaylists, setLibraryPlaylists] = useState<LibraryPlaylistRef[]>(
+    [],
+  );
+  const [libraryState, setLibraryState] = useState<LoadState>("idle");
+  const [libraryError, setLibraryError] = useState<string | null>(null);
+  const [libraryLastQuery, setLibraryLastQuery] = useState("");
+
   // Spotify
   const [spotifyTracks, setSpotifyTracks] = useState<NormalizedTrack[]>([]);
   const [spotifyState, setSpotifyState] = useState<LoadState>("idle");
@@ -45,7 +60,48 @@ export function SearchPageClient({ playlists }: Props) {
   const [quota, setQuota] = useState<QuotaStatus | null>(null);
   const [quotaBlocked, setQuotaBlocked] = useState(false);
 
+  // Controlled input value per surface, so clicking a recent search can populate
+  // and rerun the correct bar.
+  const [libraryInput, setLibraryInput] = useState("");
+  const [spotifyInput, setSpotifyInput] = useState("");
+  const [youtubeInput, setYoutubeInput] = useState("");
+  // Bumped after a search is recorded, to refresh each bar's recent-search chips.
+  const [historyTick, setHistoryTick] = useState(0);
+
+  // Record a submitted search (best-effort; never blocks the actual search).
+  async function recordHistory(surface: SearchSurface, q: string) {
+    try {
+      await apiFetch("/api/search-history", {
+        method: "POST",
+        body: JSON.stringify({ surface, query: q }),
+      });
+      setHistoryTick((t) => t + 1);
+    } catch {
+      // history is best-effort
+    }
+  }
+
+  async function onLibrarySearch(q: string) {
+    void recordHistory("library", q);
+    setLibraryState("loading");
+    setLibraryError(null);
+    setLibraryLastQuery(q);
+    try {
+      const data = await apiFetch<LibrarySearchResponse>(
+        `/api/library/search?q=${encodeURIComponent(q)}`,
+      );
+      setLibrarySongs(data.songs);
+      setLibraryPlaylists(data.playlists);
+      setLibraryState("ready");
+    } catch (err) {
+      const e = err instanceof ApiError ? err : null;
+      setLibraryError(e?.message ?? "Search failed");
+      setLibraryState("error");
+    }
+  }
+
   async function onSpotifySearch(q: string) {
+    void recordHistory("spotify", q);
     setSpotifyState("loading");
     setSpotifyError(null);
     setSpotifyLastQuery(q);
@@ -71,6 +127,7 @@ export function SearchPageClient({ playlists }: Props) {
   }
 
   async function onYouTubeSearch(q: string) {
+    void recordHistory("youtube", q);
     setYoutubeState("loading");
     setYoutubeError(null);
     setYoutubeLastQuery(q);
@@ -107,6 +164,13 @@ export function SearchPageClient({ playlists }: Props) {
     }
   }
 
+  function clearLibrary() {
+    setLibrarySongs([]);
+    setLibraryPlaylists([]);
+    setLibraryState("idle");
+    setLibraryError(null);
+  }
+
   function clearSpotify() {
     setSpotifyTracks([]);
     setSpotifyState("idle");
@@ -125,14 +189,41 @@ export function SearchPageClient({ playlists }: Props) {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-semibold">Search Spotify or YouTube</h1>
+      <h1 className="text-2xl font-semibold">
+        Search your library, Spotify, or YouTube
+      </h1>
 
       <div className="flex flex-col gap-3">
+        <SearchBar
+          onSearch={onLibrarySearch}
+          disabled={libraryState === "loading"}
+          placeholder="Search your saved songs & playlists (library)"
+          value={libraryInput}
+          onChange={setLibraryInput}
+        />
+        <RecentSearches
+          surface="library"
+          refreshKey={historyTick}
+          onRerun={(q) => {
+            setLibraryInput(q);
+            void onLibrarySearch(q);
+          }}
+        />
         <SearchBar
           onSearch={onSpotifySearch}
           disabled={spotifyState === "loading"}
           placeholder="Search artists, songs, albums… (Spotify)"
           buttonClassName={SPOTIFY_BUTTON}
+          value={spotifyInput}
+          onChange={setSpotifyInput}
+        />
+        <RecentSearches
+          surface="spotify"
+          refreshKey={historyTick}
+          onRerun={(q) => {
+            setSpotifyInput(q);
+            void onSpotifySearch(q);
+          }}
         />
         <SearchBar
           onSearch={onYouTubeSearch}
@@ -140,6 +231,16 @@ export function SearchPageClient({ playlists }: Props) {
           placeholder={youtubePlaceholder}
           buttonClassName={YOUTUBE_BUTTON}
           inputClassName={YOUTUBE_INPUT}
+          value={youtubeInput}
+          onChange={setYoutubeInput}
+        />
+        <RecentSearches
+          surface="youtube"
+          refreshKey={historyTick}
+          onRerun={(q) => {
+            setYoutubeInput(q);
+            void onYouTubeSearch(q);
+          }}
         />
         {quota && !quotaBlocked && (
           <p className="text-xs text-muted">
@@ -153,6 +254,32 @@ export function SearchPageClient({ playlists }: Props) {
           </p>
         )}
       </div>
+
+      {/* Library section */}
+      {libraryState === "loading" && (
+        <p className="text-sm text-muted">Searching your library…</p>
+      )}
+      {libraryState === "error" && libraryError && (
+        <p className="rounded border border-danger/40 bg-surface px-4 py-3 text-sm text-danger">
+          {libraryError}
+        </p>
+      )}
+      {libraryState === "ready" && (
+        <section className="flex flex-col gap-2">
+          <SectionHeader
+            title="Library results"
+            count={librarySongs.length + libraryPlaylists.length}
+            query={libraryLastQuery}
+            onClear={clearLibrary}
+          />
+          {(librarySongs.length > 0 || libraryPlaylists.length > 0) && (
+            <LibrarySearchResults
+              songs={librarySongs}
+              playlists={libraryPlaylists}
+            />
+          )}
+        </section>
+      )}
 
       {/* Spotify section */}
       {spotifyState === "loading" && (

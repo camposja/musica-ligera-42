@@ -158,3 +158,21 @@ model LyricsCache {
 
   @@index([createdAt])
 }
+
+// Per-user, per-surface recent-searches list. `surface` is a String union
+// ("library" | "spotify" | "youtube") — SQLite has no enums. Dedupe is on
+// (userId, surface, normalizedQuery): re-searching an existing query upserts and
+// bumps createdAt (moves it to the top) and refreshes the display casing. The
+// list is capped per (userId, surface) at write time. Only submitted, non-empty
+// searches are recorded (never keystrokes).
+model SearchHistory {
+  id              String   @id @default(uuid())
+  userId          String
+  surface         String   // "library" | "spotify" | "youtube"
+  query           String   // original display casing
+  normalizedQuery String   // trim + lowercase + collapse whitespace
+  createdAt       DateTime @default(now())
+
+  @@unique([userId, surface, normalizedQuery])
+  @@index([userId, surface, createdAt])
+}
