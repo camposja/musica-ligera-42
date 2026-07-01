@@ -5,17 +5,17 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/prisma.config.ts": {
-    "mtime": 1778103776.0625134,
+    "mtime": 1779641542.9807773,
     "ast_hash": "7f3181963231d50b80cfc8058036cf82",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/next-env.d.ts": {
-    "mtime": 1779161899.6076508,
+    "mtime": 1782856632.0925598,
     "ast_hash": "d0f8375ae1199dc7acd3977fc33b78b8",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/package.json": {
-    "mtime": 1779161276.4186773,
+    "mtime": 1779642417.6323903,
     "ast_hash": "561d8720f9d70be0b96b878fc44fb222",
     "semantic_hash": ""
   },
@@ -35,48 +35,53 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/next.config.ts": {
-    "mtime": 1778103567.7748609,
+    "mtime": 1779641542.9805493,
     "ast_hash": "ce9b4488cb80da1f03f8b44d628673a5",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/bin/docker-entrypoint": {
-    "mtime": 1778126431.1628528,
+    "mtime": 1779642417.596214,
     "ast_hash": "3237f6bc67ea327cf9bb3b9310b3f5a1",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/bin/backup-db": {
-    "mtime": 1778126458.0862067,
+    "mtime": 1779642417.5959046,
     "ast_hash": "f72b5673195b3aea7cf223e9304d7caf",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/prisma/migrations/20260507031507_add_api_quota_usage/migration.sql": {
-    "mtime": 1778123707.9866228,
+    "mtime": 1779642417.6378083,
     "ast_hash": "d09145d697dd5f7c36d075b7625a78e1",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/prisma/migrations/20260524120000_add_app_setting/migration.sql": {
-    "mtime": 1779639886.1150563,
+    "mtime": 1779642417.6381552,
     "ast_hash": "9b38e9867c9824bb189f5d5020bcca50",
     "semantic_hash": ""
   },
+  "/Users/scv_oc/dev/musica-42/musica-ligera-42/prisma/migrations/20260630214756_add_lyrics_cache/migration.sql": {
+    "mtime": 1782856076.1914473,
+    "ast_hash": "f4d27f7d402de2021c3fd0247206a14c",
+    "semantic_hash": ""
+  },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/prisma/migrations/20260508154326_add_youtube_search_cache/migration.sql": {
-    "mtime": 1778255006.0791655,
+    "mtime": 1779642417.638006,
     "ast_hash": "d5af659d3f9d38f93809871c400d878a",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/prisma/migrations/20260506202901_init/migration.sql": {
-    "mtime": 1778102734.8077264,
+    "mtime": 1779642417.637598,
     "ast_hash": "993ff63664b1c6a7273c42b17a205485",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/tests/songs.test.ts": {
-    "mtime": 1778124268.8563125,
+    "mtime": 1779641660.12969,
     "ast_hash": "fed2a0c7372b57a0bc652a15d433b637",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/tests/helpers.ts": {
-    "mtime": 1779640066.2275867,
-    "ast_hash": "1fa911732c692140ee6d68ed02c5482a",
+    "mtime": 1782856100.4535198,
+    "ast_hash": "271a376db38aff15b6c3771ad90d846b",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/tests/auth.test.ts": {
@@ -85,28 +90,28 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/tests/youtube.test.ts": {
-    "mtime": 1778124188.3763435,
+    "mtime": 1779641660.1315174,
     "ast_hash": "50ad4ddf59f5965ff2c289e073402551",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/tests/youtube-search.test.ts": {
-    "mtime": 1778255351.9753714,
+    "mtime": 1779641660.131194,
     "ast_hash": "94e4b802b45eb21f3e38a127e6dd94b1",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/tests/spotify-routes.test.ts": {
-    "mtime": 1778254501.6399605,
+    "mtime": 1779641660.1304822,
     "ast_hash": "86ac5ecd1723b5e2f75bade6bebec70a",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/tests/setup-env.ts": {
-    "mtime": 1778102734.8115215,
+    "mtime": 1779642417.6413913,
     "ast_hash": "8213cf7c19a839b23d8c63ff4c8a9b3a",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/tests/spotify.test.ts": {
-    "mtime": 1777884709.7633376,
-    "ast_hash": "4f71686e3d5533a82e0ddae19fd67e41",
+    "mtime": 1782622725.432687,
+    "ast_hash": "6869fe28058b6bccaad4e39d1e88a087",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/tests/playlists.test.ts": {
@@ -115,23 +120,28 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/tests/youtube-match.test.ts": {
-    "mtime": 1778012908.6225102,
-    "ast_hash": "142f45bd5a70b7c977afa4831df49c92",
+    "mtime": 1782622719.1538527,
+    "ast_hash": "fe730568d016184be22310e50a09eac0",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/tests/global-setup.ts": {
-    "mtime": 1778102734.811143,
+    "mtime": 1779642417.641009,
     "ast_hash": "a70df5c6d29ee6d9626e9e6994d4f0c2",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/tests/spotify-oauth-routes.test.ts": {
-    "mtime": 1779640325.794729,
+    "mtime": 1779641660.1301372,
     "ast_hash": "962640fc5879b9c449fc1046845bc8a5",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/tests/settings-route.test.ts": {
-    "mtime": 1779640055.8279536,
+    "mtime": 1779641660.1293325,
     "ast_hash": "43079bf48a0e49d3fa75b9be86ba535d",
+    "semantic_hash": ""
+  },
+  "/Users/scv_oc/dev/musica-42/musica-ligera-42/tests/lyrics.test.ts": {
+    "mtime": 1782856543.4127192,
+    "ast_hash": "0b5fa84f3b63f9459666afb2f789641e",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/tests/youtube-audio.test.ts": {
@@ -140,12 +150,12 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/tests/youtube-routes.test.ts": {
-    "mtime": 1778256113.8694627,
-    "ast_hash": "ae2d69028e72ef9bd4927cc96b02cb22",
+    "mtime": 1782880776.1220274,
+    "ast_hash": "9a90a5a26d918c825b4c362846034c88",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/tests/youtube-quota.test.ts": {
-    "mtime": 1778254456.3560946,
+    "mtime": 1779641660.1306522,
     "ast_hash": "be82300e26469be438707104abae5cf2",
     "semantic_hash": ""
   },
@@ -155,22 +165,27 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/.claude/settings.json": {
-    "mtime": 1779637545.0078044,
+    "mtime": 1779642417.592963,
     "ast_hash": "9276b535256dc065bd7b8b84e15abd95",
     "semantic_hash": ""
   },
+  "/Users/scv_oc/dev/musica-42/musica-ligera-42/.claude/settings.local.json": {
+    "mtime": 1782622515.2893198,
+    "ast_hash": "93af95df418e37860e98ffb252bd8d97",
+    "semantic_hash": ""
+  },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/.codex/hooks.json": {
-    "mtime": 1779637544.9694576,
+    "mtime": 1779642417.5934093,
     "ast_hash": "699e968dd8a68203d0891bf75440e892",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/scripts/install-branch-env-hook.sh": {
-    "mtime": 1778256267.599904,
+    "mtime": 1779642417.6388392,
     "ast_hash": "22c34728bfa3bd4b67bd6d0b73e8a4cd",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/scripts/switch-local-env.sh": {
-    "mtime": 1778256076.7900176,
+    "mtime": 1779642417.6391144,
     "ast_hash": "bd42adbbdec7c6bda340b0b152c11f12",
     "semantic_hash": ""
   },
@@ -185,7 +200,7 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/types/api.ts": {
-    "mtime": 1778124306.890027,
+    "mtime": 1779642417.6407192,
     "ast_hash": "3323ecf94678f53924ea3e92c0e8e177",
     "semantic_hash": ""
   },
@@ -200,7 +215,7 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/app/(app)/layout.tsx": {
-    "mtime": 1779639940.2753825,
+    "mtime": 1779641653.6590724,
     "ast_hash": "714a9fa1ca441da511e3d041e9591b23",
     "semantic_hash": ""
   },
@@ -215,17 +230,17 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/app/(app)/settings/page.tsx": {
-    "mtime": 1779639989.6247287,
+    "mtime": 1779641653.65986,
     "ast_hash": "e6770102ad51f7e00a7ba352883403cc",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/app/(app)/playlist/[id]/page.tsx": {
-    "mtime": 1778102734.8084624,
-    "ast_hash": "4a82ca570a0557b343f29de8bf4d4a4f",
+    "mtime": 1782855799.6546915,
+    "ast_hash": "49a41650d495ba008078f138ce4f4708",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/app/(app)/search/SearchPageClient.tsx": {
-    "mtime": 1778125434.3331206,
+    "mtime": 1779641653.6596968,
     "ast_hash": "027dabfde50faf15a333a1056364adce",
     "semantic_hash": ""
   },
@@ -239,13 +254,18 @@
     "ast_hash": "72e06a61a1065fa8b292f798ad1257dc",
     "semantic_hash": ""
   },
+  "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/app/api/lyrics/route.ts": {
+    "mtime": 1782856292.2122371,
+    "ast_hash": "a1f3a93ce651770b480fdfbaae4151d2",
+    "semantic_hash": ""
+  },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/app/api/songs/route.ts": {
-    "mtime": 1778124100.6324995,
+    "mtime": 1779642417.6394458,
     "ast_hash": "5daca2ff82daf788829e5b6178dcdc05",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/app/api/settings/route.ts": {
-    "mtime": 1779639906.8566513,
+    "mtime": 1779641653.6601443,
     "ast_hash": "86484dfd3b5da0dd23e7ed2a03f89752",
     "semantic_hash": ""
   },
@@ -290,7 +310,7 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/app/api/auth/login/route.ts": {
-    "mtime": 1778102734.8087974,
+    "mtime": 1779642417.6392763,
     "ast_hash": "30144a2f78b807383ecb891beb2d5373",
     "semantic_hash": ""
   },
@@ -305,12 +325,12 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/app/api/spotify/import-playlist/route.ts": {
-    "mtime": 1778254412.6193707,
+    "mtime": 1779641653.6612988,
     "ast_hash": "96d5772ebbe1ee46a4c033a43de6b5a9",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/app/api/spotify/callback/route.ts": {
-    "mtime": 1779639925.5778844,
+    "mtime": 1779641653.6607985,
     "ast_hash": "82eb0d69336a53d7de53f767cd8e4c77",
     "semantic_hash": ""
   },
@@ -320,27 +340,27 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/app/api/spotify/connect/route.ts": {
-    "mtime": 1779639912.9978256,
+    "mtime": 1779641653.6610143,
     "ast_hash": "48cb90487271273ad35e7231360bd8ee",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/app/api/keep-alive/route.ts": {
-    "mtime": 1779638245.701115,
+    "mtime": 1779641653.6600077,
     "ast_hash": "ad6ab9d44a5d79b6a2714eb374bb74b7",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/app/api/youtube/override/route.ts": {
-    "mtime": 1778256037.4487603,
-    "ast_hash": "092594d1543628254870b421d4fa806f",
+    "mtime": 1782880614.917941,
+    "ast_hash": "66aebe6a9bceed8051a515c97342831c",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/app/api/youtube/match/route.ts": {
-    "mtime": 1778124028.9296982,
-    "ast_hash": "4d6c97f7ceb4899131e6b56e166b15fc",
+    "mtime": 1782880633.566363,
+    "ast_hash": "93000b1a5610d1f883bcf0fd7054c8d7",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/app/api/youtube/rematch-missing/route.ts": {
-    "mtime": 1778124053.4609222,
+    "mtime": 1779641653.6619885,
     "ast_hash": "830f497cd2fb5c5ec2bf89e8e4ab4dcd",
     "semantic_hash": ""
   },
@@ -350,7 +370,7 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/app/api/youtube/search/route.ts": {
-    "mtime": 1778255232.1136434,
+    "mtime": 1779641653.662114,
     "ast_hash": "840a32d93c296bc4b6dbeaae6b8217d6",
     "semantic_hash": ""
   },
@@ -375,12 +395,12 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/app/(auth)/login/LoginForm.tsx": {
-    "mtime": 1778248974.9318829,
-    "ast_hash": "20cb2b3e6ce1384de7328c0bbbd543f4",
+    "mtime": 1782852288.6210558,
+    "ast_hash": "bd360aefe0d68d5201eef681d8c62743",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/app/(auth)/login/page.tsx": {
-    "mtime": 1778187452.7474606,
+    "mtime": 1779641542.9813242,
     "ast_hash": "fe4de998d58afdfc05fd0dc93f2e1e49",
     "semantic_hash": ""
   },
@@ -400,8 +420,8 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/components/PlayerBar.tsx": {
-    "mtime": 1778097072.1838496,
-    "ast_hash": "01890f2abe828294077c44876d10db52",
+    "mtime": 1782856408.9339445,
+    "ast_hash": "8243fa0fdfd85ff177eb21c8b476f7d6",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/components/ImportPlaylistForm.tsx": {
@@ -410,7 +430,7 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/components/SettingsForm.tsx": {
-    "mtime": 1779640001.9233952,
+    "mtime": 1779641542.982198,
     "ast_hash": "9f2071e7651d270af25988ae3c2779f4",
     "semantic_hash": ""
   },
@@ -425,12 +445,12 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/components/HeaderMenu.tsx": {
-    "mtime": 1779640301.8270776,
+    "mtime": 1779641653.6626322,
     "ast_hash": "1a6c3e5e3014c3d0d52958eb93e736d0",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/components/SearchBar.tsx": {
-    "mtime": 1778124624.4466207,
+    "mtime": 1779641542.9820776,
     "ast_hash": "20c074db5e1cefdc3e245480dd5d166d",
     "semantic_hash": ""
   },
@@ -450,13 +470,13 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/components/PickYoutubeMatchModal.tsx": {
-    "mtime": 1778256089.296795,
-    "ast_hash": "4522888675e774f954e3fb1a6fb8123c",
+    "mtime": 1782622745.5294135,
+    "ast_hash": "b0cdf5ff86235f61ab21f4744ba7b01b",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/components/SongList.tsx": {
-    "mtime": 1778256076.1041222,
-    "ast_hash": "06dee1e8713c88b1e43d047f81b4a219",
+    "mtime": 1782855793.356698,
+    "ast_hash": "4a526aa7e7b88145dc27d7002867a2ad",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/components/SearchResults.tsx": {
@@ -465,12 +485,12 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/components/YouTubeSearchResults.tsx": {
-    "mtime": 1778125444.7141323,
+    "mtime": 1779641542.9826918,
     "ast_hash": "0cc2a52023139b7a971dc560b050d58d",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/components/Header.tsx": {
-    "mtime": 1779639954.7886903,
+    "mtime": 1779641653.662379,
     "ast_hash": "9f5506a7387ba7698af8861738af1b26",
     "semantic_hash": ""
   },
@@ -490,7 +510,7 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/components/KeepAliveButton.tsx": {
-    "mtime": 1779638376.1430993,
+    "mtime": 1779641542.981751,
     "ast_hash": "9608fdb785dc5d7a87589aaca9db59c2",
     "semantic_hash": ""
   },
@@ -500,7 +520,7 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/lib/prisma.ts": {
-    "mtime": 1778102734.8100812,
+    "mtime": 1779642417.6401005,
     "ast_hash": "4c9e12f3119b4ead1a288fe79e9556df",
     "semantic_hash": ""
   },
@@ -510,7 +530,7 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/lib/app-settings.ts": {
-    "mtime": 1779639899.5871198,
+    "mtime": 1779641542.9828205,
     "ast_hash": "e2af14b9c4f6483495d11745b488e43b",
     "semantic_hash": ""
   },
@@ -520,13 +540,18 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/lib/youtube-search.ts": {
-    "mtime": 1778255167.0332768,
+    "mtime": 1779641542.9834545,
     "ast_hash": "abb5e8ef595a741acd32938cb2aef10a",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/lib/song-serialization.ts": {
-    "mtime": 1778102734.810282,
+    "mtime": 1779642417.6404057,
     "ast_hash": "a1ddf0ae65ee92aed0e7b7a8f3dad99d",
+    "semantic_hash": ""
+  },
+  "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/lib/song-permissions.ts": {
+    "mtime": 1782880594.7129695,
+    "ast_hash": "32251db488c492dfed4f22a5b27c6afc",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/lib/spotify-oauth.ts": {
@@ -535,7 +560,7 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/lib/youtube-quota.ts": {
-    "mtime": 1778254399.2616684,
+    "mtime": 1779641542.9832058,
     "ast_hash": "60bc8b748abc50bc9c3e0f33faa27740",
     "semantic_hash": ""
   },
@@ -545,12 +570,12 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/lib/youtube-search-cache.ts": {
-    "mtime": 1778255027.3500643,
+    "mtime": 1779641542.9833279,
     "ast_hash": "e52a2728a38123651713e8f4bb20d11a",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/lib/player-queue.ts": {
-    "mtime": 1778102734.8099203,
+    "mtime": 1779641542.9830785,
     "ast_hash": "a6db7e6a4714ad683b09f94b4f24bb8a",
     "semantic_hash": ""
   },
@@ -575,7 +600,7 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/lib/youtube.ts": {
-    "mtime": 1778255207.4532177,
+    "mtime": 1779642417.6405783,
     "ast_hash": "9f32dd8ece19b3d4c7731bc20207f44d",
     "semantic_hash": ""
   },
@@ -592,6 +617,31 @@
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/lib/auth.ts": {
     "mtime": 1777882761.2646413,
     "ast_hash": "166628f283b53f512c85c3daf0eae898",
+    "semantic_hash": ""
+  },
+  "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/lib/lyrics/lrclib.ts": {
+    "mtime": 1782856188.2458057,
+    "ast_hash": "37c9215c70001c1cc4ea9afb7e91560c",
+    "semantic_hash": ""
+  },
+  "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/lib/lyrics/types.ts": {
+    "mtime": 1782856170.7098527,
+    "ast_hash": "ef9c1f92e33b5af45ea54af2a338d8b2",
+    "semantic_hash": ""
+  },
+  "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/lib/lyrics/cache.ts": {
+    "mtime": 1782856200.9596272,
+    "ast_hash": "f6cbdfbf6de61f6381df4d2645a424b9",
+    "semantic_hash": ""
+  },
+  "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/lib/lyrics/normalize.ts": {
+    "mtime": 1782856163.6856267,
+    "ast_hash": "ed72d0a8eb022379c57766898da4dd76",
+    "semantic_hash": ""
+  },
+  "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/lib/lyrics/service.ts": {
+    "mtime": 1782856210.0677774,
+    "ast_hash": "7b9ec7be1ae7a3791d401cb3c7a65e19",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/src/lib/playback/resolver.ts": {
@@ -620,23 +670,53 @@
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/README.md": {
-    "mtime": 1779638408.5124676,
+    "mtime": 1779642417.5955894,
     "ast_hash": "0b04aa0160e380ed15c67822b0f3bf77",
     "semantic_hash": ""
   },
+  "/Users/scv_oc/dev/musica-42/musica-ligera-42/FOLLOW_UP_TICKET.md": {
+    "mtime": 1782880493.0686674,
+    "ast_hash": "df605035a72a09aed6910362055f5b29",
+    "semantic_hash": ""
+  },
+  "/Users/scv_oc/dev/musica-42/musica-ligera-42/TICKET.md": {
+    "mtime": 1782854045.1823475,
+    "ast_hash": "2df7ce54542fb00512726666bad16d23",
+    "semantic_hash": ""
+  },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/AGENTS.md": {
-    "mtime": 1779637544.9691834,
+    "mtime": 1779641542.9800055,
     "ast_hash": "3810d931f1644c66f2625640b9fdde06",
     "semantic_hash": ""
   },
+  "/Users/scv_oc/dev/musica-42/musica-ligera-42/WEB_IOS_PARITY_MASTER_LIST.md": {
+    "mtime": 1782880648.4189637,
+    "ast_hash": "6e258f0aec8b2c2c5e1031847da3f7c7",
+    "semantic_hash": ""
+  },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/CLAUDE.md": {
-    "mtime": 1779637545.0075753,
+    "mtime": 1779641542.9802604,
     "ast_hash": "d2049dd74b445bfb8b1cb8dd0c16cb22",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/pnpm-workspace.yaml": {
-    "mtime": 1779161292.2775552,
-    "ast_hash": "5317c238b4945097691f1e2bec688237",
+    "mtime": 1779643103.1408482,
+    "ast_hash": "ba21306a560f880644f17cc5595d90d1",
+    "semantic_hash": ""
+  },
+  "/Users/scv_oc/dev/musica-42/musica-ligera-42/.github/dependabot.yml": {
+    "mtime": 1782622490.5599017,
+    "ast_hash": "590a5045d451a83ca83e9fb7a4cb3a0f",
+    "semantic_hash": ""
+  },
+  "/Users/scv_oc/dev/musica-42/musica-ligera-42/.github/workflows/codeql.yml": {
+    "mtime": 1782622490.5441425,
+    "ast_hash": "2b403e22a711a57ac55a14dd20317996",
+    "semantic_hash": ""
+  },
+  "/Users/scv_oc/dev/musica-42/musica-ligera-42/.github/workflows/ci.yml": {
+    "mtime": 1782622490.5163252,
+    "ast_hash": "db09024b211e59ae3f3a36345fd63ee0",
     "semantic_hash": ""
   },
   "/Users/scv_oc/dev/musica-42/musica-ligera-42/public/file.svg": {

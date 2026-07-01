@@ -664,7 +664,7 @@
       "label": "seedSpotifyConnection()",
       "file_type": "code",
       "source_file": "tests/helpers.ts",
-      "source_location": "L56",
+      "source_location": "L57",
       "id": "tests_helpers_seedspotifyconnection",
       "community": 2,
       "norm_label": "seedspotifyconnection()"
@@ -673,7 +673,7 @@
       "label": "jsonRequest()",
       "file_type": "code",
       "source_file": "tests/helpers.ts",
-      "source_location": "L79",
+      "source_location": "L80",
       "id": "tests_helpers_jsonrequest",
       "community": 2,
       "norm_label": "jsonrequest()"
@@ -682,7 +682,7 @@
       "label": "emptyRequest()",
       "file_type": "code",
       "source_file": "tests/helpers.ts",
-      "source_location": "L87",
+      "source_location": "L88",
       "id": "tests_helpers_emptyrequest",
       "community": 2,
       "norm_label": "emptyrequest()"
@@ -691,7 +691,7 @@
       "label": "ParamCtx",
       "file_type": "code",
       "source_file": "tests/helpers.ts",
-      "source_location": "L91",
+      "source_location": "L92",
       "id": "tests_helpers_paramctx",
       "community": 2,
       "norm_label": "paramctx"
@@ -700,7 +700,7 @@
       "label": "ctx()",
       "file_type": "code",
       "source_file": "tests/helpers.ts",
-      "source_location": "L93",
+      "source_location": "L94",
       "id": "tests_helpers_ctx",
       "community": 3,
       "norm_label": "ctx()"
@@ -711,7 +711,7 @@
       "source_file": "tests/auth.test.ts",
       "source_location": "L1",
       "id": "tests_auth_test_ts",
-      "community": 2,
+      "community": 1,
       "norm_label": "auth.test.ts"
     },
     {
@@ -720,7 +720,7 @@
       "source_file": "tests/youtube.test.ts",
       "source_location": "L1",
       "id": "tests_youtube_test_ts",
-      "community": 0,
+      "community": 11,
       "norm_label": "youtube.test.ts"
     },
     {
@@ -729,7 +729,7 @@
       "source_file": "tests/youtube.test.ts",
       "source_location": "L34",
       "id": "tests_youtube_test_mockedresponse",
-      "community": 0,
+      "community": 11,
       "norm_label": "mockedresponse"
     },
     {
@@ -738,7 +738,7 @@
       "source_file": "tests/youtube.test.ts",
       "source_location": "L40",
       "id": "tests_youtube_test_makeresponse",
-      "community": 0,
+      "community": 11,
       "norm_label": "makeresponse()"
     },
     {
@@ -747,7 +747,7 @@
       "source_file": "tests/youtube.test.ts",
       "source_location": "L49",
       "id": "tests_youtube_test_mockfetchsequence",
-      "community": 0,
+      "community": 11,
       "norm_label": "mockfetchsequence()"
     },
     {
@@ -756,7 +756,7 @@
       "source_file": "tests/youtube.test.ts",
       "source_location": "L61",
       "id": "tests_youtube_test_pad",
-      "community": 0,
+      "community": 11,
       "norm_label": "pad()"
     },
     {
@@ -765,7 +765,7 @@
       "source_file": "tests/youtube.test.ts",
       "source_location": "L63",
       "id": "tests_youtube_test_itemspec",
-      "community": 0,
+      "community": 11,
       "norm_label": "itemspec"
     },
     {
@@ -774,7 +774,7 @@
       "source_file": "tests/youtube.test.ts",
       "source_location": "L73",
       "id": "tests_youtube_test_searchresp",
-      "community": 0,
+      "community": 11,
       "norm_label": "searchresp()"
     },
     {
@@ -783,7 +783,7 @@
       "source_file": "tests/youtube.test.ts",
       "source_location": "L80",
       "id": "tests_youtube_test_isoduration",
-      "community": 0,
+      "community": 11,
       "norm_label": "isoduration()"
     },
     {
@@ -792,7 +792,7 @@
       "source_file": "tests/youtube.test.ts",
       "source_location": "L86",
       "id": "tests_youtube_test_videosresp",
-      "community": 0,
+      "community": 11,
       "norm_label": "videosresp()"
     },
     {
@@ -801,7 +801,7 @@
       "source_file": "tests/youtube.test.ts",
       "source_location": "L110",
       "id": "tests_youtube_test_matchpair",
-      "community": 0,
+      "community": 11,
       "norm_label": "matchpair()"
     },
     {
@@ -810,7 +810,7 @@
       "source_file": "tests/youtube.test.ts",
       "source_location": "L305",
       "id": "tests_youtube_test_makesong",
-      "community": 0,
+      "community": 11,
       "norm_label": "makesong()"
     },
     {
@@ -819,7 +819,7 @@
       "source_file": "tests/youtube.test.ts",
       "source_location": "L372",
       "id": "tests_youtube_test_fetchspy",
-      "community": 0,
+      "community": 11,
       "norm_label": "fetchspy"
     },
     {
@@ -828,7 +828,7 @@
       "source_file": "tests/youtube.test.ts",
       "source_location": "L450",
       "id": "tests_youtube_test_searchcalls",
-      "community": 0,
+      "community": 11,
       "norm_label": "searchcalls"
     },
     {
@@ -837,7 +837,7 @@
       "source_file": "tests/youtube.test.ts",
       "source_location": "L489",
       "id": "tests_youtube_test_e",
-      "community": 0,
+      "community": 11,
       "norm_label": "e"
     },
     {
@@ -846,7 +846,7 @@
       "source_file": "tests/youtube-search.test.ts",
       "source_location": "L1",
       "id": "tests_youtube_search_test_ts",
-      "community": 0,
+      "community": 11,
       "norm_label": "youtube-search.test.ts"
     },
     {
@@ -855,7 +855,7 @@
       "source_file": "tests/youtube-search.test.ts",
       "source_location": "L90",
       "id": "tests_youtube_search_test_mockedresponse",
-      "community": 0,
+      "community": 11,
       "norm_label": "mockedresponse"
     },
     {
@@ -864,7 +864,7 @@
       "source_file": "tests/youtube-search.test.ts",
       "source_location": "L96",
       "id": "tests_youtube_search_test_makeresponse",
-      "community": 0,
+      "community": 11,
       "norm_label": "makeresponse()"
     },
     {
@@ -873,7 +873,7 @@
       "source_file": "tests/youtube-search.test.ts",
       "source_location": "L105",
       "id": "tests_youtube_search_test_mockfetchsequence",
-      "community": 0,
+      "community": 11,
       "norm_label": "mockfetchsequence()"
     },
     {
@@ -882,7 +882,7 @@
       "source_file": "tests/youtube-search.test.ts",
       "source_location": "L117",
       "id": "tests_youtube_search_test_pad",
-      "community": 0,
+      "community": 11,
       "norm_label": "pad()"
     },
     {
@@ -891,7 +891,7 @@
       "source_file": "tests/youtube-search.test.ts",
       "source_location": "L119",
       "id": "tests_youtube_search_test_searchresp",
-      "community": 0,
+      "community": 11,
       "norm_label": "searchresp()"
     },
     {
@@ -900,7 +900,7 @@
       "source_file": "tests/youtube-search.test.ts",
       "source_location": "L126",
       "id": "tests_youtube_search_test_videosresp",
-      "community": 0,
+      "community": 11,
       "norm_label": "videosresp()"
     },
     {
@@ -1426,6 +1426,96 @@
       "norm_label": "body"
     },
     {
+      "label": "lyrics.test.ts",
+      "file_type": "code",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L1",
+      "id": "tests_lyrics_test_ts",
+      "community": 0,
+      "norm_label": "lyrics.test.ts"
+    },
+    {
+      "label": "Mocked",
+      "file_type": "code",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L23",
+      "id": "tests_lyrics_test_mocked",
+      "community": 0,
+      "norm_label": "mocked"
+    },
+    {
+      "label": "makeResponse()",
+      "file_type": "code",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L25",
+      "id": "tests_lyrics_test_makeresponse",
+      "community": 0,
+      "norm_label": "makeresponse()"
+    },
+    {
+      "label": "mockFetchSequence()",
+      "file_type": "code",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L32",
+      "id": "tests_lyrics_test_mockfetchsequence",
+      "community": 0,
+      "norm_label": "mockfetchsequence()"
+    },
+    {
+      "label": "track()",
+      "file_type": "code",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L40",
+      "id": "tests_lyrics_test_track",
+      "community": 0,
+      "norm_label": "track()"
+    },
+    {
+      "label": "ok",
+      "file_type": "code",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L103",
+      "id": "tests_lyrics_test_ok",
+      "community": 0,
+      "norm_label": "ok"
+    },
+    {
+      "label": "spy",
+      "file_type": "code",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L111",
+      "id": "tests_lyrics_test_spy",
+      "community": 0,
+      "norm_label": "spy"
+    },
+    {
+      "label": "init",
+      "file_type": "code",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L146",
+      "id": "tests_lyrics_test_init",
+      "community": 0,
+      "norm_label": "init"
+    },
+    {
+      "label": "old",
+      "file_type": "code",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L177",
+      "id": "tests_lyrics_test_old",
+      "community": 0,
+      "norm_label": "old"
+    },
+    {
+      "label": "asUser()",
+      "file_type": "code",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L254",
+      "id": "tests_lyrics_test_asuser",
+      "community": 2,
+      "norm_label": "asuser()"
+    },
+    {
       "label": "youtube-audio.test.ts",
       "file_type": "code",
       "source_file": "tests/youtube-audio.test.ts",
@@ -1485,7 +1575,7 @@
       "source_file": "tests/youtube-audio.test.ts",
       "source_location": "L95",
       "id": "tests_youtube_audio_test_makeusersession",
-      "community": 3,
+      "community": 2,
       "norm_label": "makeusersession()"
     },
     {
@@ -1642,10 +1732,19 @@
       "norm_label": "makesong()"
     },
     {
+      "label": "addSongToUserPlaylist()",
+      "file_type": "code",
+      "source_file": "tests/youtube-routes.test.ts",
+      "source_location": "L118",
+      "id": "tests_youtube_routes_test_addsongtouserplaylist",
+      "community": 2,
+      "norm_label": "addsongtouserplaylist()"
+    },
+    {
       "label": "fetchSpy",
       "file_type": "code",
       "source_file": "tests/youtube-routes.test.ts",
-      "source_location": "L140",
+      "source_location": "L169",
       "id": "tests_youtube_routes_test_fetchspy",
       "community": 2,
       "norm_label": "fetchspy"
@@ -1654,7 +1753,7 @@
       "label": "videoDetails()",
       "file_type": "code",
       "source_file": "tests/youtube-routes.test.ts",
-      "source_location": "L245",
+      "source_location": "L285",
       "id": "tests_youtube_routes_test_videodetails",
       "community": 2,
       "norm_label": "videodetails()"
@@ -1663,7 +1762,7 @@
       "label": "makeUnmatchedSong()",
       "file_type": "code",
       "source_file": "tests/youtube-routes.test.ts",
-      "source_location": "L531",
+      "source_location": "L639",
       "id": "tests_youtube_routes_test_makeunmatchedsong",
       "community": 2,
       "norm_label": "makeunmatchedsong()"
@@ -1672,7 +1771,7 @@
       "label": "searchRequest()",
       "file_type": "code",
       "source_file": "tests/youtube-routes.test.ts",
-      "source_location": "L654",
+      "source_location": "L762",
       "id": "tests_youtube_routes_test_searchrequest",
       "community": 2,
       "norm_label": "searchrequest()"
@@ -1681,7 +1780,7 @@
       "label": "today",
       "file_type": "code",
       "source_file": "tests/youtube-routes.test.ts",
-      "source_location": "L790",
+      "source_location": "L898",
       "id": "tests_youtube_routes_test_today",
       "community": 2,
       "norm_label": "today"
@@ -1690,7 +1789,7 @@
       "label": "candA",
       "file_type": "code",
       "source_file": "tests/youtube-routes.test.ts",
-      "source_location": "L1049",
+      "source_location": "L1157",
       "id": "tests_youtube_routes_test_canda",
       "community": 2,
       "norm_label": "canda"
@@ -1699,7 +1798,7 @@
       "label": "candB",
       "file_type": "code",
       "source_file": "tests/youtube-routes.test.ts",
-      "source_location": "L1050",
+      "source_location": "L1158",
       "id": "tests_youtube_routes_test_candb",
       "community": 2,
       "norm_label": "candb"
@@ -1708,10 +1807,19 @@
       "label": "candC",
       "file_type": "code",
       "source_file": "tests/youtube-routes.test.ts",
-      "source_location": "L1051",
+      "source_location": "L1159",
       "id": "tests_youtube_routes_test_candc",
       "community": 2,
       "norm_label": "candc"
+    },
+    {
+      "label": "candAVideos",
+      "file_type": "code",
+      "source_file": "tests/youtube-routes.test.ts",
+      "source_location": "L1243",
+      "id": "tests_youtube_routes_test_candavideos",
+      "community": 2,
+      "norm_label": "candavideos"
     },
     {
       "label": "youtube-quota.test.ts",
@@ -1719,7 +1827,7 @@
       "source_file": "tests/youtube-quota.test.ts",
       "source_location": "L1",
       "id": "tests_youtube_quota_test_ts",
-      "community": 0,
+      "community": 11,
       "norm_label": "youtube-quota.test.ts"
     },
     {
@@ -1728,7 +1836,7 @@
       "source_file": "tests/youtube-quota.test.ts",
       "source_location": "L50",
       "id": "tests_youtube_quota_test_now",
-      "community": 0,
+      "community": 11,
       "norm_label": "now"
     },
     {
@@ -1820,6 +1928,33 @@
       "id": "claude_settings_hooks_pretooluse",
       "community": 27,
       "norm_label": "pretooluse"
+    },
+    {
+      "label": "settings.local.json",
+      "file_type": "code",
+      "source_file": ".claude/settings.local.json",
+      "source_location": "L1",
+      "id": "claude_settings_local_json",
+      "community": 46,
+      "norm_label": "settings.local.json"
+    },
+    {
+      "label": "permissions",
+      "file_type": "code",
+      "source_file": ".claude/settings.local.json",
+      "source_location": "L2",
+      "id": "claude_settings_local_permissions",
+      "community": 46,
+      "norm_label": "permissions"
+    },
+    {
+      "label": "allow",
+      "file_type": "code",
+      "source_file": ".claude/settings.local.json",
+      "source_location": "L3",
+      "id": "claude_settings_local_permissions_allow",
+      "community": 46,
+      "norm_label": "allow"
     },
     {
       "label": "hooks.json",
@@ -2106,7 +2241,7 @@
       "source_file": "src/types/api.ts",
       "source_location": "L79",
       "id": "types_api_youtubesearchresult",
-      "community": 0,
+      "community": 11,
       "norm_label": "youtubesearchresult"
     },
     {
@@ -2331,7 +2466,7 @@
       "source_file": "src/app/(app)/search/SearchPageClient.tsx",
       "source_location": "L33",
       "id": "search_searchpageclient_searchpageclient",
-      "community": 10,
+      "community": 17,
       "norm_label": "searchpageclient()"
     },
     {
@@ -2391,10 +2526,28 @@
     {
       "label": "route.ts",
       "file_type": "code",
+      "source_file": "src/app/api/lyrics/route.ts",
+      "source_location": "L1",
+      "id": "src_app_api_lyrics_route_ts",
+      "community": 1,
+      "norm_label": "route.ts"
+    },
+    {
+      "label": "GET()",
+      "file_type": "code",
+      "source_file": "src/app/api/lyrics/route.ts",
+      "source_location": "L10",
+      "id": "lyrics_route_get",
+      "community": 1,
+      "norm_label": "get()"
+    },
+    {
+      "label": "route.ts",
+      "file_type": "code",
       "source_file": "src/app/api/songs/route.ts",
       "source_location": "L1",
       "id": "src_app_api_songs_route_ts",
-      "community": 0,
+      "community": 1,
       "norm_label": "route.ts"
     },
     {
@@ -2412,7 +2565,7 @@
       "source_file": "src/app/api/songs/route.ts",
       "source_location": "L16",
       "id": "songs_route_post",
-      "community": 0,
+      "community": 1,
       "norm_label": "post()"
     },
     {
@@ -2592,7 +2745,7 @@
       "source_file": "src/app/api/auth/logout/route.ts",
       "source_location": "L1",
       "id": "src_app_api_auth_logout_route_ts",
-      "community": 2,
+      "community": 45,
       "norm_label": "route.ts"
     },
     {
@@ -2601,7 +2754,7 @@
       "source_file": "src/app/api/auth/logout/route.ts",
       "source_location": "L3",
       "id": "logout_route_post",
-      "community": 2,
+      "community": 45,
       "norm_label": "post()"
     },
     {
@@ -2646,7 +2799,7 @@
       "source_file": "src/app/api/auth/login/route.ts",
       "source_location": "L1",
       "id": "src_app_api_auth_login_route_ts",
-      "community": 2,
+      "community": 45,
       "norm_label": "route.ts"
     },
     {
@@ -2655,7 +2808,7 @@
       "source_file": "src/app/api/auth/login/route.ts",
       "source_location": "L5",
       "id": "login_route_safeequal",
-      "community": 2,
+      "community": 45,
       "norm_label": "safeequal()"
     },
     {
@@ -2664,7 +2817,7 @@
       "source_file": "src/app/api/auth/login/route.ts",
       "source_location": "L11",
       "id": "login_route_post",
-      "community": 2,
+      "community": 45,
       "norm_label": "post()"
     },
     {
@@ -2700,7 +2853,7 @@
       "source_file": "src/app/api/youtube/search/route.ts",
       "source_location": "L9",
       "id": "search_route_get",
-      "community": 0,
+      "community": 11,
       "norm_label": "get()"
     },
     {
@@ -2754,7 +2907,7 @@
       "source_file": "src/app/api/spotify/callback/route.ts",
       "source_location": "L1",
       "id": "src_app_api_spotify_callback_route_ts",
-      "community": 8,
+      "community": 4,
       "norm_label": "route.ts"
     },
     {
@@ -2763,7 +2916,7 @@
       "source_file": "src/app/api/spotify/callback/route.ts",
       "source_location": "L17",
       "id": "callback_route_appurl",
-      "community": 8,
+      "community": 4,
       "norm_label": "appurl()"
     },
     {
@@ -2772,7 +2925,7 @@
       "source_file": "src/app/api/spotify/callback/route.ts",
       "source_location": "L25",
       "id": "callback_route_get",
-      "community": 8,
+      "community": 4,
       "norm_label": "get()"
     },
     {
@@ -2799,7 +2952,7 @@
       "source_file": "src/app/api/spotify/connect/route.ts",
       "source_location": "L1",
       "id": "src_app_api_spotify_connect_route_ts",
-      "community": 8,
+      "community": 4,
       "norm_label": "route.ts"
     },
     {
@@ -2808,7 +2961,7 @@
       "source_file": "src/app/api/spotify/connect/route.ts",
       "source_location": "L9",
       "id": "connect_route_get",
-      "community": 8,
+      "community": 4,
       "norm_label": "get()"
     },
     {
@@ -2835,16 +2988,16 @@
       "source_file": "src/app/api/youtube/override/route.ts",
       "source_location": "L1",
       "id": "src_app_api_youtube_override_route_ts",
-      "community": 0,
+      "community": 1,
       "norm_label": "route.ts"
     },
     {
       "label": "POST()",
       "file_type": "code",
       "source_file": "src/app/api/youtube/override/route.ts",
-      "source_location": "L11",
+      "source_location": "L12",
       "id": "override_route_post",
-      "community": 0,
+      "community": 1,
       "norm_label": "post()"
     },
     {
@@ -2853,25 +3006,25 @@
       "source_file": "src/app/api/youtube/match/route.ts",
       "source_location": "L1",
       "id": "src_app_api_youtube_match_route_ts",
-      "community": 0,
+      "community": 1,
       "norm_label": "route.ts"
     },
     {
       "label": "POST()",
       "file_type": "code",
       "source_file": "src/app/api/youtube/match/route.ts",
-      "source_location": "L7",
+      "source_location": "L8",
       "id": "match_route_post",
-      "community": 0,
+      "community": 1,
       "norm_label": "post()"
     },
     {
       "label": "youtubeErrorResponse()",
       "file_type": "code",
       "source_file": "src/app/api/youtube/match/route.ts",
-      "source_location": "L53",
+      "source_location": "L60",
       "id": "match_route_youtubeerrorresponse",
-      "community": 0,
+      "community": 1,
       "norm_label": "youtubeerrorresponse()"
     },
     {
@@ -2916,7 +3069,7 @@
       "source_file": "src/app/api/youtube/search/route.ts",
       "source_location": "L1",
       "id": "src_app_api_youtube_search_route_ts",
-      "community": 0,
+      "community": 11,
       "norm_label": "route.ts"
     },
     {
@@ -2925,7 +3078,7 @@
       "source_file": "src/app/api/youtube/search/route.ts",
       "source_location": "L32",
       "id": "search_route_youtubeerrorresponse",
-      "community": 0,
+      "community": 11,
       "norm_label": "youtubeerrorresponse()"
     },
     {
@@ -3141,7 +3294,7 @@
       "source_file": "src/components/YouTubePlayer.tsx",
       "source_location": "L1",
       "id": "src_components_youtubeplayer_tsx",
-      "community": 11,
+      "community": 47,
       "norm_label": "youtubeplayer.tsx"
     },
     {
@@ -3150,7 +3303,7 @@
       "source_file": "src/components/YouTubePlayer.tsx",
       "source_location": "L5",
       "id": "components_youtubeplayer_props",
-      "community": 11,
+      "community": 47,
       "norm_label": "props"
     },
     {
@@ -3159,7 +3312,7 @@
       "source_file": "src/components/YouTubePlayer.tsx",
       "source_location": "L12",
       "id": "components_youtubeplayer_youtubeplayer",
-      "community": 11,
+      "community": 47,
       "norm_label": "youtubeplayer()"
     },
     {
@@ -3213,7 +3366,7 @@
       "source_file": "src/components/PlayerBar.tsx",
       "source_location": "L1",
       "id": "src_components_playerbar_tsx",
-      "community": 11,
+      "community": 47,
       "norm_label": "playerbar.tsx"
     },
     {
@@ -3222,7 +3375,7 @@
       "source_file": "src/components/PlayerBar.tsx",
       "source_location": "L9",
       "id": "components_playerbar_audiostatus",
-      "community": 11,
+      "community": 47,
       "norm_label": "audiostatus"
     },
     {
@@ -3231,7 +3384,7 @@
       "source_file": "src/components/PlayerBar.tsx",
       "source_location": "L10",
       "id": "components_playerbar_audioerror",
-      "community": 11,
+      "community": 47,
       "norm_label": "audioerror"
     },
     {
@@ -3240,7 +3393,7 @@
       "source_file": "src/components/PlayerBar.tsx",
       "source_location": "L16",
       "id": "components_playerbar_preloadnext",
-      "community": 11,
+      "community": 47,
       "norm_label": "preloadnext()"
     },
     {
@@ -3249,8 +3402,26 @@
       "source_file": "src/components/PlayerBar.tsx",
       "source_location": "L28",
       "id": "components_playerbar_playerbar",
-      "community": 11,
+      "community": 13,
       "norm_label": "playerbar()"
+    },
+    {
+      "label": "LyricsUiState",
+      "file_type": "code",
+      "source_file": "src/components/PlayerBar.tsx",
+      "source_location": "L318",
+      "id": "components_playerbar_lyricsuistate",
+      "community": 47,
+      "norm_label": "lyricsuistate"
+    },
+    {
+      "label": "LyricsPanel()",
+      "file_type": "code",
+      "source_file": "src/components/PlayerBar.tsx",
+      "source_location": "L329",
+      "id": "components_playerbar_lyricspanel",
+      "community": 47,
+      "norm_label": "lyricspanel()"
     },
     {
       "label": "ImportPlaylistForm.tsx",
@@ -3321,7 +3492,7 @@
       "source_file": "src/components/YouTubeAudioPlayer.tsx",
       "source_location": "L1",
       "id": "src_components_youtubeaudioplayer_tsx",
-      "community": 11,
+      "community": 47,
       "norm_label": "youtubeaudioplayer.tsx"
     },
     {
@@ -3330,7 +3501,7 @@
       "source_file": "src/components/YouTubeAudioPlayer.tsx",
       "source_location": "L3",
       "id": "components_youtubeaudioplayer_props",
-      "community": 11,
+      "community": 47,
       "norm_label": "props"
     },
     {
@@ -3339,7 +3510,7 @@
       "source_file": "src/components/YouTubeAudioPlayer.tsx",
       "source_location": "L10",
       "id": "components_youtubeaudioplayer_youtubeaudioplayer",
-      "community": 11,
+      "community": 47,
       "norm_label": "youtubeaudioplayer()"
     },
     {
@@ -3562,7 +3733,7 @@
       "label": "parseMetadata()",
       "file_type": "code",
       "source_file": "src/components/PickYoutubeMatchModal.tsx",
-      "source_location": "L183",
+      "source_location": "L189",
       "id": "components_pickyoutubematchmodal_parsemetadata",
       "community": 13,
       "norm_label": "parsemetadata()"
@@ -3571,7 +3742,7 @@
       "label": "formatDuration()",
       "file_type": "code",
       "source_file": "src/components/PickYoutubeMatchModal.tsx",
-      "source_location": "L194",
+      "source_location": "L200",
       "id": "components_pickyoutubematchmodal_formatduration",
       "community": 13,
       "norm_label": "formatduration()"
@@ -3580,7 +3751,7 @@
       "label": "CandidateRow()",
       "file_type": "code",
       "source_file": "src/components/PickYoutubeMatchModal.tsx",
-      "source_location": "L201",
+      "source_location": "L207",
       "id": "components_pickyoutubematchmodal_candidaterow",
       "community": 13,
       "norm_label": "candidaterow()"
@@ -3595,19 +3766,10 @@
       "norm_label": "songlist.tsx"
     },
     {
-      "label": "Role",
-      "file_type": "code",
-      "source_file": "src/components/SongList.tsx",
-      "source_location": "L11",
-      "id": "components_songlist_role",
-      "community": 13,
-      "norm_label": "role"
-    },
-    {
       "label": "Props",
       "file_type": "code",
       "source_file": "src/components/SongList.tsx",
-      "source_location": "L13",
+      "source_location": "L11",
       "id": "components_songlist_props",
       "community": 13,
       "norm_label": "props"
@@ -3616,7 +3778,7 @@
       "label": "REASON_LABELS",
       "file_type": "code",
       "source_file": "src/components/SongList.tsx",
-      "source_location": "L20",
+      "source_location": "L17",
       "id": "components_songlist_reason_labels",
       "community": 13,
       "norm_label": "reason_labels"
@@ -3625,7 +3787,7 @@
       "label": "MatchBadge()",
       "file_type": "code",
       "source_file": "src/components/SongList.tsx",
-      "source_location": "L30",
+      "source_location": "L27",
       "id": "components_songlist_matchbadge",
       "community": 13,
       "norm_label": "matchbadge()"
@@ -3634,7 +3796,7 @@
       "label": "friendlyOverrideError()",
       "file_type": "code",
       "source_file": "src/components/SongList.tsx",
-      "source_location": "L63",
+      "source_location": "L60",
       "id": "components_songlist_friendlyoverrideerror",
       "community": 13,
       "norm_label": "friendlyoverrideerror()"
@@ -3643,7 +3805,7 @@
       "label": "OverrideButtons()",
       "file_type": "code",
       "source_file": "src/components/SongList.tsx",
-      "source_location": "L80",
+      "source_location": "L77",
       "id": "components_songlist_overridebuttons",
       "community": 13,
       "norm_label": "overridebuttons()"
@@ -3652,7 +3814,7 @@
       "label": "OverrideEditor()",
       "file_type": "code",
       "source_file": "src/components/SongList.tsx",
-      "source_location": "L148",
+      "source_location": "L140",
       "id": "components_songlist_overrideeditor",
       "community": 13,
       "norm_label": "overrideeditor()"
@@ -3661,7 +3823,7 @@
       "label": "SongList()",
       "file_type": "code",
       "source_file": "src/components/SongList.tsx",
-      "source_location": "L208",
+      "source_location": "L200",
       "id": "components_songlist_songlist",
       "community": 13,
       "norm_label": "songlist()"
@@ -3717,7 +3879,7 @@
       "source_file": "src/components/SearchResults.tsx",
       "source_location": "L20",
       "id": "components_searchresults_searchresults",
-      "community": 9,
+      "community": 17,
       "norm_label": "searchresults()"
     },
     {
@@ -4383,7 +4545,7 @@
       "source_file": "src/lib/youtube-search.ts",
       "source_location": "L1",
       "id": "src_lib_youtube_search_ts",
-      "community": 0,
+      "community": 11,
       "norm_label": "youtube-search.ts"
     },
     {
@@ -4392,7 +4554,7 @@
       "source_file": "src/lib/youtube-search.ts",
       "source_location": "L29",
       "id": "lib_youtube_search_youtubesearchresult",
-      "community": 0,
+      "community": 11,
       "norm_label": "youtubesearchresult"
     },
     {
@@ -4401,7 +4563,7 @@
       "source_file": "src/lib/youtube-search.ts",
       "source_location": "L38",
       "id": "lib_youtube_search_searchitem",
-      "community": 0,
+      "community": 11,
       "norm_label": "searchitem"
     },
     {
@@ -4410,7 +4572,7 @@
       "source_file": "src/lib/youtube-search.ts",
       "source_location": "L39",
       "id": "lib_youtube_search_rawsearchresponse",
-      "community": 0,
+      "community": 11,
       "norm_label": "rawsearchresponse"
     },
     {
@@ -4419,7 +4581,7 @@
       "source_file": "src/lib/youtube-search.ts",
       "source_location": "L41",
       "id": "lib_youtube_search_getapikey",
-      "community": 0,
+      "community": 11,
       "norm_label": "getapikey()"
     },
     {
@@ -4428,7 +4590,7 @@
       "source_file": "src/lib/youtube-search.ts",
       "source_location": "L65",
       "id": "lib_youtube_search_searchyoutube",
-      "community": 0,
+      "community": 11,
       "norm_label": "searchyoutube()"
     },
     {
@@ -4437,7 +4599,7 @@
       "source_file": "src/lib/youtube-search.ts",
       "source_location": "L154",
       "id": "lib_youtube_search_parseyoutubemetadata",
-      "community": 0,
+      "community": 11,
       "norm_label": "parseyoutubemetadata()"
     },
     {
@@ -4446,7 +4608,7 @@
       "source_file": "src/lib/youtube-search.ts",
       "source_location": "L168",
       "id": "lib_youtube_search_cleanchannel",
-      "community": 0,
+      "community": 11,
       "norm_label": "cleanchannel()"
     },
     {
@@ -4455,7 +4617,7 @@
       "source_file": "src/lib/song-serialization.ts",
       "source_location": "L1",
       "id": "src_lib_song_serialization_ts",
-      "community": 0,
+      "community": 1,
       "norm_label": "song-serialization.ts"
     },
     {
@@ -4464,7 +4626,7 @@
       "source_file": "src/lib/song-serialization.ts",
       "source_location": "L11",
       "id": "lib_song_serialization_parsealtids",
-      "community": 0,
+      "community": 1,
       "norm_label": "parsealtids()"
     },
     {
@@ -4473,7 +4635,7 @@
       "source_file": "src/lib/song-serialization.ts",
       "source_location": "L22",
       "id": "lib_song_serialization_serializealtids",
-      "community": 0,
+      "community": 1,
       "norm_label": "serializealtids()"
     },
     {
@@ -4482,7 +4644,7 @@
       "source_file": "src/lib/song-serialization.ts",
       "source_location": "L31",
       "id": "lib_song_serialization_normalizesong",
-      "community": 0,
+      "community": 1,
       "norm_label": "normalizesong()"
     },
     {
@@ -4491,8 +4653,26 @@
       "source_file": "src/lib/song-serialization.ts",
       "source_location": "L43",
       "id": "lib_song_serialization_normalizeplaylistwithsongs",
-      "community": 0,
+      "community": 1,
       "norm_label": "normalizeplaylistwithsongs()"
+    },
+    {
+      "label": "song-permissions.ts",
+      "file_type": "code",
+      "source_file": "src/lib/song-permissions.ts",
+      "source_location": "L1",
+      "id": "src_lib_song_permissions_ts",
+      "community": 1,
+      "norm_label": "song-permissions.ts"
+    },
+    {
+      "label": "canRepairSongMatch()",
+      "file_type": "code",
+      "source_file": "src/lib/song-permissions.ts",
+      "source_location": "L9",
+      "id": "lib_song_permissions_canrepairsongmatch",
+      "community": 1,
+      "norm_label": "canrepairsongmatch()"
     },
     {
       "label": "spotify-oauth.ts",
@@ -4500,7 +4680,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L1",
       "id": "src_lib_spotify_oauth_ts",
-      "community": 8,
+      "community": 4,
       "norm_label": "spotify-oauth.ts"
     },
     {
@@ -4509,7 +4689,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L23",
       "id": "lib_spotify_oauth_notconnectederror",
-      "community": 8,
+      "community": 4,
       "norm_label": "notconnectederror"
     },
     {
@@ -4518,7 +4698,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L24",
       "id": "lib_spotify_oauth_notconnectederror_constructor",
-      "community": 8,
+      "community": 4,
       "norm_label": ".constructor()"
     },
     {
@@ -4527,7 +4707,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L30",
       "id": "lib_spotify_oauth_reconnectrequirederror",
-      "community": 8,
+      "community": 4,
       "norm_label": "reconnectrequirederror"
     },
     {
@@ -4536,7 +4716,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L31",
       "id": "lib_spotify_oauth_reconnectrequirederror_constructor",
-      "community": 8,
+      "community": 4,
       "norm_label": ".constructor()"
     },
     {
@@ -4545,7 +4725,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L37",
       "id": "lib_spotify_oauth_usernotallowlistederror",
-      "community": 8,
+      "community": 4,
       "norm_label": "usernotallowlistederror"
     },
     {
@@ -4554,7 +4734,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L38",
       "id": "lib_spotify_oauth_usernotallowlistederror_constructor",
-      "community": 8,
+      "community": 4,
       "norm_label": ".constructor()"
     },
     {
@@ -4563,7 +4743,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L46",
       "id": "lib_spotify_oauth_tokenresponse",
-      "community": 8,
+      "community": 4,
       "norm_label": "tokenresponse"
     },
     {
@@ -4572,7 +4752,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L54",
       "id": "lib_spotify_oauth_getjwtsecret",
-      "community": 8,
+      "community": 4,
       "norm_label": "getjwtsecret()"
     },
     {
@@ -4581,7 +4761,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L60",
       "id": "lib_spotify_oauth_getoauthcreds",
-      "community": 8,
+      "community": 4,
       "norm_label": "getoauthcreds()"
     },
     {
@@ -4590,7 +4770,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L73",
       "id": "lib_spotify_oauth_signoauthstate",
-      "community": 8,
+      "community": 4,
       "norm_label": "signoauthstate()"
     },
     {
@@ -4599,7 +4779,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L83",
       "id": "lib_spotify_oauth_verifyoauthstatejwt",
-      "community": 8,
+      "community": 4,
       "norm_label": "verifyoauthstatejwt()"
     },
     {
@@ -4608,7 +4788,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L98",
       "id": "lib_spotify_oauth_setoauthstatecookie",
-      "community": 8,
+      "community": 4,
       "norm_label": "setoauthstatecookie()"
     },
     {
@@ -4617,7 +4797,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L109",
       "id": "lib_spotify_oauth_readoauthstatecookie",
-      "community": 8,
+      "community": 4,
       "norm_label": "readoauthstatecookie()"
     },
     {
@@ -4626,7 +4806,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L114",
       "id": "lib_spotify_oauth_clearoauthstatecookie",
-      "community": 8,
+      "community": 4,
       "norm_label": "clearoauthstatecookie()"
     },
     {
@@ -4635,7 +4815,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L125",
       "id": "lib_spotify_oauth_buildauthorizeurl",
-      "community": 8,
+      "community": 4,
       "norm_label": "buildauthorizeurl()"
     },
     {
@@ -4644,7 +4824,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L137",
       "id": "lib_spotify_oauth_posttokenendpoint",
-      "community": 8,
+      "community": 4,
       "norm_label": "posttokenendpoint()"
     },
     {
@@ -4653,7 +4833,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L173",
       "id": "lib_spotify_oauth_exchangecodefortoken",
-      "community": 8,
+      "community": 4,
       "norm_label": "exchangecodefortoken()"
     },
     {
@@ -4662,7 +4842,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L184",
       "id": "lib_spotify_oauth_refreshaccesstoken",
-      "community": 8,
+      "community": 4,
       "norm_label": "refreshaccesstoken()"
     },
     {
@@ -4671,7 +4851,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L195",
       "id": "lib_spotify_oauth_tryfetchspotifyuserid",
-      "community": 8,
+      "community": 4,
       "norm_label": "tryfetchspotifyuserid()"
     },
     {
@@ -4680,7 +4860,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L210",
       "id": "lib_spotify_oauth_upsertconnection",
-      "community": 8,
+      "community": 4,
       "norm_label": "upsertconnection()"
     },
     {
@@ -4689,7 +4869,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L242",
       "id": "lib_spotify_oauth_getvalidconnectiontoken",
-      "community": 8,
+      "community": 4,
       "norm_label": "getvalidconnectiontoken()"
     },
     {
@@ -4698,7 +4878,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L265",
       "id": "lib_spotify_oauth_spotifyconnectionfetch",
-      "community": 8,
+      "community": 4,
       "norm_label": "spotifyconnectionfetch()"
     },
     {
@@ -4707,7 +4887,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L299",
       "id": "lib_spotify_oauth_getplaylistasconnection",
-      "community": 8,
+      "community": 4,
       "norm_label": "getplaylistasconnection()"
     },
     {
@@ -4716,7 +4896,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L309",
       "id": "lib_spotify_oauth_getallplaylisttracksasconnection",
-      "community": 8,
+      "community": 4,
       "norm_label": "getallplaylisttracksasconnection()"
     },
     {
@@ -4725,7 +4905,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L338",
       "id": "lib_spotify_oauth_isconnected",
-      "community": 8,
+      "community": 4,
       "norm_label": "isconnected()"
     },
     {
@@ -4752,7 +4932,7 @@
       "source_file": "src/lib/youtube-quota.ts",
       "source_location": "L1",
       "id": "src_lib_youtube_quota_ts",
-      "community": 0,
+      "community": 11,
       "norm_label": "youtube-quota.ts"
     },
     {
@@ -4761,7 +4941,7 @@
       "source_file": "src/lib/youtube-quota.ts",
       "source_location": "L28",
       "id": "lib_youtube_quota_defaultdailycap",
-      "community": 0,
+      "community": 11,
       "norm_label": "defaultdailycap()"
     },
     {
@@ -4770,7 +4950,7 @@
       "source_file": "src/lib/youtube-quota.ts",
       "source_location": "L32",
       "id": "lib_youtube_quota_defaultsafetycap",
-      "community": 0,
+      "community": 11,
       "norm_label": "defaultsafetycap()"
     },
     {
@@ -4779,7 +4959,7 @@
       "source_file": "src/lib/youtube-quota.ts",
       "source_location": "L40",
       "id": "lib_youtube_quota_utcdaykey",
-      "community": 0,
+      "community": 11,
       "norm_label": "utcdaykey()"
     },
     {
@@ -4788,7 +4968,7 @@
       "source_file": "src/lib/youtube-quota.ts",
       "source_location": "L45",
       "id": "lib_youtube_quota_nextresetat",
-      "community": 0,
+      "community": 11,
       "norm_label": "nextresetat()"
     },
     {
@@ -4797,7 +4977,7 @@
       "source_file": "src/lib/youtube-quota.ts",
       "source_location": "L60",
       "id": "lib_youtube_quota_quotacheckresult",
-      "community": 0,
+      "community": 11,
       "norm_label": "quotacheckresult"
     },
     {
@@ -4806,7 +4986,7 @@
       "source_file": "src/lib/youtube-quota.ts",
       "source_location": "L75",
       "id": "lib_youtube_quota_readusedunits",
-      "community": 0,
+      "community": 11,
       "norm_label": "readusedunits()"
     },
     {
@@ -4815,7 +4995,7 @@
       "source_file": "src/lib/youtube-quota.ts",
       "source_location": "L87",
       "id": "lib_youtube_quota_checkquota",
-      "community": 0,
+      "community": 11,
       "norm_label": "checkquota()"
     },
     {
@@ -4824,7 +5004,7 @@
       "source_file": "src/lib/youtube-quota.ts",
       "source_location": "L116",
       "id": "lib_youtube_quota_consumequota",
-      "community": 0,
+      "community": 11,
       "norm_label": "consumequota()"
     },
     {
@@ -4833,7 +5013,7 @@
       "source_file": "src/lib/youtube-quota.ts",
       "source_location": "L131",
       "id": "lib_youtube_quota_markquotaexhausted",
-      "community": 0,
+      "community": 11,
       "norm_label": "markquotaexhausted()"
     },
     {
@@ -4842,7 +5022,7 @@
       "source_file": "src/lib/youtube-quota.ts",
       "source_location": "L141",
       "id": "lib_youtube_quota_quotastatus",
-      "community": 0,
+      "community": 11,
       "norm_label": "quotastatus"
     },
     {
@@ -4851,7 +5031,7 @@
       "source_file": "src/lib/youtube-quota.ts",
       "source_location": "L148",
       "id": "lib_youtube_quota_getquotastatus",
-      "community": 0,
+      "community": 11,
       "norm_label": "getquotastatus()"
     },
     {
@@ -4887,7 +5067,7 @@
       "source_file": "src/lib/youtube-search-cache.ts",
       "source_location": "L1",
       "id": "src_lib_youtube_search_cache_ts",
-      "community": 0,
+      "community": 11,
       "norm_label": "youtube-search-cache.ts"
     },
     {
@@ -4896,7 +5076,7 @@
       "source_file": "src/lib/youtube-search-cache.ts",
       "source_location": "L29",
       "id": "lib_youtube_search_cache_normalizequery",
-      "community": 0,
+      "community": 11,
       "norm_label": "normalizequery()"
     },
     {
@@ -4905,7 +5085,7 @@
       "source_file": "src/lib/youtube-search-cache.ts",
       "source_location": "L33",
       "id": "lib_youtube_search_cache_cachelookup",
-      "community": 0,
+      "community": 11,
       "norm_label": "cachelookup()"
     },
     {
@@ -4914,7 +5094,7 @@
       "source_file": "src/lib/youtube-search-cache.ts",
       "source_location": "L54",
       "id": "lib_youtube_search_cache_cachestore",
-      "community": 0,
+      "community": 11,
       "norm_label": "cachestore()"
     },
     {
@@ -4923,7 +5103,7 @@
       "source_file": "src/lib/youtube-search-cache.ts",
       "source_location": "L82",
       "id": "lib_youtube_search_cache_purgeoldrows",
-      "community": 0,
+      "community": 11,
       "norm_label": "purgeoldrows()"
     },
     {
@@ -4995,7 +5175,7 @@
       "source_file": "src/lib/player-queue.ts",
       "source_location": "L82",
       "id": "lib_player_queue_getnextplayableyoutubeid",
-      "community": 11,
+      "community": 7,
       "norm_label": "getnextplayableyoutubeid()"
     },
     {
@@ -5067,7 +5247,7 @@
       "source_file": "src/lib/session.ts",
       "source_location": "L1",
       "id": "src_lib_session_ts",
-      "community": 2,
+      "community": 45,
       "norm_label": "session.ts"
     },
     {
@@ -5085,7 +5265,7 @@
       "source_file": "src/lib/session.ts",
       "source_location": "L11",
       "id": "lib_session_getsecret",
-      "community": 2,
+      "community": 45,
       "norm_label": "getsecret()"
     },
     {
@@ -5094,7 +5274,7 @@
       "source_file": "src/lib/session.ts",
       "source_location": "L19",
       "id": "lib_session_signsession",
-      "community": 2,
+      "community": 45,
       "norm_label": "signsession()"
     },
     {
@@ -5103,7 +5283,7 @@
       "source_file": "src/lib/session.ts",
       "source_location": "L27",
       "id": "lib_session_verifysessiontoken",
-      "community": 2,
+      "community": 45,
       "norm_label": "verifysessiontoken()"
     },
     {
@@ -5112,7 +5292,7 @@
       "source_file": "src/lib/session.ts",
       "source_location": "L42",
       "id": "lib_session_setsessioncookie",
-      "community": 2,
+      "community": 45,
       "norm_label": "setsessioncookie()"
     },
     {
@@ -5121,7 +5301,7 @@
       "source_file": "src/lib/session.ts",
       "source_location": "L54",
       "id": "lib_session_clearsessioncookie",
-      "community": 2,
+      "community": 45,
       "norm_label": "clearsessioncookie()"
     },
     {
@@ -5130,7 +5310,7 @@
       "source_file": "src/lib/session.ts",
       "source_location": "L65",
       "id": "lib_session_readsessioncookie",
-      "community": 2,
+      "community": 45,
       "norm_label": "readsessioncookie()"
     },
     {
@@ -5139,7 +5319,7 @@
       "source_file": "src/lib/session.ts",
       "source_location": "L72",
       "id": "lib_session_issession",
-      "community": 2,
+      "community": 45,
       "norm_label": "issession()"
     },
     {
@@ -5337,7 +5517,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L1",
       "id": "src_lib_youtube_ts",
-      "community": 0,
+      "community": 11,
       "norm_label": "youtube.ts"
     },
     {
@@ -5346,7 +5526,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L18",
       "id": "lib_youtube_youtubeerror",
-      "community": 0,
+      "community": 1,
       "norm_label": "youtubeerror"
     },
     {
@@ -5355,7 +5535,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L19",
       "id": "lib_youtube_youtubeerror_constructor",
-      "community": 0,
+      "community": 1,
       "norm_label": ".constructor()"
     },
     {
@@ -5364,7 +5544,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L40",
       "id": "lib_youtube_quota_lock_reasons",
-      "community": 0,
+      "community": 11,
       "norm_label": "quota_lock_reasons"
     },
     {
@@ -5373,7 +5553,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L42",
       "id": "lib_youtube_isquotaexhaustionreason",
-      "community": 0,
+      "community": 11,
       "norm_label": "isquotaexhaustionreason()"
     },
     {
@@ -5382,7 +5562,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L49",
       "id": "lib_youtube_parseyoutubeerrorreason",
-      "community": 0,
+      "community": 11,
       "norm_label": "parseyoutubeerrorreason()"
     },
     {
@@ -5391,7 +5571,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L68",
       "id": "lib_youtube_getapikey",
-      "community": 0,
+      "community": 11,
       "norm_label": "getapikey()"
     },
     {
@@ -5400,7 +5580,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L93",
       "id": "lib_youtube_parseyoutuberef",
-      "community": 0,
+      "community": 1,
       "norm_label": "parseyoutuberef()"
     },
     {
@@ -5409,7 +5589,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L140",
       "id": "lib_youtube_searchitem",
-      "community": 0,
+      "community": 11,
       "norm_label": "searchitem"
     },
     {
@@ -5418,7 +5598,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L141",
       "id": "lib_youtube_searchresponse",
-      "community": 0,
+      "community": 11,
       "norm_label": "searchresponse"
     },
     {
@@ -5427,7 +5607,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L143",
       "id": "lib_youtube_thumbnailentry",
-      "community": 0,
+      "community": 11,
       "norm_label": "thumbnailentry"
     },
     {
@@ -5436,7 +5616,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L144",
       "id": "lib_youtube_videodetailsitem",
-      "community": 0,
+      "community": 11,
       "norm_label": "videodetailsitem"
     },
     {
@@ -5445,7 +5625,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L161",
       "id": "lib_youtube_videosresponse",
-      "community": 0,
+      "community": 11,
       "norm_label": "videosresponse"
     },
     {
@@ -5454,7 +5634,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L163",
       "id": "lib_youtube_videodetails",
-      "community": 0,
+      "community": 11,
       "norm_label": "videodetails"
     },
     {
@@ -5463,7 +5643,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L175",
       "id": "lib_youtube_parseisoduration",
-      "community": 0,
+      "community": 11,
       "norm_label": "parseisoduration()"
     },
     {
@@ -5472,7 +5652,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L189",
       "id": "lib_youtube_fetchvideodetails",
-      "community": 0,
+      "community": 1,
       "norm_label": "fetchvideodetails()"
     },
     {
@@ -5481,7 +5661,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L237",
       "id": "lib_youtube_filterembeddableids",
-      "community": 0,
+      "community": 1,
       "norm_label": "filterembeddableids()"
     },
     {
@@ -5490,7 +5670,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L259",
       "id": "lib_youtube_searchcandidates",
-      "community": 0,
+      "community": 11,
       "norm_label": "searchcandidates()"
     },
     {
@@ -5499,7 +5679,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L280",
       "id": "lib_youtube_refiltersongmatch",
-      "community": 0,
+      "community": 1,
       "norm_label": "refiltersongmatch()"
     },
     {
@@ -5508,7 +5688,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L307",
       "id": "lib_youtube_matchoutcome",
-      "community": 0,
+      "community": 11,
       "norm_label": "matchoutcome"
     },
     {
@@ -5517,7 +5697,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L311",
       "id": "lib_youtube_matchsongbyid",
-      "community": 0,
+      "community": 11,
       "norm_label": "matchsongbyid()"
     },
     {
@@ -5526,7 +5706,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L366",
       "id": "lib_youtube_chain",
-      "community": 0,
+      "community": 11,
       "norm_label": "chain"
     },
     {
@@ -5544,7 +5724,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L385",
       "id": "lib_youtube_flushpendingmatches",
-      "community": 0,
+      "community": 11,
       "norm_label": "flushpendingmatches()"
     },
     {
@@ -5553,7 +5733,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L390",
       "id": "lib_youtube_resetmatchchainfortests",
-      "community": 0,
+      "community": 11,
       "norm_label": "_resetmatchchainfortests()"
     },
     {
@@ -5663,6 +5843,285 @@
       "id": "lib_auth_effectiveuserid",
       "community": 1,
       "norm_label": "effectiveuserid()"
+    },
+    {
+      "label": "lrclib.ts",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L1",
+      "id": "src_lib_lyrics_lrclib_ts",
+      "community": 0,
+      "norm_label": "lrclib.ts"
+    },
+    {
+      "label": "LrclibError",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L14",
+      "id": "lyrics_lrclib_lrcliberror",
+      "community": 0,
+      "norm_label": "lrcliberror"
+    },
+    {
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L16",
+      "id": "lyrics_lrclib_lrcliberror_constructor",
+      "community": 0,
+      "norm_label": ".constructor()"
+    },
+    {
+      "label": "LrclibTrack",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L24",
+      "id": "lyrics_lrclib_lrclibtrack",
+      "community": 0,
+      "norm_label": "lrclibtrack"
+    },
+    {
+      "label": "getURL()",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L31",
+      "id": "lyrics_lrclib_geturl",
+      "community": 0,
+      "norm_label": "geturl()"
+    },
+    {
+      "label": "searchURL()",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L37",
+      "id": "lyrics_lrclib_searchurl",
+      "community": 0,
+      "norm_label": "searchurl()"
+    },
+    {
+      "label": "readBodySafe()",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L42",
+      "id": "lyrics_lrclib_readbodysafe",
+      "community": 0,
+      "norm_label": "readbodysafe()"
+    },
+    {
+      "label": "lrclibGet()",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L52",
+      "id": "lyrics_lrclib_lrclibget",
+      "community": 0,
+      "norm_label": "lrclibget()"
+    },
+    {
+      "label": "toLookup()",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L65",
+      "id": "lyrics_lrclib_tolookup",
+      "community": 0,
+      "norm_label": "tolookup()"
+    },
+    {
+      "label": "bestMatch()",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L75",
+      "id": "lyrics_lrclib_bestmatch",
+      "community": 0,
+      "norm_label": "bestmatch()"
+    },
+    {
+      "label": "fetchLyrics()",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L91",
+      "id": "lyrics_lrclib_fetchlyrics",
+      "community": 0,
+      "norm_label": "fetchlyrics()"
+    },
+    {
+      "label": "types.ts",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/types.ts",
+      "source_location": "L1",
+      "id": "src_lib_lyrics_types_ts",
+      "community": 0,
+      "norm_label": "types.ts"
+    },
+    {
+      "label": "LyricsResponse",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/types.ts",
+      "source_location": "L4",
+      "id": "lyrics_types_lyricsresponse",
+      "community": 0,
+      "norm_label": "lyricsresponse"
+    },
+    {
+      "label": "LyricsLookup",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/types.ts",
+      "source_location": "L12",
+      "id": "lyrics_types_lyricslookup",
+      "community": 0,
+      "norm_label": "lyricslookup"
+    },
+    {
+      "label": "cache.ts",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/cache.ts",
+      "source_location": "L1",
+      "id": "src_lib_lyrics_cache_ts",
+      "community": 0,
+      "norm_label": "cache.ts"
+    },
+    {
+      "label": "Status",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/cache.ts",
+      "source_location": "L4",
+      "id": "lyrics_cache_status",
+      "community": 0,
+      "norm_label": "status"
+    },
+    {
+      "label": "TTL_MS",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/cache.ts",
+      "source_location": "L9",
+      "id": "lyrics_cache_ttl_ms",
+      "community": 0,
+      "norm_label": "ttl_ms"
+    },
+    {
+      "label": "isStatus()",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/cache.ts",
+      "source_location": "L15",
+      "id": "lyrics_cache_isstatus",
+      "community": 0,
+      "norm_label": "isstatus()"
+    },
+    {
+      "label": "toLookup()",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/cache.ts",
+      "source_location": "L19",
+      "id": "lyrics_cache_tolookup",
+      "community": 0,
+      "norm_label": "tolookup()"
+    },
+    {
+      "label": "lookup()",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/cache.ts",
+      "source_location": "L27",
+      "id": "lyrics_cache_lookup",
+      "community": 0,
+      "norm_label": "lookup()"
+    },
+    {
+      "label": "record()",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/cache.ts",
+      "source_location": "L35",
+      "id": "lyrics_cache_record",
+      "community": 0,
+      "norm_label": "record()"
+    },
+    {
+      "label": "prune()",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/cache.ts",
+      "source_location": "L53",
+      "id": "lyrics_cache_prune",
+      "community": 0,
+      "norm_label": "prune()"
+    },
+    {
+      "label": "normalize.ts",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/normalize.ts",
+      "source_location": "L1",
+      "id": "src_lib_lyrics_normalize_ts",
+      "community": 0,
+      "norm_label": "normalize.ts"
+    },
+    {
+      "label": "fold()",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/normalize.ts",
+      "source_location": "L9",
+      "id": "lyrics_normalize_fold",
+      "community": 0,
+      "norm_label": "fold()"
+    },
+    {
+      "label": "lyricsKey()",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/normalize.ts",
+      "source_location": "L20",
+      "id": "lyrics_normalize_lyricskey",
+      "community": 0,
+      "norm_label": "lyricskey()"
+    },
+    {
+      "label": "lyricsMatchNorm()",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/normalize.ts",
+      "source_location": "L27",
+      "id": "lyrics_normalize_lyricsmatchnorm",
+      "community": 0,
+      "norm_label": "lyricsmatchnorm()"
+    },
+    {
+      "label": "looselyMatches()",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/normalize.ts",
+      "source_location": "L36",
+      "id": "lyrics_normalize_looselymatches",
+      "community": 0,
+      "norm_label": "looselymatches()"
+    },
+    {
+      "label": "service.ts",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/service.ts",
+      "source_location": "L1",
+      "id": "src_lib_lyrics_service_ts",
+      "community": 0,
+      "norm_label": "service.ts"
+    },
+    {
+      "label": "SongLike",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/service.ts",
+      "source_location": "L6",
+      "id": "lyrics_service_songlike",
+      "community": 0,
+      "norm_label": "songlike"
+    },
+    {
+      "label": "toResponse()",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/service.ts",
+      "source_location": "L8",
+      "id": "lyrics_service_toresponse",
+      "community": 0,
+      "norm_label": "toresponse()"
+    },
+    {
+      "label": "getLyrics()",
+      "file_type": "code",
+      "source_file": "src/lib/lyrics/service.ts",
+      "source_location": "L17",
+      "id": "lyrics_service_getlyrics",
+      "community": 0,
+      "norm_label": "getlyrics()"
     },
     {
       "label": "resolver.ts",
@@ -6475,6 +6934,411 @@
       "norm_label": "notes"
     },
     {
+      "label": "FOLLOW_UP_TICKET.md",
+      "file_type": "document",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L1",
+      "id": "follow_up_ticket_md",
+      "community": 23,
+      "norm_label": "follow_up_ticket.md"
+    },
+    {
+      "label": "Follow-up Ticket: Scope USER YouTube Repairs + Refresh Graphify",
+      "file_type": "document",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L1",
+      "id": "musica_ligera_42_follow_up_ticket_follow_up_ticket_scope_user_youtube_repairs_refresh_graphify",
+      "community": 23,
+      "norm_label": "follow-up ticket: scope user youtube repairs + refresh graphify"
+    },
+    {
+      "label": "Goal",
+      "file_type": "document",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L3",
+      "id": "musica_ligera_42_follow_up_ticket_goal",
+      "community": 23,
+      "norm_label": "goal"
+    },
+    {
+      "label": "Context",
+      "file_type": "document",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L14",
+      "id": "musica_ligera_42_follow_up_ticket_context",
+      "community": 23,
+      "norm_label": "context"
+    },
+    {
+      "label": "Phase 1 \u2014 Scope USER match/override to owned playlist songs",
+      "file_type": "document",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L29",
+      "id": "musica_ligera_42_follow_up_ticket_phase_1_scope_user_match_override_to_owned_playlist_songs",
+      "community": 23,
+      "norm_label": "phase 1 \u2014 scope user match/override to owned playlist songs"
+    },
+    {
+      "label": "Deliverable",
+      "file_type": "document",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L31",
+      "id": "musica_ligera_42_follow_up_ticket_deliverable",
+      "community": 23,
+      "norm_label": "deliverable"
+    },
+    {
+      "label": "Suggested implementation",
+      "file_type": "document",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L48",
+      "id": "musica_ligera_42_follow_up_ticket_suggested_implementation",
+      "community": 23,
+      "norm_label": "suggested implementation"
+    },
+    {
+      "label": "code:ts (import type { Session } from \"@/lib/session\";)",
+      "file_type": "document",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L58",
+      "id": "musica_ligera_42_follow_up_ticket_codeblock_1",
+      "community": 23,
+      "norm_label": "code:ts (import type { session } from \"@/lib/session\";)"
+    },
+    {
+      "label": "Tests",
+      "file_type": "document",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L84",
+      "id": "musica_ligera_42_follow_up_ticket_tests",
+      "community": 23,
+      "norm_label": "tests"
+    },
+    {
+      "label": "Manual verification",
+      "file_type": "document",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L101",
+      "id": "musica_ligera_42_follow_up_ticket_manual_verification",
+      "community": 23,
+      "norm_label": "manual verification"
+    },
+    {
+      "label": "Phase 2 \u2014 Refresh graphify state",
+      "file_type": "document",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L111",
+      "id": "musica_ligera_42_follow_up_ticket_phase_2_refresh_graphify_state",
+      "community": 23,
+      "norm_label": "phase 2 \u2014 refresh graphify state"
+    },
+    {
+      "label": "Deliverable",
+      "file_type": "document",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L113",
+      "id": "musica_ligera_42_follow_up_ticket_deliverable_113",
+      "community": 23,
+      "norm_label": "deliverable"
+    },
+    {
+      "label": "code:sh (graphify update .)",
+      "file_type": "document",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L119",
+      "id": "musica_ligera_42_follow_up_ticket_codeblock_2",
+      "community": 23,
+      "norm_label": "code:sh (graphify update .)"
+    },
+    {
+      "label": "Current state to respect",
+      "file_type": "document",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L125",
+      "id": "musica_ligera_42_follow_up_ticket_current_state_to_respect",
+      "community": 23,
+      "norm_label": "current state to respect"
+    },
+    {
+      "label": "Commit guidance",
+      "file_type": "document",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L137",
+      "id": "musica_ligera_42_follow_up_ticket_commit_guidance",
+      "community": 23,
+      "norm_label": "commit guidance"
+    },
+    {
+      "label": "Verification",
+      "file_type": "document",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L146",
+      "id": "musica_ligera_42_follow_up_ticket_verification",
+      "community": 23,
+      "norm_label": "verification"
+    },
+    {
+      "label": "code:sh (pnpm exec tsc --noEmit)",
+      "file_type": "document",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L150",
+      "id": "musica_ligera_42_follow_up_ticket_codeblock_3",
+      "community": 23,
+      "norm_label": "code:sh (pnpm exec tsc --noemit)"
+    },
+    {
+      "label": "Non-goals",
+      "file_type": "document",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L163",
+      "id": "musica_ligera_42_follow_up_ticket_non_goals",
+      "community": 23,
+      "norm_label": "non-goals"
+    },
+    {
+      "label": "TICKET.md",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L1",
+      "id": "ticket_md",
+      "community": 8,
+      "norm_label": "ticket.md"
+    },
+    {
+      "label": "Ticket: Web parity with iOS \u2014 USER YouTube matching + lyrics",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L1",
+      "id": "musica_ligera_42_ticket_ticket_web_parity_with_ios_user_youtube_matching_lyrics",
+      "community": 8,
+      "norm_label": "ticket: web parity with ios \u2014 user youtube matching + lyrics"
+    },
+    {
+      "label": "Goal",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L3",
+      "id": "musica_ligera_42_ticket_goal",
+      "community": 8,
+      "norm_label": "goal"
+    },
+    {
+      "label": "Context",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L14",
+      "id": "musica_ligera_42_ticket_context",
+      "community": 8,
+      "norm_label": "context"
+    },
+    {
+      "label": "Phase 1 \u2014 Let USERs match and repair YouTube links",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L35",
+      "id": "musica_ligera_42_ticket_phase_1_let_users_match_and_repair_youtube_links",
+      "community": 8,
+      "norm_label": "phase 1 \u2014 let users match and repair youtube links"
+    },
+    {
+      "label": "Deliverable",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L37",
+      "id": "musica_ligera_42_ticket_deliverable",
+      "community": 8,
+      "norm_label": "deliverable"
+    },
+    {
+      "label": "Desired UI behavior",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L49",
+      "id": "musica_ligera_42_ticket_desired_ui_behavior",
+      "community": 8,
+      "norm_label": "desired ui behavior"
+    },
+    {
+      "label": "API authorization changes",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L71",
+      "id": "musica_ligera_42_ticket_api_authorization_changes",
+      "community": 8,
+      "norm_label": "api authorization changes"
+    },
+    {
+      "label": "Shared-state warning",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L94",
+      "id": "musica_ligera_42_ticket_shared_state_warning",
+      "community": 8,
+      "norm_label": "shared-state warning"
+    },
+    {
+      "label": "Tests",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L100",
+      "id": "musica_ligera_42_ticket_tests",
+      "community": 8,
+      "norm_label": "tests"
+    },
+    {
+      "label": "Manual verification",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L112",
+      "id": "musica_ligera_42_ticket_manual_verification",
+      "community": 8,
+      "norm_label": "manual verification"
+    },
+    {
+      "label": "Phase 2 \u2014 Add web lyrics using the iOS architecture",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L127",
+      "id": "musica_ligera_42_ticket_phase_2_add_web_lyrics_using_the_ios_architecture",
+      "community": 8,
+      "norm_label": "phase 2 \u2014 add web lyrics using the ios architecture"
+    },
+    {
+      "label": "iOS reference",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L129",
+      "id": "musica_ligera_42_ticket_ios_reference",
+      "community": 8,
+      "norm_label": "ios reference"
+    },
+    {
+      "label": "Suggested web architecture",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L156",
+      "id": "musica_ligera_42_ticket_suggested_web_architecture",
+      "community": 8,
+      "norm_label": "suggested web architecture"
+    },
+    {
+      "label": "code:ts (type LyricsResponse =)",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L176",
+      "id": "musica_ligera_42_ticket_codeblock_1",
+      "community": 8,
+      "norm_label": "code:ts (type lyricsresponse =)"
+    },
+    {
+      "label": "Cache model",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L186",
+      "id": "musica_ligera_42_ticket_cache_model",
+      "community": 8,
+      "norm_label": "cache model"
+    },
+    {
+      "label": "code:prisma (model LyricsCache {)",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L190",
+      "id": "musica_ligera_42_ticket_codeblock_2",
+      "community": 8,
+      "norm_label": "code:prisma (model lyricscache {)"
+    },
+    {
+      "label": "LRCLIB provider behavior",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L213",
+      "id": "musica_ligera_42_ticket_lrclib_provider_behavior",
+      "community": 8,
+      "norm_label": "lrclib provider behavior"
+    },
+    {
+      "label": "UI",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L240",
+      "id": "musica_ligera_42_ticket_ui",
+      "community": 8,
+      "norm_label": "ui"
+    },
+    {
+      "label": "Optional duration parity",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L257",
+      "id": "musica_ligera_42_ticket_optional_duration_parity",
+      "community": 8,
+      "norm_label": "optional duration parity"
+    },
+    {
+      "label": "Tests",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L263",
+      "id": "musica_ligera_42_ticket_tests_263",
+      "community": 8,
+      "norm_label": "tests"
+    },
+    {
+      "label": "Manual verification",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L279",
+      "id": "musica_ligera_42_ticket_manual_verification_279",
+      "community": 8,
+      "norm_label": "manual verification"
+    },
+    {
+      "label": "Non-goals",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L290",
+      "id": "musica_ligera_42_ticket_non_goals",
+      "community": 8,
+      "norm_label": "non-goals"
+    },
+    {
+      "label": "Final verification before handoff",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L299",
+      "id": "musica_ligera_42_ticket_final_verification_before_handoff",
+      "community": 8,
+      "norm_label": "final verification before handoff"
+    },
+    {
+      "label": "code:sh (pnpm exec tsc --noEmit)",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L303",
+      "id": "musica_ligera_42_ticket_codeblock_3",
+      "community": 8,
+      "norm_label": "code:sh (pnpm exec tsc --noemit)"
+    },
+    {
+      "label": "code:sh (graphify update .)",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L318",
+      "id": "musica_ligera_42_ticket_codeblock_4",
+      "community": 8,
+      "norm_label": "code:sh (graphify update .)"
+    },
+    {
+      "label": "Already captured / not a separate ticket",
+      "file_type": "document",
+      "source_file": "TICKET.md",
+      "source_location": "L324",
+      "id": "musica_ligera_42_ticket_already_captured_not_a_separate_ticket",
+      "community": 8,
+      "norm_label": "already captured / not a separate ticket"
+    },
+    {
       "label": "AGENTS.md",
       "file_type": "document",
       "source_file": "AGENTS.md",
@@ -6502,6 +7366,51 @@
       "norm_label": "graphify"
     },
     {
+      "label": "WEB_IOS_PARITY_MASTER_LIST.md",
+      "file_type": "document",
+      "source_file": "WEB_IOS_PARITY_MASTER_LIST.md",
+      "source_location": "L1",
+      "id": "web_ios_parity_master_list_md",
+      "community": 48,
+      "norm_label": "web_ios_parity_master_list.md"
+    },
+    {
+      "label": "Web/iOS Parity Master List",
+      "file_type": "document",
+      "source_file": "WEB_IOS_PARITY_MASTER_LIST.md",
+      "source_location": "L1",
+      "id": "musica_ligera_42_web_ios_parity_master_list_web_ios_parity_master_list",
+      "community": 48,
+      "norm_label": "web/ios parity master list"
+    },
+    {
+      "label": "TODO",
+      "file_type": "document",
+      "source_file": "WEB_IOS_PARITY_MASTER_LIST.md",
+      "source_location": "L5",
+      "id": "musica_ligera_42_web_ios_parity_master_list_todo",
+      "community": 48,
+      "norm_label": "todo"
+    },
+    {
+      "label": "DONE",
+      "file_type": "document",
+      "source_file": "WEB_IOS_PARITY_MASTER_LIST.md",
+      "source_location": "L59",
+      "id": "musica_ligera_42_web_ios_parity_master_list_done",
+      "community": 48,
+      "norm_label": "done"
+    },
+    {
+      "label": "Side Bar: iOS-specific or lower-value for web",
+      "file_type": "document",
+      "source_file": "WEB_IOS_PARITY_MASTER_LIST.md",
+      "source_location": "L69",
+      "id": "musica_ligera_42_web_ios_parity_master_list_side_bar_ios_specific_or_lower_value_for_web",
+      "community": 48,
+      "norm_label": "side bar: ios-specific or lower-value for web"
+    },
+    {
       "label": "CLAUDE.md",
       "file_type": "document",
       "source_file": "CLAUDE.md",
@@ -6518,6 +7427,15 @@
       "id": "musica_ligera_42_claude_graphify",
       "community": 34,
       "norm_label": "graphify"
+    },
+    {
+      "label": "Role",
+      "file_type": "code",
+      "source_file": "src/components/SongList.tsx",
+      "source_location": "L11",
+      "community": 13,
+      "norm_label": "role",
+      "id": "components_songlist_role"
     }
   ],
   "links": [
@@ -7428,7 +8346,18 @@
       "source_file": "tests/settings-route.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_settings_route_test_ts",
+      "target": "tests_helpers_ts"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
       "target": "tests_helpers_ts",
       "confidence_score": 1.0
     },
@@ -7527,7 +8456,18 @@
       "source_file": "tests/settings-route.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_settings_route_test_ts",
+      "target": "tests_helpers_clearcookies"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
       "target": "tests_helpers_clearcookies",
       "confidence_score": 1.0
     },
@@ -7659,9 +8599,9 @@
       "source_file": "tests/settings-route.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_settings_route_test_ts",
-      "target": "tests_helpers_setownersession",
-      "confidence_score": 1.0
+      "target": "tests_helpers_setownersession"
     },
     {
       "relation": "imports",
@@ -7758,7 +8698,18 @@
       "source_file": "tests/settings-route.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_settings_route_test_ts",
+      "target": "tests_helpers_setusersession"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
       "target": "tests_helpers_setusersession",
       "confidence_score": 1.0
     },
@@ -7793,6 +8744,17 @@
       "source_location": "L249",
       "weight": 1.0,
       "source": "tests_playlists_test_makeownedplaylist",
+      "target": "tests_helpers_setusersession"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L256",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_asuser",
       "target": "tests_helpers_setusersession"
     },
     {
@@ -7879,7 +8841,18 @@
       "source_file": "tests/settings-route.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_settings_route_test_ts",
+      "target": "tests_helpers_truncateall"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
       "target": "tests_helpers_truncateall",
       "confidence_score": 1.0
     },
@@ -7978,9 +8951,9 @@
       "source_file": "tests/settings-route.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_settings_route_test_ts",
-      "target": "tests_helpers_jsonrequest",
-      "confidence_score": 1.0
+      "target": "tests_helpers_jsonrequest"
     },
     {
       "relation": "imports",
@@ -9528,9 +10501,9 @@
       "source_file": "tests/settings-route.test.ts",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_settings_route_test_ts",
-      "target": "src_app_api_settings_route_ts",
-      "confidence_score": 1.0
+      "target": "src_app_api_settings_route_ts"
     },
     {
       "relation": "imports",
@@ -9539,9 +10512,9 @@
       "source_file": "tests/settings-route.test.ts",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_settings_route_test_ts",
-      "target": "settings_route_get",
-      "confidence_score": 1.0
+      "target": "settings_route_get"
     },
     {
       "relation": "imports",
@@ -9550,9 +10523,9 @@
       "source_file": "tests/settings-route.test.ts",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_settings_route_test_ts",
-      "target": "settings_route_patch",
-      "confidence_score": 1.0
+      "target": "settings_route_patch"
     },
     {
       "relation": "contains",
@@ -9560,9 +10533,9 @@
       "source_file": "tests/settings-route.test.ts",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_settings_route_test_ts",
-      "target": "tests_settings_route_test_makeuser",
-      "confidence_score": 1.0
+      "target": "tests_settings_route_test_makeuser"
     },
     {
       "relation": "contains",
@@ -9570,8 +10543,307 @@
       "source_file": "tests/settings-route.test.ts",
       "source_location": "L106",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_settings_route_test_ts",
-      "target": "tests_settings_route_test_body",
+      "target": "tests_settings_route_test_body"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "src_lib_lyrics_normalize_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "lyrics_normalize_looselymatches",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "lyrics_normalize_lyricskey",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "lyrics_normalize_lyricsmatchnorm",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "src_lib_lyrics_lrclib_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "lyrics_lrclib_bestmatch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "lyrics_lrclib_fetchlyrics",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "lyrics_lrclib_geturl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "lyrics_lrclib_lrcliberror",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "lyrics_lrclib_searchurl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "lyrics_lrclib_tolookup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "src_lib_lyrics_cache_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "lyrics_cache_lookup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "lyrics_cache_prune",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "lyrics_cache_record",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "src_lib_lyrics_service_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "lyrics_service_getlyrics",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "src_app_api_lyrics_route_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "lyrics_route_get",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "tests_lyrics_test_mocked",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "tests_lyrics_test_makeresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L32",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "tests_lyrics_test_mockfetchsequence",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "tests_lyrics_test_track",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L103",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "tests_lyrics_test_ok",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L229",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "tests_lyrics_test_spy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L146",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "tests_lyrics_test_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L193",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "tests_lyrics_test_old",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/lyrics.test.ts",
+      "source_location": "L254",
+      "weight": 1.0,
+      "source": "tests_lyrics_test_ts",
+      "target": "tests_lyrics_test_asuser",
       "confidence_score": 1.0
     },
     {
@@ -10018,6 +11290,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "tests/youtube-routes.test.ts",
+      "source_location": "L118",
+      "weight": 1.0,
+      "source": "tests_youtube_routes_test_ts",
+      "target": "tests_youtube_routes_test_addsongtouserplaylist",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/youtube-routes.test.ts",
       "source_location": "L630",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -10093,6 +11375,16 @@
       "confidence_score": 1.0,
       "source": "tests_youtube_routes_test_ts",
       "target": "tests_youtube_routes_test_candc"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/youtube-routes.test.ts",
+      "source_location": "L1243",
+      "weight": 1.0,
+      "source": "tests_youtube_routes_test_ts",
+      "target": "tests_youtube_routes_test_candavideos",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -10359,6 +11651,26 @@
       "confidence_score": 1.0,
       "source": "claude_settings_hooks",
       "target": "claude_settings_hooks_pretooluse"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/settings.local.json",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "claude_settings_local_json",
+      "target": "claude_settings_local_permissions"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/settings.local.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "claude_settings_local_permissions",
+      "target": "claude_settings_local_permissions_allow"
     },
     {
       "relation": "contains",
@@ -11313,9 +12625,9 @@
       "source_file": "src/app/(app)/layout.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_app_layout_tsx",
-      "target": "src_lib_app_settings_ts",
-      "confidence_score": 1.0
+      "target": "src_lib_app_settings_ts"
     },
     {
       "relation": "imports",
@@ -11324,9 +12636,9 @@
       "source_file": "src/app/(app)/layout.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_app_layout_tsx",
-      "target": "lib_app_settings_getappsettings",
-      "confidence_score": 1.0
+      "target": "lib_app_settings_getappsettings"
     },
     {
       "relation": "imports_from",
@@ -11475,9 +12787,9 @@
       "source_file": "src/app/(app)/settings/page.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_app_settings_page_tsx",
-      "target": "src_lib_current_user_ts",
-      "confidence_score": 1.0
+      "target": "src_lib_current_user_ts"
     },
     {
       "relation": "imports",
@@ -11486,9 +12798,9 @@
       "source_file": "src/app/(app)/settings/page.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_app_settings_page_tsx",
-      "target": "lib_current_user_getrequiredsession",
-      "confidence_score": 1.0
+      "target": "lib_current_user_getrequiredsession"
     },
     {
       "relation": "imports_from",
@@ -11497,9 +12809,9 @@
       "source_file": "src/app/(app)/settings/page.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_app_settings_page_tsx",
-      "target": "src_lib_app_settings_ts",
-      "confidence_score": 1.0
+      "target": "src_lib_app_settings_ts"
     },
     {
       "relation": "imports",
@@ -11508,9 +12820,9 @@
       "source_file": "src/app/(app)/settings/page.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_app_settings_page_tsx",
-      "target": "lib_app_settings_getappsettings",
-      "confidence_score": 1.0
+      "target": "lib_app_settings_getappsettings"
     },
     {
       "relation": "imports_from",
@@ -11519,9 +12831,9 @@
       "source_file": "src/app/(app)/settings/page.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_app_settings_page_tsx",
-      "target": "src_components_settingsform_tsx",
-      "confidence_score": 1.0
+      "target": "src_components_settingsform_tsx"
     },
     {
       "relation": "imports",
@@ -11530,9 +12842,9 @@
       "source_file": "src/app/(app)/settings/page.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_app_settings_page_tsx",
-      "target": "components_settingsform_settingsform",
-      "confidence_score": 1.0
+      "target": "components_settingsform_settingsform"
     },
     {
       "relation": "contains",
@@ -11540,9 +12852,9 @@
       "source_file": "src/app/(app)/settings/page.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_app_settings_page_tsx",
-      "target": "settings_page_settingspage",
-      "confidence_score": 1.0
+      "target": "settings_page_settingspage"
     },
     {
       "relation": "calls",
@@ -12198,6 +13510,115 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/app/api/lyrics/route.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_app_api_lyrics_route_ts",
+      "target": "src_lib_auth_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/lyrics/route.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_app_api_lyrics_route_ts",
+      "target": "lib_auth_getsession",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/lyrics/route.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_app_api_lyrics_route_ts",
+      "target": "lib_auth_unauthorized",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/lyrics/route.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "src_app_api_lyrics_route_ts",
+      "target": "src_lib_lyrics_service_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/lyrics/route.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "src_app_api_lyrics_route_ts",
+      "target": "lyrics_service_getlyrics",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/lyrics/route.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_app_api_lyrics_route_ts",
+      "target": "src_lib_prisma_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/lyrics/route.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "src_app_api_lyrics_route_ts",
+      "target": "lyrics_route_get",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/api/lyrics/route.ts",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "lyrics_route_get",
+      "target": "lib_auth_getsession"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/api/lyrics/route.ts",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "lyrics_route_get",
+      "target": "lib_auth_unauthorized"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/api/lyrics/route.ts",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "lyrics_route_get",
+      "target": "lyrics_service_getlyrics"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/app/api/songs/route.ts",
       "source_location": "L1",
       "weight": 1.0,
@@ -12397,9 +13818,9 @@
       "source_file": "src/app/api/settings/route.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_settings_route_ts",
-      "target": "src_lib_auth_ts",
-      "confidence_score": 1.0
+      "target": "src_lib_auth_ts"
     },
     {
       "relation": "imports",
@@ -12408,9 +13829,9 @@
       "source_file": "src/app/api/settings/route.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_settings_route_ts",
-      "target": "lib_auth_forbidden",
-      "confidence_score": 1.0
+      "target": "lib_auth_forbidden"
     },
     {
       "relation": "imports",
@@ -12419,9 +13840,9 @@
       "source_file": "src/app/api/settings/route.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_settings_route_ts",
-      "target": "lib_auth_getsession",
-      "confidence_score": 1.0
+      "target": "lib_auth_getsession"
     },
     {
       "relation": "imports",
@@ -12430,9 +13851,9 @@
       "source_file": "src/app/api/settings/route.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_settings_route_ts",
-      "target": "lib_auth_unauthorized",
-      "confidence_score": 1.0
+      "target": "lib_auth_unauthorized"
     },
     {
       "relation": "imports_from",
@@ -12441,9 +13862,9 @@
       "source_file": "src/app/api/settings/route.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_settings_route_ts",
-      "target": "src_lib_app_settings_ts",
-      "confidence_score": 1.0
+      "target": "src_lib_app_settings_ts"
     },
     {
       "relation": "imports",
@@ -12452,9 +13873,9 @@
       "source_file": "src/app/api/settings/route.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_settings_route_ts",
-      "target": "lib_app_settings_getappsettings",
-      "confidence_score": 1.0
+      "target": "lib_app_settings_getappsettings"
     },
     {
       "relation": "imports",
@@ -12463,9 +13884,9 @@
       "source_file": "src/app/api/settings/route.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_settings_route_ts",
-      "target": "lib_app_settings_updateappsettings",
-      "confidence_score": 1.0
+      "target": "lib_app_settings_updateappsettings"
     },
     {
       "relation": "contains",
@@ -12473,9 +13894,9 @@
       "source_file": "src/app/api/settings/route.ts",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_settings_route_ts",
-      "target": "settings_route_get",
-      "confidence_score": 1.0
+      "target": "settings_route_get"
     },
     {
       "relation": "contains",
@@ -12483,9 +13904,9 @@
       "source_file": "src/app/api/settings/route.ts",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_settings_route_ts",
-      "target": "settings_route_patch",
-      "confidence_score": 1.0
+      "target": "settings_route_patch"
     },
     {
       "relation": "calls",
@@ -14308,9 +15729,9 @@
       "source_file": "src/app/api/spotify/callback/route.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_spotify_callback_route_ts",
-      "target": "src_lib_app_settings_ts",
-      "confidence_score": 1.0
+      "target": "src_lib_app_settings_ts"
     },
     {
       "relation": "imports",
@@ -14319,9 +15740,9 @@
       "source_file": "src/app/api/spotify/callback/route.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_spotify_callback_route_ts",
-      "target": "lib_app_settings_getappsettings",
-      "confidence_score": 1.0
+      "target": "lib_app_settings_getappsettings"
     },
     {
       "relation": "imports_from",
@@ -14690,9 +16111,9 @@
       "source_file": "src/app/api/spotify/connect/route.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_spotify_connect_route_ts",
-      "target": "src_lib_app_settings_ts",
-      "confidence_score": 1.0
+      "target": "src_lib_app_settings_ts"
     },
     {
       "relation": "imports",
@@ -14701,9 +16122,9 @@
       "source_file": "src/app/api/spotify/connect/route.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_spotify_connect_route_ts",
-      "target": "lib_app_settings_getappsettings",
-      "confidence_score": 1.0
+      "target": "lib_app_settings_getappsettings"
     },
     {
       "relation": "imports_from",
@@ -14963,6 +16384,28 @@
       "source_file": "src/app/api/youtube/override/route.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "source": "src_app_api_youtube_override_route_ts",
+      "target": "src_lib_song_permissions_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/youtube/override/route.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_app_api_youtube_override_route_ts",
+      "target": "lib_song_permissions_canrepairsongmatch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/youtube/override/route.ts",
+      "source_location": "L3",
+      "weight": 1.0,
       "confidence_score": 1.0,
       "source": "src_app_api_youtube_override_route_ts",
       "target": "src_lib_song_serialization_ts"
@@ -15071,17 +16514,6 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/api/youtube/override/route.ts",
-      "source_location": "L14",
-      "weight": 1.0,
-      "source": "override_route_post",
-      "target": "lib_auth_forbidden"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/app/api/youtube/override/route.ts",
       "source_location": "L37",
       "weight": 1.0,
       "source": "override_route_post",
@@ -15097,6 +16529,28 @@
       "weight": 1.0,
       "source": "override_route_post",
       "target": "lib_youtube_id_isvalidyoutubeid"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/api/youtube/override/route.ts",
+      "source_location": "L83",
+      "weight": 1.0,
+      "source": "override_route_post",
+      "target": "lib_song_permissions_canrepairsongmatch"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/api/youtube/override/route.ts",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "override_route_post",
+      "target": "lib_auth_forbidden"
     },
     {
       "relation": "calls",
@@ -15185,6 +16639,28 @@
       "confidence_score": 1.0,
       "source": "src_app_api_youtube_match_route_ts",
       "target": "src_lib_prisma_ts"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/youtube/match/route.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_app_api_youtube_match_route_ts",
+      "target": "src_lib_song_permissions_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/youtube/match/route.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_app_api_youtube_match_route_ts",
+      "target": "lib_song_permissions_canrepairsongmatch",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -15315,6 +16791,17 @@
       "weight": 1.0,
       "source": "match_route_post",
       "target": "lib_auth_unauthorized"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/api/youtube/match/route.ts",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "match_route_post",
+      "target": "lib_song_permissions_canrepairsongmatch"
     },
     {
       "relation": "calls",
@@ -16726,6 +18213,26 @@
       "target": "components_playerbar_playerbar"
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/PlayerBar.tsx",
+      "source_location": "L318",
+      "weight": 1.0,
+      "source": "src_components_playerbar_tsx",
+      "target": "components_playerbar_lyricsuistate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/PlayerBar.tsx",
+      "source_location": "L329",
+      "weight": 1.0,
+      "source": "src_components_playerbar_tsx",
+      "target": "components_playerbar_lyricspanel",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -16840,9 +18347,9 @@
       "source_file": "src/components/SettingsForm.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_settingsform_tsx",
-      "target": "src_lib_api_client_ts",
-      "confidence_score": 1.0
+      "target": "src_lib_api_client_ts"
     },
     {
       "relation": "imports",
@@ -16851,9 +18358,9 @@
       "source_file": "src/components/SettingsForm.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_settingsform_tsx",
-      "target": "lib_api_client_apierror",
-      "confidence_score": 1.0
+      "target": "lib_api_client_apierror"
     },
     {
       "relation": "imports",
@@ -16862,9 +18369,9 @@
       "source_file": "src/components/SettingsForm.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_settingsform_tsx",
-      "target": "lib_api_client_apifetch",
-      "confidence_score": 1.0
+      "target": "lib_api_client_apifetch"
     },
     {
       "relation": "contains",
@@ -16872,9 +18379,9 @@
       "source_file": "src/components/SettingsForm.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_settingsform_tsx",
-      "target": "components_settingsform_settings",
-      "confidence_score": 1.0
+      "target": "components_settingsform_settings"
     },
     {
       "relation": "contains",
@@ -16882,9 +18389,9 @@
       "source_file": "src/components/SettingsForm.tsx",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_settingsform_tsx",
-      "target": "components_settingsform_status",
-      "confidence_score": 1.0
+      "target": "components_settingsform_status"
     },
     {
       "relation": "contains",
@@ -16892,9 +18399,9 @@
       "source_file": "src/components/SettingsForm.tsx",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_settingsform_tsx",
-      "target": "components_settingsform_settingsform",
-      "confidence_score": 1.0
+      "target": "components_settingsform_settingsform"
     },
     {
       "relation": "contains",
@@ -17472,16 +18979,6 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/SongList.tsx",
-      "source_location": "L11",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_components_songlist_tsx",
-      "target": "components_songlist_role"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/SongList.tsx",
       "source_location": "L13",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -17547,6 +19044,16 @@
       "confidence_score": 1.0,
       "source": "src_components_songlist_tsx",
       "target": "components_songlist_songlist"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/SongList.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_components_songlist_tsx",
+      "target": "components_songlist_role"
     },
     {
       "relation": "calls",
@@ -18482,7 +19989,18 @@
       "source_file": "src/lib/app-settings.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_app_settings_ts",
+      "target": "src_lib_prisma_ts"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/song-permissions.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_lib_song_permissions_ts",
       "target": "src_lib_prisma_ts",
       "confidence_score": 1.0
     },
@@ -18531,6 +20049,17 @@
       "target": "src_lib_prisma_ts"
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/cache.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_cache_ts",
+      "target": "src_lib_prisma_ts",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/api-client.ts",
@@ -18566,9 +20095,9 @@
       "source_file": "src/lib/app-settings.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_app_settings_ts",
-      "target": "lib_app_settings_appsettings",
-      "confidence_score": 1.0
+      "target": "lib_app_settings_appsettings"
     },
     {
       "relation": "contains",
@@ -18576,9 +20105,9 @@
       "source_file": "src/lib/app-settings.ts",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_app_settings_ts",
-      "target": "lib_app_settings_getappsettings",
-      "confidence_score": 1.0
+      "target": "lib_app_settings_getappsettings"
     },
     {
       "relation": "contains",
@@ -18586,9 +20115,9 @@
       "source_file": "src/lib/app-settings.ts",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_app_settings_ts",
-      "target": "lib_app_settings_updateappsettings",
-      "confidence_score": 1.0
+      "target": "lib_app_settings_updateappsettings"
     },
     {
       "relation": "contains",
@@ -19427,6 +20956,38 @@
       "weight": 1.0,
       "source": "lib_youtube_matchsongbyid",
       "target": "lib_song_serialization_serializealtids"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/song-permissions.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "src_lib_song_permissions_ts",
+      "target": "src_lib_session_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/song-permissions.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "src_lib_song_permissions_ts",
+      "target": "lib_session_session",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/song-permissions.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "src_lib_song_permissions_ts",
+      "target": "lib_song_permissions_canrepairsongmatch",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -21361,6 +22922,629 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_lrclib_ts",
+      "target": "src_lib_lyrics_normalize_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_lrclib_ts",
+      "target": "lyrics_normalize_looselymatches",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_lrclib_ts",
+      "target": "lyrics_normalize_lyricsmatchnorm",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_lrclib_ts",
+      "target": "src_lib_lyrics_types_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_lrclib_ts",
+      "target": "lyrics_types_lyricslookup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_lrclib_ts",
+      "target": "lyrics_lrclib_lrcliberror",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_lrclib_ts",
+      "target": "lyrics_lrclib_lrclibtrack",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_lrclib_ts",
+      "target": "lyrics_lrclib_geturl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L37",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_lrclib_ts",
+      "target": "lyrics_lrclib_searchurl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L42",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_lrclib_ts",
+      "target": "lyrics_lrclib_readbodysafe",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L52",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_lrclib_ts",
+      "target": "lyrics_lrclib_lrclibget",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L65",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_lrclib_ts",
+      "target": "lyrics_lrclib_tolookup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L75",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_lrclib_ts",
+      "target": "lyrics_lrclib_bestmatch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L91",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_lrclib_ts",
+      "target": "lyrics_lrclib_fetchlyrics",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/service.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_service_ts",
+      "target": "src_lib_lyrics_lrclib_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "lyrics_lrclib_lrcliberror",
+      "target": "lyrics_lrclib_lrcliberror_constructor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L96",
+      "weight": 1.0,
+      "source": "lyrics_lrclib_fetchlyrics",
+      "target": "lyrics_lrclib_geturl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L99",
+      "weight": 1.0,
+      "source": "lyrics_lrclib_fetchlyrics",
+      "target": "lyrics_lrclib_searchurl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L56",
+      "weight": 1.0,
+      "source": "lyrics_lrclib_lrclibget",
+      "target": "lyrics_lrclib_readbodysafe",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L97",
+      "weight": 1.0,
+      "source": "lyrics_lrclib_fetchlyrics",
+      "target": "lyrics_lrclib_tolookup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L101",
+      "weight": 1.0,
+      "source": "lyrics_lrclib_fetchlyrics",
+      "target": "lyrics_lrclib_bestmatch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L80",
+      "weight": 1.0,
+      "source": "lyrics_lrclib_bestmatch",
+      "target": "lyrics_normalize_lyricsmatchnorm"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/lib/lyrics/lrclib.ts",
+      "source_location": "L86",
+      "weight": 1.0,
+      "source": "lyrics_lrclib_bestmatch",
+      "target": "lyrics_normalize_looselymatches"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/service.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_service_ts",
+      "target": "lyrics_lrclib_fetchlyrics",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/lib/lyrics/service.ts",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "lyrics_service_getlyrics",
+      "target": "lyrics_lrclib_fetchlyrics"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/types.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_types_ts",
+      "target": "lyrics_types_lyricsresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/types.ts",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_types_ts",
+      "target": "lyrics_types_lyricslookup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/cache.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_cache_ts",
+      "target": "src_lib_lyrics_types_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/service.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_service_ts",
+      "target": "src_lib_lyrics_types_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/service.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_service_ts",
+      "target": "lyrics_types_lyricsresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/cache.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_cache_ts",
+      "target": "lyrics_types_lyricslookup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/service.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_service_ts",
+      "target": "lyrics_types_lyricslookup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/cache.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_cache_ts",
+      "target": "lyrics_cache_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/cache.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_cache_ts",
+      "target": "lyrics_cache_ttl_ms",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/cache.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_cache_ts",
+      "target": "lyrics_cache_isstatus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/cache.ts",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_cache_ts",
+      "target": "lyrics_cache_tolookup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/cache.ts",
+      "source_location": "L27",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_cache_ts",
+      "target": "lyrics_cache_lookup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/cache.ts",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_cache_ts",
+      "target": "lyrics_cache_record",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/cache.ts",
+      "source_location": "L53",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_cache_ts",
+      "target": "lyrics_cache_prune",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/service.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_service_ts",
+      "target": "src_lib_lyrics_cache_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/cache.ts",
+      "source_location": "L29",
+      "weight": 1.0,
+      "source": "lyrics_cache_lookup",
+      "target": "lyrics_cache_isstatus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/cache.ts",
+      "source_location": "L32",
+      "weight": 1.0,
+      "source": "lyrics_cache_lookup",
+      "target": "lyrics_cache_tolookup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/service.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_service_ts",
+      "target": "lyrics_cache_lookup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/lib/lyrics/service.ts",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "lyrics_service_getlyrics",
+      "target": "lyrics_cache_lookup"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/cache.ts",
+      "source_location": "L46",
+      "weight": 1.0,
+      "source": "lyrics_cache_record",
+      "target": "lyrics_cache_prune",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/service.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_service_ts",
+      "target": "lyrics_cache_record",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/lib/lyrics/service.ts",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "lyrics_service_getlyrics",
+      "target": "lyrics_cache_record"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/normalize.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_normalize_ts",
+      "target": "lyrics_normalize_fold",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/normalize.ts",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_normalize_ts",
+      "target": "lyrics_normalize_lyricskey",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/normalize.ts",
+      "source_location": "L27",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_normalize_ts",
+      "target": "lyrics_normalize_lyricsmatchnorm",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/normalize.ts",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_normalize_ts",
+      "target": "lyrics_normalize_looselymatches",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/service.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_service_ts",
+      "target": "src_lib_lyrics_normalize_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/normalize.ts",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "lyrics_normalize_lyricsmatchnorm",
+      "target": "lyrics_normalize_fold",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/service.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_service_ts",
+      "target": "lyrics_normalize_lyricskey",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/lib/lyrics/service.ts",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "lyrics_service_getlyrics",
+      "target": "lyrics_normalize_lyricskey"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/service.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_service_ts",
+      "target": "lyrics_service_songlike",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/service.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_service_ts",
+      "target": "lyrics_service_toresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/service.ts",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "src_lib_lyrics_service_ts",
+      "target": "lyrics_service_getlyrics",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/lyrics/service.ts",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "lyrics_service_getlyrics",
+      "target": "lyrics_service_toresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/lib/playback/resolver.ts",
       "source_location": "L1",
       "weight": 1.0,
@@ -22431,6 +24615,436 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "follow_up_ticket_md",
+      "target": "musica_ligera_42_follow_up_ticket_follow_up_ticket_scope_user_youtube_repairs_refresh_graphify",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "musica_ligera_42_follow_up_ticket_follow_up_ticket_scope_user_youtube_repairs_refresh_graphify",
+      "target": "musica_ligera_42_follow_up_ticket_goal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "musica_ligera_42_follow_up_ticket_follow_up_ticket_scope_user_youtube_repairs_refresh_graphify",
+      "target": "musica_ligera_42_follow_up_ticket_context",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L29",
+      "weight": 1.0,
+      "source": "musica_ligera_42_follow_up_ticket_follow_up_ticket_scope_user_youtube_repairs_refresh_graphify",
+      "target": "musica_ligera_42_follow_up_ticket_phase_1_scope_user_match_override_to_owned_playlist_songs",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L111",
+      "weight": 1.0,
+      "source": "musica_ligera_42_follow_up_ticket_follow_up_ticket_scope_user_youtube_repairs_refresh_graphify",
+      "target": "musica_ligera_42_follow_up_ticket_phase_2_refresh_graphify_state",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L146",
+      "weight": 1.0,
+      "source": "musica_ligera_42_follow_up_ticket_follow_up_ticket_scope_user_youtube_repairs_refresh_graphify",
+      "target": "musica_ligera_42_follow_up_ticket_verification",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L163",
+      "weight": 1.0,
+      "source": "musica_ligera_42_follow_up_ticket_follow_up_ticket_scope_user_youtube_repairs_refresh_graphify",
+      "target": "musica_ligera_42_follow_up_ticket_non_goals",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "musica_ligera_42_follow_up_ticket_phase_1_scope_user_match_override_to_owned_playlist_songs",
+      "target": "musica_ligera_42_follow_up_ticket_deliverable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L48",
+      "weight": 1.0,
+      "source": "musica_ligera_42_follow_up_ticket_phase_1_scope_user_match_override_to_owned_playlist_songs",
+      "target": "musica_ligera_42_follow_up_ticket_suggested_implementation",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L84",
+      "weight": 1.0,
+      "source": "musica_ligera_42_follow_up_ticket_phase_1_scope_user_match_override_to_owned_playlist_songs",
+      "target": "musica_ligera_42_follow_up_ticket_tests",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L101",
+      "weight": 1.0,
+      "source": "musica_ligera_42_follow_up_ticket_phase_1_scope_user_match_override_to_owned_playlist_songs",
+      "target": "musica_ligera_42_follow_up_ticket_manual_verification",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L58",
+      "weight": 1.0,
+      "source": "musica_ligera_42_follow_up_ticket_suggested_implementation",
+      "target": "musica_ligera_42_follow_up_ticket_codeblock_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L113",
+      "weight": 1.0,
+      "source": "musica_ligera_42_follow_up_ticket_phase_2_refresh_graphify_state",
+      "target": "musica_ligera_42_follow_up_ticket_deliverable_113",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L125",
+      "weight": 1.0,
+      "source": "musica_ligera_42_follow_up_ticket_phase_2_refresh_graphify_state",
+      "target": "musica_ligera_42_follow_up_ticket_current_state_to_respect",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L137",
+      "weight": 1.0,
+      "source": "musica_ligera_42_follow_up_ticket_phase_2_refresh_graphify_state",
+      "target": "musica_ligera_42_follow_up_ticket_commit_guidance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L119",
+      "weight": 1.0,
+      "source": "musica_ligera_42_follow_up_ticket_deliverable_113",
+      "target": "musica_ligera_42_follow_up_ticket_codeblock_2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "FOLLOW_UP_TICKET.md",
+      "source_location": "L150",
+      "weight": 1.0,
+      "source": "musica_ligera_42_follow_up_ticket_verification",
+      "target": "musica_ligera_42_follow_up_ticket_codeblock_3",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "ticket_md",
+      "target": "musica_ligera_42_ticket_ticket_web_parity_with_ios_user_youtube_matching_lyrics",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_ticket_web_parity_with_ios_user_youtube_matching_lyrics",
+      "target": "musica_ligera_42_ticket_goal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_ticket_web_parity_with_ios_user_youtube_matching_lyrics",
+      "target": "musica_ligera_42_ticket_context",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_ticket_web_parity_with_ios_user_youtube_matching_lyrics",
+      "target": "musica_ligera_42_ticket_phase_1_let_users_match_and_repair_youtube_links",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L127",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_ticket_web_parity_with_ios_user_youtube_matching_lyrics",
+      "target": "musica_ligera_42_ticket_phase_2_add_web_lyrics_using_the_ios_architecture",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L290",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_ticket_web_parity_with_ios_user_youtube_matching_lyrics",
+      "target": "musica_ligera_42_ticket_non_goals",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L299",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_ticket_web_parity_with_ios_user_youtube_matching_lyrics",
+      "target": "musica_ligera_42_ticket_final_verification_before_handoff",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L324",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_ticket_web_parity_with_ios_user_youtube_matching_lyrics",
+      "target": "musica_ligera_42_ticket_already_captured_not_a_separate_ticket",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L37",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_phase_1_let_users_match_and_repair_youtube_links",
+      "target": "musica_ligera_42_ticket_deliverable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L49",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_phase_1_let_users_match_and_repair_youtube_links",
+      "target": "musica_ligera_42_ticket_desired_ui_behavior",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L71",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_phase_1_let_users_match_and_repair_youtube_links",
+      "target": "musica_ligera_42_ticket_api_authorization_changes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L94",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_phase_1_let_users_match_and_repair_youtube_links",
+      "target": "musica_ligera_42_ticket_shared_state_warning",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L100",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_phase_1_let_users_match_and_repair_youtube_links",
+      "target": "musica_ligera_42_ticket_tests",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L112",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_phase_1_let_users_match_and_repair_youtube_links",
+      "target": "musica_ligera_42_ticket_manual_verification",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L129",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_phase_2_add_web_lyrics_using_the_ios_architecture",
+      "target": "musica_ligera_42_ticket_ios_reference",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L156",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_phase_2_add_web_lyrics_using_the_ios_architecture",
+      "target": "musica_ligera_42_ticket_suggested_web_architecture",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L186",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_phase_2_add_web_lyrics_using_the_ios_architecture",
+      "target": "musica_ligera_42_ticket_cache_model",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L213",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_phase_2_add_web_lyrics_using_the_ios_architecture",
+      "target": "musica_ligera_42_ticket_lrclib_provider_behavior",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L240",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_phase_2_add_web_lyrics_using_the_ios_architecture",
+      "target": "musica_ligera_42_ticket_ui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L257",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_phase_2_add_web_lyrics_using_the_ios_architecture",
+      "target": "musica_ligera_42_ticket_optional_duration_parity",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L263",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_phase_2_add_web_lyrics_using_the_ios_architecture",
+      "target": "musica_ligera_42_ticket_tests_263",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L279",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_phase_2_add_web_lyrics_using_the_ios_architecture",
+      "target": "musica_ligera_42_ticket_manual_verification_279",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L176",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_suggested_web_architecture",
+      "target": "musica_ligera_42_ticket_codeblock_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L190",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_cache_model",
+      "target": "musica_ligera_42_ticket_codeblock_2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L303",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_final_verification_before_handoff",
+      "target": "musica_ligera_42_ticket_codeblock_3",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "TICKET.md",
+      "source_location": "L318",
+      "weight": 1.0,
+      "source": "musica_ligera_42_ticket_final_verification_before_handoff",
+      "target": "musica_ligera_42_ticket_codeblock_4",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "AGENTS.md",
       "source_location": "L2",
       "weight": 1.0,
@@ -22451,6 +25065,46 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "WEB_IOS_PARITY_MASTER_LIST.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "web_ios_parity_master_list_md",
+      "target": "musica_ligera_42_web_ios_parity_master_list_web_ios_parity_master_list",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "WEB_IOS_PARITY_MASTER_LIST.md",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "musica_ligera_42_web_ios_parity_master_list_web_ios_parity_master_list",
+      "target": "musica_ligera_42_web_ios_parity_master_list_todo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "WEB_IOS_PARITY_MASTER_LIST.md",
+      "source_location": "L59",
+      "weight": 1.0,
+      "source": "musica_ligera_42_web_ios_parity_master_list_web_ios_parity_master_list",
+      "target": "musica_ligera_42_web_ios_parity_master_list_done",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "WEB_IOS_PARITY_MASTER_LIST.md",
+      "source_location": "L69",
+      "weight": 1.0,
+      "source": "musica_ligera_42_web_ios_parity_master_list_web_ios_parity_master_list",
+      "target": "musica_ligera_42_web_ios_parity_master_list_side_bar_ios_specific_or_lower_value_for_web",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "CLAUDE.md",
       "source_location": "L3",
       "weight": 1.0,
@@ -22460,5 +25114,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "7e24fae17650f05fb249792db00564423d82fc19"
+  "built_at_commit": "5ab4fe14c3b8dda72368c98bf737ab7d9a4c459e"
 }
