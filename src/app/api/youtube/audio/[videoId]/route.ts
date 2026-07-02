@@ -1,5 +1,6 @@
 import { getSession, unauthorized } from "@/lib/auth";
 import { isValidYoutubeId } from "@/lib/youtube";
+import { createMoovPatchTransform, ensureMoovPatch } from "@/lib/playback/moov-probe";
 import { evictAudioCache, resolveAudio } from "@/lib/playback/resolver";
 import {
   ResolveError,
@@ -20,6 +21,9 @@ const STATUS_FOR_CODE: Record<ResolveErrorCode, number> = {
   all_providers_failed: 502,
 };
 
+// Deliberately excludes validators like `etag`/`content-md5`: we may patch
+// bytes in flight (moov duration fix), so upstream byte-identity claims must
+// never reach the client. `last-modified` is dropped too when a patch applies.
 const FORWARD_RESPONSE_HEADERS = [
   "content-type",
   "content-length",
@@ -33,6 +37,15 @@ function errorResponse(code: ResolveErrorCode, detail: string, videoId: string) 
     { error: code, videoId, detail },
     { status: STATUS_FOR_CODE[code] },
   );
+}
+
+// Absolute file offset of the response's first byte: 0 for a full 200, the
+// content-range start for a 206. null = can't tell → serve unpatched.
+function servedStartOffset(upstream: Response): number | null {
+  if (upstream.status === 200) return 0;
+  if (upstream.status !== 206) return null;
+  const m = /^bytes (\d+)-/.exec(upstream.headers.get("content-range") ?? "");
+  return m ? Number(m[1]) : null;
 }
 
 async function fetchUpstream(stream: PlaybackStream, range: string | null) {
@@ -87,6 +100,9 @@ export async function GET(request: Request, ctx: Ctx) {
       }
       return errorResponse("stream_403", "retry resolve threw", videoId);
     }
+    // The retry produced a fresh cache entry — moov offsets (if any) are
+    // probed against the fresh URL below, never carried over from the stale one.
+    stream = retryStream;
     try {
       upstream = await fetchUpstream(retryStream, range);
     } catch (err) {
@@ -129,7 +145,23 @@ export async function GET(request: Request, ctx: Ctx) {
   // Stream URLs are IP-bound; never let an intermediary cache across clients.
   headers.set("cache-control", "no-store");
 
-  return new Response(upstream.body, {
+  // Fragmented-MP4 duration fix: zero the init-moov duration fields in flight
+  // so fragment-aware demuxers (Safari) don't double-count the duration. The
+  // probe decision is cached per stream; any failure serves bytes unpatched.
+  let body = upstream.body;
+  const patch = await ensureMoovPatch(videoId, stream);
+  if (patch.state === "offsets" && body) {
+    const servedStart = servedStartOffset(upstream);
+    const patchEnd = Math.max(...patch.offsets) + 4;
+    if (servedStart !== null && servedStart < patchEnd) {
+      body = body.pipeThrough(createMoovPatchTransform(patch.offsets, servedStart));
+      // The patched body is size-preserving but not byte-identical to
+      // upstream: never forward validators that claim byte-identity.
+      headers.delete("last-modified");
+    }
+  }
+
+  return new Response(body, {
     status: upstream.status,
     headers,
   });

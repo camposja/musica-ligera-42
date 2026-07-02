@@ -347,6 +347,251 @@ describe("GET /api/youtube/audio/[videoId]", () => {
   });
 });
 
+// === fragmented-MP4 moov duration patch ====================================
+
+// Minimal synthetic fragmented-MP4 head (same shape as the real YouTube init
+// segment): ftyp + moov{mvhd, mvex, trak{tkhd, mdia{mdhd}}}. Duration fields
+// land at absolute offsets 48 (mvhd), 96 (tkhd), 132 (mdhd).
+function be32(v: number): number[] {
+  return [(v >> 24) & 0xff, (v >> 16) & 0xff, (v >> 8) & 0xff, v & 0xff];
+}
+function mp4box(type: string, body: number[]): number[] {
+  return [...be32(8 + body.length), ...[...type].map((c) => c.charCodeAt(0)), ...body];
+}
+const DURATION_BE = [0x00, 0xbf, 0x6e, 0x20]; // 12545568
+function fragmentedHead(): Uint8Array {
+  const Z = [0, 0, 0, 0];
+  const mvhd = mp4box("mvhd", [...Z, ...Z, ...Z, ...be32(44100), ...DURATION_BE]);
+  const tkhd = mp4box("tkhd", [...Z, ...Z, ...Z, ...be32(1), ...Z, ...DURATION_BE]);
+  const mdhd = mp4box("mdhd", [...Z, ...Z, ...Z, ...be32(44100), ...DURATION_BE]);
+  const trak = mp4box("trak", [...tkhd, ...mp4box("mdia", mdhd)]);
+  const moov = mp4box("moov", [...mvhd, ...mp4box("mvex", []), ...trak]);
+  const ftyp = mp4box("ftyp", [...[..."isom"].map((c) => c.charCodeAt(0)), ...Z]);
+  return new Uint8Array([...ftyp, ...moov]);
+}
+const HEAD = fragmentedHead();
+const HEAD_OFFSETS = [48, 96, 132];
+
+function upstreamResponse(
+  bytes: Uint8Array,
+  init: { status?: number; headers?: Record<string, string> } = {},
+): Response {
+  return new Response(new Uint8Array(bytes), {
+    status: init.status ?? 200,
+    headers: {
+      "content-type": "audio/mp4",
+      "content-length": String(bytes.length),
+      ...init.headers,
+    },
+  });
+}
+
+function readU32(b: Uint8Array, o: number): number {
+  return (b[o] << 24) | (b[o + 1] << 16) | (b[o + 2] << 8) | b[o + 3];
+}
+
+describe("GET /api/youtube/audio — moov duration patch", () => {
+  const ORIGINAL_DISABLE = process.env.DISABLE_MOOV_DURATION_PATCH;
+
+  afterEach(() => {
+    if (ORIGINAL_DISABLE === undefined) {
+      delete process.env.DISABLE_MOOV_DURATION_PATCH;
+    } else {
+      process.env.DISABLE_MOOV_DURATION_PATCH = ORIGINAL_DISABLE;
+    }
+  });
+
+  it("zeroes the duration fields end-to-end; other bytes and headers intact", async () => {
+    await makeUserSession();
+    mockSpawnOnce({ stdout: ytDlpJson({ ext: "m4a" }) });
+    vi.spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(upstreamResponse(HEAD)) // main request
+      .mockResolvedValueOnce(upstreamResponse(HEAD, { status: 206 })); // head probe
+    const res = await audioGET(audioReq(VID), ctx({ videoId: VID }));
+    expect(res.status).toBe(200);
+    const got = new Uint8Array(await res.arrayBuffer());
+    expect(got.length).toBe(HEAD.length);
+    expect(res.headers.get("content-length")).toBe(String(HEAD.length));
+    for (const off of HEAD_OFFSETS) {
+      expect(readU32(HEAD, off)).toBe(12_545_568); // fixture sanity
+      expect(readU32(got, off)).toBe(0);
+    }
+    // Every byte outside the three 4-byte fields is untouched.
+    const patched = new Set(HEAD_OFFSETS.flatMap((o) => [o, o + 1, o + 2, o + 3]));
+    for (let i = 0; i < HEAD.length; i++) {
+      if (!patched.has(i)) expect(got[i]).toBe(HEAD[i]);
+    }
+  });
+
+  it("drops last-modified when patched (body is no longer byte-identical)", async () => {
+    await makeUserSession();
+    mockSpawnOnce({ stdout: ytDlpJson({ ext: "m4a" }) });
+    const lm = "Wed, 01 Jul 2026 00:00:00 GMT";
+    vi.spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(upstreamResponse(HEAD, { headers: { "last-modified": lm } }))
+      .mockResolvedValueOnce(upstreamResponse(HEAD, { status: 206 }));
+    const res = await audioGET(audioReq(VID), ctx({ videoId: VID }));
+    expect(res.headers.get("last-modified")).toBeNull();
+  });
+
+  it("keeps last-modified when the stream is not patched (no mvex)", async () => {
+    await makeUserSession();
+    mockSpawnOnce({ stdout: ytDlpJson({ ext: "m4a" }) });
+    const plain = new Uint8Array(64); // garbage → parse yields no offsets
+    const lm = "Wed, 01 Jul 2026 00:00:00 GMT";
+    vi.spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(upstreamResponse(plain, { headers: { "last-modified": lm } }))
+      .mockResolvedValueOnce(upstreamResponse(plain, { status: 206 }));
+    const res = await audioGET(audioReq(VID), ctx({ videoId: VID }));
+    expect(res.headers.get("last-modified")).toBe(lm);
+    expect(new Uint8Array(await res.arrayBuffer())).toEqual(plain);
+  });
+
+  it("patches only in-range bytes on a ranged request straddling a field", async () => {
+    await makeUserSession();
+    mockSpawnOnce({ stdout: ytDlpJson({ ext: "m4a" }) });
+    // First request warms the probe (offsets cached on the stream entry).
+    vi.spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(upstreamResponse(HEAD))
+      .mockResolvedValueOnce(upstreamResponse(HEAD, { status: 206 }))
+      // Ranged request: bytes 50-99 — covers the tail of the mvhd field (48-51)
+      // and all of the tkhd field (96-99).
+      .mockResolvedValueOnce(
+        upstreamResponse(HEAD.slice(50, 100), {
+          status: 206,
+          headers: { "content-range": `bytes 50-99/${HEAD.length}` },
+        }),
+      );
+    await audioGET(audioReq(VID), ctx({ videoId: VID }));
+    const res = await audioGET(
+      audioReq(VID, { headers: { range: "bytes=50-99" } }),
+      ctx({ videoId: VID }),
+    );
+    expect(res.status).toBe(206);
+    const got = new Uint8Array(await res.arrayBuffer());
+    const expected = HEAD.slice(50, 100);
+    for (const off of HEAD_OFFSETS) {
+      for (let k = 0; k < 4; k++) {
+        const idx = off + k - 50;
+        if (idx >= 0 && idx < expected.length) expected[idx] = 0;
+      }
+    }
+    expect(got).toEqual(expected);
+    // Sanity: in-range bytes of the mvhd field (50,51) zeroed; the tkhd field too.
+    expect(got[0]).toBe(0); // abs 50 (mvhd duration byte 3)
+    expect(got[46]).toBe(0); // abs 96 (tkhd duration byte 0)
+  });
+
+  it("passes a range entirely past the moov through untouched", async () => {
+    await makeUserSession();
+    mockSpawnOnce({ stdout: ytDlpJson({ ext: "m4a" }) });
+    const tail = new Uint8Array([9, 8, 7, 6]);
+    vi.spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(upstreamResponse(HEAD))
+      .mockResolvedValueOnce(upstreamResponse(HEAD, { status: 206 }))
+      .mockResolvedValueOnce(
+        upstreamResponse(tail, {
+          status: 206,
+          headers: { "content-range": "bytes 1000-1003/2000" },
+        }),
+      );
+    await audioGET(audioReq(VID), ctx({ videoId: VID }));
+    const res = await audioGET(
+      audioReq(VID, { headers: { range: "bytes=1000-1003" } }),
+      ctx({ videoId: VID }),
+    );
+    expect(new Uint8Array(await res.arrayBuffer())).toEqual(tail);
+  });
+
+  it("never probes webm streams (fetch called once)", async () => {
+    await makeUserSession();
+    mockSpawnOnce({ stdout: ytDlpJson({ ext: "webm" }) });
+    const fetchSpy = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(
+        new Response("WEBM_BYTES", {
+          status: 200,
+          headers: { "content-type": "audio/webm" },
+        }),
+      );
+    const res = await audioGET(audioReq(VID), ctx({ videoId: VID }));
+    expect(await res.text()).toBe("WEBM_BYTES");
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("probes parameterized mp4 content types (audio/mp4; codecs=…)", async () => {
+    await makeUserSession();
+    mockSpawnOnce({ stdout: ytDlpJson({ ext: "m4a" }) });
+    vi.spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(
+        upstreamResponse(HEAD, {
+          headers: { "content-type": 'audio/mp4; codecs="mp4a.40.2"' },
+        }),
+      )
+      .mockResolvedValueOnce(upstreamResponse(HEAD, { status: 206 }));
+    const res = await audioGET(audioReq(VID), ctx({ videoId: VID }));
+    const got = new Uint8Array(await res.arrayBuffer());
+    expect(readU32(got, 48)).toBe(0);
+  });
+
+  it("DISABLE_MOOV_DURATION_PATCH=1 → no probe, body unmodified", async () => {
+    process.env.DISABLE_MOOV_DURATION_PATCH = "1";
+    await makeUserSession();
+    mockSpawnOnce({ stdout: ytDlpJson({ ext: "m4a" }) });
+    const fetchSpy = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(upstreamResponse(HEAD));
+    const res = await audioGET(audioReq(VID), ctx({ videoId: VID }));
+    const got = new Uint8Array(await res.arrayBuffer());
+    expect(got).toEqual(HEAD);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("probe failure → 200 with unmodified body (fail-safe)", async () => {
+    await makeUserSession();
+    mockSpawnOnce({ stdout: ytDlpJson({ ext: "m4a" }) });
+    vi.spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(upstreamResponse(HEAD))
+      .mockRejectedValueOnce(new Error("probe network down"));
+    const res = await audioGET(audioReq(VID), ctx({ videoId: VID }));
+    expect(res.status).toBe(200);
+    expect(new Uint8Array(await res.arrayBuffer())).toEqual(HEAD);
+  });
+
+  it("403-retry path probes the fresh URL, not the stale one", async () => {
+    await makeUserSession();
+    mockSpawnOnce({ stdout: ytDlpJson({ url: "https://cdn/stale", ext: "m4a" }) });
+    mockSpawnOnce({ stdout: ytDlpJson({ url: "https://cdn/fresh", ext: "m4a" }) });
+    const fetchSpy = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(new Response("forbidden", { status: 403 })) // stale main
+      .mockResolvedValueOnce(upstreamResponse(HEAD)) // fresh main
+      .mockResolvedValueOnce(upstreamResponse(HEAD, { status: 206 })); // probe
+    const res = await audioGET(audioReq(VID), ctx({ videoId: VID }));
+    expect(res.status).toBe(200);
+    const got = new Uint8Array(await res.arrayBuffer());
+    expect(readU32(got, 48)).toBe(0);
+    // Probe (3rd fetch) hit the fresh URL.
+    expect(String(fetchSpy.mock.calls[2][0])).toBe("https://cdn/fresh");
+  });
+
+  it("probe result is cached — second request issues no second probe", async () => {
+    await makeUserSession();
+    mockSpawnOnce({ stdout: ytDlpJson({ ext: "m4a" }) });
+    const fetchSpy = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(upstreamResponse(HEAD))
+      .mockResolvedValueOnce(upstreamResponse(HEAD, { status: 206 }))
+      .mockResolvedValueOnce(upstreamResponse(HEAD));
+    await audioGET(audioReq(VID), ctx({ videoId: VID }));
+    const res = await audioGET(audioReq(VID), ctx({ videoId: VID }));
+    const got = new Uint8Array(await res.arrayBuffer());
+    expect(readU32(got, 48)).toBe(0);
+    // main + probe + main — no 4th call.
+    expect(fetchSpy).toHaveBeenCalledTimes(3);
+  });
+});
+
 // === resolveAudio with optional Piped fallback ============================
 
 const PIPED_BASE = "https://piped.test.example";
