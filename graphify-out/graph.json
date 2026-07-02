@@ -666,7 +666,7 @@
       "source_file": "tests/helpers.ts",
       "source_location": "L58",
       "id": "tests_helpers_seedspotifyconnection",
-      "community": 2,
+      "community": 47,
       "norm_label": "seedspotifyconnection()"
     },
     {
@@ -675,7 +675,7 @@
       "source_file": "tests/helpers.ts",
       "source_location": "L81",
       "id": "tests_helpers_jsonrequest",
-      "community": 2,
+      "community": 54,
       "norm_label": "jsonrequest()"
     },
     {
@@ -684,7 +684,7 @@
       "source_file": "tests/helpers.ts",
       "source_location": "L89",
       "id": "tests_helpers_emptyrequest",
-      "community": 2,
+      "community": 54,
       "norm_label": "emptyrequest()"
     },
     {
@@ -711,7 +711,7 @@
       "source_file": "tests/auth.test.ts",
       "source_location": "L1",
       "id": "tests_auth_test_ts",
-      "community": 2,
+      "community": 1,
       "norm_label": "auth.test.ts"
     },
     {
@@ -727,7 +727,7 @@
       "label": "MockedResponse",
       "file_type": "code",
       "source_file": "tests/youtube.test.ts",
-      "source_location": "L34",
+      "source_location": "L35",
       "id": "tests_youtube_test_mockedresponse",
       "community": 11,
       "norm_label": "mockedresponse"
@@ -736,7 +736,7 @@
       "label": "makeResponse()",
       "file_type": "code",
       "source_file": "tests/youtube.test.ts",
-      "source_location": "L40",
+      "source_location": "L41",
       "id": "tests_youtube_test_makeresponse",
       "community": 11,
       "norm_label": "makeresponse()"
@@ -745,7 +745,7 @@
       "label": "mockFetchSequence()",
       "file_type": "code",
       "source_file": "tests/youtube.test.ts",
-      "source_location": "L49",
+      "source_location": "L50",
       "id": "tests_youtube_test_mockfetchsequence",
       "community": 11,
       "norm_label": "mockfetchsequence()"
@@ -754,7 +754,7 @@
       "label": "PAD()",
       "file_type": "code",
       "source_file": "tests/youtube.test.ts",
-      "source_location": "L61",
+      "source_location": "L62",
       "id": "tests_youtube_test_pad",
       "community": 11,
       "norm_label": "pad()"
@@ -763,7 +763,7 @@
       "label": "ItemSpec",
       "file_type": "code",
       "source_file": "tests/youtube.test.ts",
-      "source_location": "L63",
+      "source_location": "L64",
       "id": "tests_youtube_test_itemspec",
       "community": 11,
       "norm_label": "itemspec"
@@ -772,7 +772,7 @@
       "label": "searchResp()",
       "file_type": "code",
       "source_file": "tests/youtube.test.ts",
-      "source_location": "L73",
+      "source_location": "L74",
       "id": "tests_youtube_test_searchresp",
       "community": 11,
       "norm_label": "searchresp()"
@@ -781,7 +781,7 @@
       "label": "isoDuration()",
       "file_type": "code",
       "source_file": "tests/youtube.test.ts",
-      "source_location": "L80",
+      "source_location": "L81",
       "id": "tests_youtube_test_isoduration",
       "community": 11,
       "norm_label": "isoduration()"
@@ -790,7 +790,7 @@
       "label": "videosResp()",
       "file_type": "code",
       "source_file": "tests/youtube.test.ts",
-      "source_location": "L86",
+      "source_location": "L87",
       "id": "tests_youtube_test_videosresp",
       "community": 11,
       "norm_label": "videosresp()"
@@ -799,7 +799,7 @@
       "label": "matchPair()",
       "file_type": "code",
       "source_file": "tests/youtube.test.ts",
-      "source_location": "L110",
+      "source_location": "L111",
       "id": "tests_youtube_test_matchpair",
       "community": 11,
       "norm_label": "matchpair()"
@@ -808,7 +808,7 @@
       "label": "makeSong()",
       "file_type": "code",
       "source_file": "tests/youtube.test.ts",
-      "source_location": "L305",
+      "source_location": "L306",
       "id": "tests_youtube_test_makesong",
       "community": 11,
       "norm_label": "makesong()"
@@ -817,7 +817,7 @@
       "label": "fetchSpy",
       "file_type": "code",
       "source_file": "tests/youtube.test.ts",
-      "source_location": "L372",
+      "source_location": "L375",
       "id": "tests_youtube_test_fetchspy",
       "community": 11,
       "norm_label": "fetchspy"
@@ -826,7 +826,7 @@
       "label": "searchCalls",
       "file_type": "code",
       "source_file": "tests/youtube.test.ts",
-      "source_location": "L450",
+      "source_location": "L503",
       "id": "tests_youtube_test_searchcalls",
       "community": 11,
       "norm_label": "searchcalls"
@@ -835,7 +835,7 @@
       "label": "e",
       "file_type": "code",
       "source_file": "tests/youtube.test.ts",
-      "source_location": "L489",
+      "source_location": "L542",
       "id": "tests_youtube_test_e",
       "community": 11,
       "norm_label": "e"
@@ -846,7 +846,7 @@
       "source_file": "tests/youtube-search.test.ts",
       "source_location": "L1",
       "id": "tests_youtube_search_test_ts",
-      "community": 11,
+      "community": 56,
       "norm_label": "youtube-search.test.ts"
     },
     {
@@ -855,7 +855,7 @@
       "source_file": "tests/youtube-search.test.ts",
       "source_location": "L90",
       "id": "tests_youtube_search_test_mockedresponse",
-      "community": 11,
+      "community": 56,
       "norm_label": "mockedresponse"
     },
     {
@@ -864,7 +864,7 @@
       "source_file": "tests/youtube-search.test.ts",
       "source_location": "L96",
       "id": "tests_youtube_search_test_makeresponse",
-      "community": 11,
+      "community": 56,
       "norm_label": "makeresponse()"
     },
     {
@@ -873,7 +873,7 @@
       "source_file": "tests/youtube-search.test.ts",
       "source_location": "L105",
       "id": "tests_youtube_search_test_mockfetchsequence",
-      "community": 11,
+      "community": 56,
       "norm_label": "mockfetchsequence()"
     },
     {
@@ -882,7 +882,7 @@
       "source_file": "tests/youtube-search.test.ts",
       "source_location": "L117",
       "id": "tests_youtube_search_test_pad",
-      "community": 11,
+      "community": 56,
       "norm_label": "pad()"
     },
     {
@@ -891,7 +891,7 @@
       "source_file": "tests/youtube-search.test.ts",
       "source_location": "L119",
       "id": "tests_youtube_search_test_searchresp",
-      "community": 11,
+      "community": 56,
       "norm_label": "searchresp()"
     },
     {
@@ -900,7 +900,7 @@
       "source_file": "tests/youtube-search.test.ts",
       "source_location": "L126",
       "id": "tests_youtube_search_test_videosresp",
-      "community": 11,
+      "community": 56,
       "norm_label": "videosresp()"
     },
     {
@@ -909,7 +909,7 @@
       "source_file": "tests/spotify-routes.test.ts",
       "source_location": "L1",
       "id": "tests_spotify_routes_test_ts",
-      "community": 2,
+      "community": 54,
       "norm_label": "spotify-routes.test.ts"
     },
     {
@@ -918,7 +918,7 @@
       "source_file": "tests/spotify-routes.test.ts",
       "source_location": "L50",
       "id": "tests_spotify_routes_test_mockedresponse",
-      "community": 2,
+      "community": 54,
       "norm_label": "mockedresponse"
     },
     {
@@ -927,7 +927,7 @@
       "source_file": "tests/spotify-routes.test.ts",
       "source_location": "L57",
       "id": "tests_spotify_routes_test_makeresponse",
-      "community": 2,
+      "community": 54,
       "norm_label": "makeresponse()"
     },
     {
@@ -936,7 +936,7 @@
       "source_file": "tests/spotify-routes.test.ts",
       "source_location": "L67",
       "id": "tests_spotify_routes_test_tokenresponse",
-      "community": 2,
+      "community": 54,
       "norm_label": "tokenresponse()"
     },
     {
@@ -945,7 +945,7 @@
       "source_file": "tests/spotify-routes.test.ts",
       "source_location": "L71",
       "id": "tests_spotify_routes_test_mockfetchsequence",
-      "community": 2,
+      "community": 54,
       "norm_label": "mockfetchsequence()"
     },
     {
@@ -954,7 +954,7 @@
       "source_file": "tests/spotify-routes.test.ts",
       "source_location": "L83",
       "id": "tests_spotify_routes_test_track",
-      "community": 2,
+      "community": 54,
       "norm_label": "track()"
     },
     {
@@ -963,7 +963,7 @@
       "source_file": "tests/spotify-routes.test.ts",
       "source_location": "L97",
       "id": "tests_spotify_routes_test_buildembedhtml",
-      "community": 2,
+      "community": 54,
       "norm_label": "buildembedhtml()"
     },
     {
@@ -972,7 +972,7 @@
       "source_file": "tests/spotify-routes.test.ts",
       "source_location": "L129",
       "id": "tests_spotify_routes_test_mockembedresponse",
-      "community": 2,
+      "community": 54,
       "norm_label": "mockembedresponse()"
     },
     {
@@ -981,7 +981,7 @@
       "source_file": "tests/spotify-routes.test.ts",
       "source_location": "L138",
       "id": "tests_spotify_routes_test_makeuser",
-      "community": 2,
+      "community": 54,
       "norm_label": "makeuser()"
     },
     {
@@ -990,7 +990,7 @@
       "source_file": "tests/spotify-routes.test.ts",
       "source_location": "L362",
       "id": "tests_spotify_routes_test_embedtracks",
-      "community": 2,
+      "community": 54,
       "norm_label": "embedtracks"
     },
     {
@@ -1055,6 +1055,24 @@
       "id": "tests_library_search_test_ranked",
       "community": 2,
       "norm_label": "ranked"
+    },
+    {
+      "label": "duration-guard.test.ts",
+      "file_type": "code",
+      "source_file": "tests/duration-guard.test.ts",
+      "source_location": "L1",
+      "id": "tests_duration_guard_test_ts",
+      "community": 7,
+      "norm_label": "duration-guard.test.ts"
+    },
+    {
+      "label": "base",
+      "file_type": "code",
+      "source_file": "tests/duration-guard.test.ts",
+      "source_location": "L35",
+      "id": "tests_duration_guard_test_base",
+      "community": 7,
+      "norm_label": "base"
     },
     {
       "label": "spotify.test.ts",
@@ -1161,7 +1179,7 @@
       "source_file": "tests/playlists.test.ts",
       "source_location": "L1",
       "id": "tests_playlists_test_ts",
-      "community": 2,
+      "community": 1,
       "norm_label": "playlists.test.ts"
     },
     {
@@ -1170,7 +1188,7 @@
       "source_file": "tests/playlists.test.ts",
       "source_location": "L30",
       "id": "tests_playlists_test_makeuser",
-      "community": 2,
+      "community": 1,
       "norm_label": "makeuser()"
     },
     {
@@ -1179,7 +1197,7 @@
       "source_file": "tests/playlists.test.ts",
       "source_location": "L36",
       "id": "tests_playlists_test_makesong",
-      "community": 2,
+      "community": 1,
       "norm_label": "makesong()"
     },
     {
@@ -1188,7 +1206,7 @@
       "source_file": "tests/playlists.test.ts",
       "source_location": "L188",
       "id": "tests_playlists_test_deletereq",
-      "community": 2,
+      "community": 54,
       "norm_label": "deletereq()"
     },
     {
@@ -1197,7 +1215,7 @@
       "source_file": "tests/playlists.test.ts",
       "source_location": "L244",
       "id": "tests_playlists_test_makeownedplaylist",
-      "community": 2,
+      "community": 1,
       "norm_label": "makeownedplaylist()"
     },
     {
@@ -1206,7 +1224,7 @@
       "source_file": "tests/playlists.test.ts",
       "source_location": "L489",
       "id": "tests_playlists_test_makelockedplaylist",
-      "community": 2,
+      "community": 1,
       "norm_label": "makelockedplaylist()"
     },
     {
@@ -1215,7 +1233,7 @@
       "source_file": "tests/playlists.test.ts",
       "source_location": "L558",
       "id": "tests_playlists_test_makeplaylistwithsongs",
-      "community": 2,
+      "community": 1,
       "norm_label": "makeplaylistwithsongs()"
     },
     {
@@ -1235,6 +1253,15 @@
       "id": "tests_search_history_test_makeuser",
       "community": 45,
       "norm_label": "makeuser()"
+    },
+    {
+      "label": "tick()",
+      "file_type": "code",
+      "source_file": "tests/search-history.test.ts",
+      "source_location": "L33",
+      "id": "tests_search_history_test_tick",
+      "community": 45,
+      "norm_label": "tick()"
     },
     {
       "label": "youtube-match.test.ts",
@@ -1330,7 +1357,7 @@
       "label": "looseFirst",
       "file_type": "code",
       "source_file": "tests/youtube-match.test.ts",
-      "source_location": "L345",
+      "source_location": "L352",
       "id": "tests_youtube_match_test_loosefirst",
       "community": 5,
       "norm_label": "loosefirst"
@@ -1339,7 +1366,7 @@
       "label": "exact",
       "file_type": "code",
       "source_file": "tests/youtube-match.test.ts",
-      "source_location": "L350",
+      "source_location": "L357",
       "id": "tests_youtube_match_test_exact",
       "community": 5,
       "norm_label": "exact"
@@ -1348,7 +1375,7 @@
       "label": "live",
       "file_type": "code",
       "source_file": "tests/youtube-match.test.ts",
-      "source_location": "L363",
+      "source_location": "L370",
       "id": "tests_youtube_match_test_live",
       "community": 5,
       "norm_label": "live"
@@ -1357,7 +1384,7 @@
       "label": "lyric",
       "file_type": "code",
       "source_file": "tests/youtube-match.test.ts",
-      "source_location": "L368",
+      "source_location": "L375",
       "id": "tests_youtube_match_test_lyric",
       "community": 5,
       "norm_label": "lyric"
@@ -1366,7 +1393,7 @@
       "label": "candidates",
       "file_type": "code",
       "source_file": "tests/youtube-match.test.ts",
-      "source_location": "L391",
+      "source_location": "L398",
       "id": "tests_youtube_match_test_candidates",
       "community": 5,
       "norm_label": "candidates"
@@ -1413,7 +1440,7 @@
       "source_file": "tests/spotify-oauth-routes.test.ts",
       "source_location": "L1",
       "id": "tests_spotify_oauth_routes_test_ts",
-      "community": 2,
+      "community": 47,
       "norm_label": "spotify-oauth-routes.test.ts"
     },
     {
@@ -1422,7 +1449,7 @@
       "source_file": "tests/spotify-oauth-routes.test.ts",
       "source_location": "L41",
       "id": "tests_spotify_oauth_routes_test_mockedresponse",
-      "community": 2,
+      "community": 47,
       "norm_label": "mockedresponse"
     },
     {
@@ -1431,7 +1458,7 @@
       "source_file": "tests/spotify-oauth-routes.test.ts",
       "source_location": "L47",
       "id": "tests_spotify_oauth_routes_test_makeresponse",
-      "community": 2,
+      "community": 47,
       "norm_label": "makeresponse()"
     },
     {
@@ -1440,7 +1467,7 @@
       "source_file": "tests/spotify-oauth-routes.test.ts",
       "source_location": "L56",
       "id": "tests_spotify_oauth_routes_test_mockfetchsequence",
-      "community": 2,
+      "community": 47,
       "norm_label": "mockfetchsequence()"
     },
     {
@@ -1449,7 +1476,7 @@
       "source_file": "tests/spotify-oauth-routes.test.ts",
       "source_location": "L68",
       "id": "tests_spotify_oauth_routes_test_makeuser",
-      "community": 2,
+      "community": 47,
       "norm_label": "makeuser()"
     },
     {
@@ -1458,7 +1485,7 @@
       "source_file": "tests/spotify-oauth-routes.test.ts",
       "source_location": "L72",
       "id": "tests_spotify_oauth_routes_test_readcookievalue",
-      "community": 2,
+      "community": 47,
       "norm_label": "readcookievalue()"
     },
     {
@@ -1467,7 +1494,7 @@
       "source_file": "tests/spotify-oauth-routes.test.ts",
       "source_location": "L128",
       "id": "tests_spotify_oauth_routes_test_callbackurl",
-      "community": 2,
+      "community": 47,
       "norm_label": "callbackurl()"
     },
     {
@@ -1584,7 +1611,7 @@
       "source_file": "tests/lyrics.test.ts",
       "source_location": "L254",
       "id": "tests_lyrics_test_asuser",
-      "community": 0,
+      "community": 2,
       "norm_label": "asuser()"
     },
     {
@@ -1636,7 +1663,7 @@
       "label": "enoentError()",
       "file_type": "code",
       "source_file": "tests/youtube-audio.test.ts",
-      "source_location": "L91",
+      "source_location": "L94",
       "id": "tests_youtube_audio_test_enoenterror",
       "community": 3,
       "norm_label": "enoenterror()"
@@ -1645,16 +1672,16 @@
       "label": "makeUserSession()",
       "file_type": "code",
       "source_file": "tests/youtube-audio.test.ts",
-      "source_location": "L95",
+      "source_location": "L98",
       "id": "tests_youtube_audio_test_makeusersession",
-      "community": 3,
+      "community": 2,
       "norm_label": "makeusersession()"
     },
     {
       "label": "statusReq()",
       "file_type": "code",
       "source_file": "tests/youtube-audio.test.ts",
-      "source_location": "L174",
+      "source_location": "L177",
       "id": "tests_youtube_audio_test_statusreq",
       "community": 3,
       "norm_label": "statusreq()"
@@ -1663,7 +1690,7 @@
       "label": "audioReq()",
       "file_type": "code",
       "source_file": "tests/youtube-audio.test.ts",
-      "source_location": "L230",
+      "source_location": "L270",
       "id": "tests_youtube_audio_test_audioreq",
       "community": 3,
       "norm_label": "audioreq()"
@@ -1672,7 +1699,7 @@
       "label": "fetchSpy",
       "file_type": "code",
       "source_file": "tests/youtube-audio.test.ts",
-      "source_location": "L268",
+      "source_location": "L308",
       "id": "tests_youtube_audio_test_fetchspy",
       "community": 3,
       "norm_label": "fetchspy"
@@ -1681,16 +1708,133 @@
       "label": "sentHeaders",
       "file_type": "code",
       "source_file": "tests/youtube-audio.test.ts",
-      "source_location": "L284",
+      "source_location": "L324",
       "id": "tests_youtube_audio_test_sentheaders",
       "community": 3,
       "norm_label": "sentheaders"
     },
     {
+      "label": "be32()",
+      "file_type": "code",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L395",
+      "id": "tests_youtube_audio_test_be32",
+      "community": 3,
+      "norm_label": "be32()"
+    },
+    {
+      "label": "mp4box()",
+      "file_type": "code",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L398",
+      "id": "tests_youtube_audio_test_mp4box",
+      "community": 3,
+      "norm_label": "mp4box()"
+    },
+    {
+      "label": "DURATION_BE",
+      "file_type": "code",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L401",
+      "id": "tests_youtube_audio_test_duration_be",
+      "community": 3,
+      "norm_label": "duration_be"
+    },
+    {
+      "label": "fragmentedHead()",
+      "file_type": "code",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L402",
+      "id": "tests_youtube_audio_test_fragmentedhead",
+      "community": 3,
+      "norm_label": "fragmentedhead()"
+    },
+    {
+      "label": "HEAD",
+      "file_type": "code",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L412",
+      "id": "tests_youtube_audio_test_head",
+      "community": 3,
+      "norm_label": "head"
+    },
+    {
+      "label": "HEAD_OFFSETS",
+      "file_type": "code",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L413",
+      "id": "tests_youtube_audio_test_head_offsets",
+      "community": 3,
+      "norm_label": "head_offsets"
+    },
+    {
+      "label": "upstreamResponse()",
+      "file_type": "code",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L415",
+      "id": "tests_youtube_audio_test_upstreamresponse",
+      "community": 3,
+      "norm_label": "upstreamresponse()"
+    },
+    {
+      "label": "readU32()",
+      "file_type": "code",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L429",
+      "id": "tests_youtube_audio_test_readu32",
+      "community": 3,
+      "norm_label": "readu32()"
+    },
+    {
+      "label": "got",
+      "file_type": "code",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L452",
+      "id": "tests_youtube_audio_test_got",
+      "community": 3,
+      "norm_label": "got"
+    },
+    {
+      "label": "patched",
+      "file_type": "code",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L460",
+      "id": "tests_youtube_audio_test_patched",
+      "community": 3,
+      "norm_label": "patched"
+    },
+    {
+      "label": "plain",
+      "file_type": "code",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L480",
+      "id": "tests_youtube_audio_test_plain",
+      "community": 3,
+      "norm_label": "plain"
+    },
+    {
+      "label": "expected",
+      "file_type": "code",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L512",
+      "id": "tests_youtube_audio_test_expected",
+      "community": 3,
+      "norm_label": "expected"
+    },
+    {
+      "label": "tail",
+      "file_type": "code",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L528",
+      "id": "tests_youtube_audio_test_tail",
+      "community": 3,
+      "norm_label": "tail"
+    },
+    {
       "label": "enablePiped()",
       "file_type": "code",
       "source_file": "tests/youtube-audio.test.ts",
-      "source_location": "L354",
+      "source_location": "L639",
       "id": "tests_youtube_audio_test_enablepiped",
       "community": 3,
       "norm_label": "enablepiped()"
@@ -1699,7 +1843,7 @@
       "label": "pipedAudioStreams()",
       "file_type": "code",
       "source_file": "tests/youtube-audio.test.ts",
-      "source_location": "L359",
+      "source_location": "L644",
       "id": "tests_youtube_audio_test_pipedaudiostreams",
       "community": 3,
       "norm_label": "pipedaudiostreams()"
@@ -1710,7 +1854,7 @@
       "source_file": "tests/youtube-routes.test.ts",
       "source_location": "L1",
       "id": "tests_youtube_routes_test_ts",
-      "community": 2,
+      "community": 50,
       "norm_label": "youtube-routes.test.ts"
     },
     {
@@ -1719,7 +1863,7 @@
       "source_file": "tests/youtube-routes.test.ts",
       "source_location": "L37",
       "id": "tests_youtube_routes_test_mockedresponse",
-      "community": 2,
+      "community": 50,
       "norm_label": "mockedresponse"
     },
     {
@@ -1728,7 +1872,7 @@
       "source_file": "tests/youtube-routes.test.ts",
       "source_location": "L43",
       "id": "tests_youtube_routes_test_makeresponse",
-      "community": 2,
+      "community": 50,
       "norm_label": "makeresponse()"
     },
     {
@@ -1737,7 +1881,7 @@
       "source_file": "tests/youtube-routes.test.ts",
       "source_location": "L52",
       "id": "tests_youtube_routes_test_mockfetchsequence",
-      "community": 2,
+      "community": 50,
       "norm_label": "mockfetchsequence()"
     },
     {
@@ -1746,7 +1890,7 @@
       "source_file": "tests/youtube-routes.test.ts",
       "source_location": "L64",
       "id": "tests_youtube_routes_test_searchresp",
-      "community": 2,
+      "community": 50,
       "norm_label": "searchresp()"
     },
     {
@@ -1755,7 +1899,7 @@
       "source_file": "tests/youtube-routes.test.ts",
       "source_location": "L71",
       "id": "tests_youtube_routes_test_isoduration",
-      "community": 2,
+      "community": 50,
       "norm_label": "isoduration()"
     },
     {
@@ -1764,7 +1908,7 @@
       "source_file": "tests/youtube-routes.test.ts",
       "source_location": "L79",
       "id": "tests_youtube_routes_test_videosresp",
-      "community": 2,
+      "community": 50,
       "norm_label": "videosresp()"
     },
     {
@@ -1773,7 +1917,7 @@
       "source_file": "tests/youtube-routes.test.ts",
       "source_location": "L99",
       "id": "tests_youtube_routes_test_matchpair",
-      "community": 2,
+      "community": 50,
       "norm_label": "matchpair()"
     },
     {
@@ -1782,7 +1926,7 @@
       "source_file": "tests/youtube-routes.test.ts",
       "source_location": "L103",
       "id": "tests_youtube_routes_test_pad",
-      "community": 2,
+      "community": 50,
       "norm_label": "pad()"
     },
     {
@@ -1791,7 +1935,7 @@
       "source_file": "tests/youtube-routes.test.ts",
       "source_location": "L105",
       "id": "tests_youtube_routes_test_makeuser",
-      "community": 2,
+      "community": 50,
       "norm_label": "makeuser()"
     },
     {
@@ -1800,7 +1944,7 @@
       "source_file": "tests/youtube-routes.test.ts",
       "source_location": "L109",
       "id": "tests_youtube_routes_test_makesong",
-      "community": 2,
+      "community": 50,
       "norm_label": "makesong()"
     },
     {
@@ -1809,7 +1953,7 @@
       "source_file": "tests/youtube-routes.test.ts",
       "source_location": "L118",
       "id": "tests_youtube_routes_test_addsongtouserplaylist",
-      "community": 2,
+      "community": 50,
       "norm_label": "addsongtouserplaylist()"
     },
     {
@@ -1818,7 +1962,7 @@
       "source_file": "tests/youtube-routes.test.ts",
       "source_location": "L169",
       "id": "tests_youtube_routes_test_fetchspy",
-      "community": 2,
+      "community": 50,
       "norm_label": "fetchspy"
     },
     {
@@ -1827,71 +1971,206 @@
       "source_file": "tests/youtube-routes.test.ts",
       "source_location": "L285",
       "id": "tests_youtube_routes_test_videodetails",
-      "community": 2,
+      "community": 50,
       "norm_label": "videodetails()"
     },
     {
       "label": "makeUnmatchedSong()",
       "file_type": "code",
       "source_file": "tests/youtube-routes.test.ts",
-      "source_location": "L639",
+      "source_location": "L641",
       "id": "tests_youtube_routes_test_makeunmatchedsong",
-      "community": 2,
+      "community": 50,
       "norm_label": "makeunmatchedsong()"
     },
     {
       "label": "searchRequest()",
       "file_type": "code",
       "source_file": "tests/youtube-routes.test.ts",
-      "source_location": "L762",
+      "source_location": "L764",
       "id": "tests_youtube_routes_test_searchrequest",
-      "community": 2,
+      "community": 50,
       "norm_label": "searchrequest()"
     },
     {
       "label": "today",
       "file_type": "code",
       "source_file": "tests/youtube-routes.test.ts",
-      "source_location": "L898",
+      "source_location": "L900",
       "id": "tests_youtube_routes_test_today",
-      "community": 2,
+      "community": 50,
       "norm_label": "today"
     },
     {
       "label": "candA",
       "file_type": "code",
       "source_file": "tests/youtube-routes.test.ts",
-      "source_location": "L1157",
+      "source_location": "L1159",
       "id": "tests_youtube_routes_test_canda",
-      "community": 2,
+      "community": 50,
       "norm_label": "canda"
     },
     {
       "label": "candB",
       "file_type": "code",
       "source_file": "tests/youtube-routes.test.ts",
-      "source_location": "L1158",
+      "source_location": "L1160",
       "id": "tests_youtube_routes_test_candb",
-      "community": 2,
+      "community": 50,
       "norm_label": "candb"
     },
     {
       "label": "candC",
       "file_type": "code",
       "source_file": "tests/youtube-routes.test.ts",
-      "source_location": "L1159",
+      "source_location": "L1161",
       "id": "tests_youtube_routes_test_candc",
-      "community": 2,
+      "community": 50,
       "norm_label": "candc"
     },
     {
       "label": "candAVideos",
       "file_type": "code",
       "source_file": "tests/youtube-routes.test.ts",
-      "source_location": "L1243",
+      "source_location": "L1245",
       "id": "tests_youtube_routes_test_candavideos",
-      "community": 2,
+      "community": 50,
       "norm_label": "candavideos"
+    },
+    {
+      "label": "moov-duration-patcher.test.ts",
+      "file_type": "code",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L1",
+      "id": "tests_moov_duration_patcher_test_ts",
+      "community": 49,
+      "norm_label": "moov-duration-patcher.test.ts"
+    },
+    {
+      "label": "be32()",
+      "file_type": "code",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L11",
+      "id": "tests_moov_duration_patcher_test_be32",
+      "community": 49,
+      "norm_label": "be32()"
+    },
+    {
+      "label": "box()",
+      "file_type": "code",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L15",
+      "id": "tests_moov_duration_patcher_test_box",
+      "community": 49,
+      "norm_label": "box()"
+    },
+    {
+      "label": "NON_ZERO_DURATION",
+      "file_type": "code",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L19",
+      "id": "tests_moov_duration_patcher_test_non_zero_duration",
+      "community": 49,
+      "norm_label": "non_zero_duration"
+    },
+    {
+      "label": "ZERO4",
+      "file_type": "code",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L20",
+      "id": "tests_moov_duration_patcher_test_zero4",
+      "community": 49,
+      "norm_label": "zero4"
+    },
+    {
+      "label": "mvhd()",
+      "file_type": "code",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L23",
+      "id": "tests_moov_duration_patcher_test_mvhd",
+      "community": 49,
+      "norm_label": "mvhd()"
+    },
+    {
+      "label": "tkhd()",
+      "file_type": "code",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L35",
+      "id": "tests_moov_duration_patcher_test_tkhd",
+      "community": 49,
+      "norm_label": "tkhd()"
+    },
+    {
+      "label": "mdhd()",
+      "file_type": "code",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L47",
+      "id": "tests_moov_duration_patcher_test_mdhd",
+      "community": 49,
+      "norm_label": "mdhd()"
+    },
+    {
+      "label": "elst()",
+      "file_type": "code",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L57",
+      "id": "tests_moov_duration_patcher_test_elst",
+      "community": 49,
+      "norm_label": "elst()"
+    },
+    {
+      "label": "mvex()",
+      "file_type": "code",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L61",
+      "id": "tests_moov_duration_patcher_test_mvex",
+      "community": 49,
+      "norm_label": "mvex()"
+    },
+    {
+      "label": "buildHeader()",
+      "file_type": "code",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L66",
+      "id": "tests_moov_duration_patcher_test_buildheader",
+      "community": 49,
+      "norm_label": "buildheader()"
+    },
+    {
+      "label": "head",
+      "file_type": "code",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L85",
+      "id": "tests_moov_duration_patcher_test_head",
+      "community": 49,
+      "norm_label": "head"
+    },
+    {
+      "label": "truncated",
+      "file_type": "code",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L130",
+      "id": "tests_moov_duration_patcher_test_truncated",
+      "community": 49,
+      "norm_label": "truncated"
+    },
+    {
+      "label": "offsets",
+      "file_type": "code",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L148",
+      "id": "tests_moov_duration_patcher_test_offsets",
+      "community": 49,
+      "norm_label": "offsets"
+    },
+    {
+      "label": "slice",
+      "file_type": "code",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L159",
+      "id": "tests_moov_duration_patcher_test_slice",
+      "community": 49,
+      "norm_label": "slice"
     },
     {
       "label": "youtube-quota.test.ts",
@@ -1926,7 +2205,7 @@
       "source_file": "tests/keep-alive-schedule.test.ts",
       "source_location": "L1",
       "id": "tests_keep_alive_schedule_test_ts",
-      "community": 10,
+      "community": 53,
       "norm_label": "keep-alive-schedule.test.ts"
     },
     {
@@ -1935,7 +2214,7 @@
       "source_file": "tests/keep-alive-schedule.test.ts",
       "source_location": "L22",
       "id": "tests_keep_alive_schedule_test_hi",
-      "community": 10,
+      "community": 53,
       "norm_label": "hi"
     },
     {
@@ -1944,7 +2223,7 @@
       "source_file": "tests/keep-alive-schedule.test.ts",
       "source_location": "L29",
       "id": "tests_keep_alive_schedule_test_d",
-      "community": 10,
+      "community": 53,
       "norm_label": "d"
     },
     {
@@ -2250,14 +2529,14 @@
       "source_file": "src/types/api.ts",
       "source_location": "L17",
       "id": "types_api_song",
-      "community": 13,
+      "community": 9,
       "norm_label": "song"
     },
     {
       "label": "MeResponse",
       "file_type": "code",
       "source_file": "src/types/api.ts",
-      "source_location": "L32",
+      "source_location": "L33",
       "id": "types_api_meresponse",
       "community": 17,
       "norm_label": "meresponse"
@@ -2266,7 +2545,7 @@
       "label": "NormalizedTrack",
       "file_type": "code",
       "source_file": "src/types/api.ts",
-      "source_location": "L44",
+      "source_location": "L45",
       "id": "types_api_normalizedtrack",
       "community": 9,
       "norm_label": "normalizedtrack"
@@ -2275,16 +2554,16 @@
       "label": "PlaylistWithCount",
       "file_type": "code",
       "source_file": "src/types/api.ts",
-      "source_location": "L53",
+      "source_location": "L54",
       "id": "types_api_playlistwithcount",
-      "community": 10,
+      "community": 52,
       "norm_label": "playlistwithcount"
     },
     {
       "label": "PlaylistWithSongs",
       "file_type": "code",
       "source_file": "src/types/api.ts",
-      "source_location": "L57",
+      "source_location": "L58",
       "id": "types_api_playlistwithsongs",
       "community": 17,
       "norm_label": "playlistwithsongs"
@@ -2293,7 +2572,7 @@
       "label": "SearchResponse",
       "file_type": "code",
       "source_file": "src/types/api.ts",
-      "source_location": "L61",
+      "source_location": "L62",
       "id": "types_api_searchresponse",
       "community": 17,
       "norm_label": "searchresponse"
@@ -2302,7 +2581,7 @@
       "label": "ListPlaylistsResponse",
       "file_type": "code",
       "source_file": "src/types/api.ts",
-      "source_location": "L63",
+      "source_location": "L64",
       "id": "types_api_listplaylistsresponse",
       "community": 17,
       "norm_label": "listplaylistsresponse"
@@ -2311,16 +2590,16 @@
       "label": "ListUsersResponse",
       "file_type": "code",
       "source_file": "src/types/api.ts",
-      "source_location": "L65",
+      "source_location": "L66",
       "id": "types_api_listusersresponse",
-      "community": 10,
+      "community": 51,
       "norm_label": "listusersresponse"
     },
     {
       "label": "SongResponse",
       "file_type": "code",
       "source_file": "src/types/api.ts",
-      "source_location": "L67",
+      "source_location": "L68",
       "id": "types_api_songresponse",
       "community": 9,
       "norm_label": "songresponse"
@@ -2329,34 +2608,34 @@
       "label": "PlaylistResponse",
       "file_type": "code",
       "source_file": "src/types/api.ts",
-      "source_location": "L69",
+      "source_location": "L70",
       "id": "types_api_playlistresponse",
-      "community": 17,
+      "community": 10,
       "norm_label": "playlistresponse"
     },
     {
       "label": "ImportPlaylistResponse",
       "file_type": "code",
       "source_file": "src/types/api.ts",
-      "source_location": "L71",
+      "source_location": "L72",
       "id": "types_api_importplaylistresponse",
-      "community": 17,
+      "community": 51,
       "norm_label": "importplaylistresponse"
     },
     {
       "label": "YoutubeSearchResult",
       "file_type": "code",
       "source_file": "src/types/api.ts",
-      "source_location": "L79",
+      "source_location": "L80",
       "id": "types_api_youtubesearchresult",
-      "community": 13,
+      "community": 11,
       "norm_label": "youtubesearchresult"
     },
     {
       "label": "QuotaStatus",
       "file_type": "code",
       "source_file": "src/types/api.ts",
-      "source_location": "L88",
+      "source_location": "L89",
       "id": "types_api_quotastatus",
       "community": 17,
       "norm_label": "quotastatus"
@@ -2365,7 +2644,7 @@
       "label": "YoutubeSearchResponse",
       "file_type": "code",
       "source_file": "src/types/api.ts",
-      "source_location": "L94",
+      "source_location": "L95",
       "id": "types_api_youtubesearchresponse",
       "community": 13,
       "norm_label": "youtubesearchresponse"
@@ -2374,7 +2653,7 @@
       "label": "LibraryPlaylistRef",
       "file_type": "code",
       "source_file": "src/types/api.ts",
-      "source_location": "L104",
+      "source_location": "L105",
       "id": "types_api_libraryplaylistref",
       "community": 17,
       "norm_label": "libraryplaylistref"
@@ -2383,7 +2662,7 @@
       "label": "LibrarySearchResult",
       "file_type": "code",
       "source_file": "src/types/api.ts",
-      "source_location": "L107",
+      "source_location": "L108",
       "id": "types_api_librarysearchresult",
       "community": 17,
       "norm_label": "librarysearchresult"
@@ -2392,7 +2671,7 @@
       "label": "LibrarySearchResponse",
       "file_type": "code",
       "source_file": "src/types/api.ts",
-      "source_location": "L109",
+      "source_location": "L110",
       "id": "types_api_librarysearchresponse",
       "community": 17,
       "norm_label": "librarysearchresponse"
@@ -2401,7 +2680,7 @@
       "label": "SearchSurface",
       "file_type": "code",
       "source_file": "src/types/api.ts",
-      "source_location": "L117",
+      "source_location": "L118",
       "id": "types_api_searchsurface",
       "community": 17,
       "norm_label": "searchsurface"
@@ -2475,7 +2754,7 @@
       "source_file": "src/app/(app)/layout.tsx",
       "source_location": "L1",
       "id": "src_app_app_layout_tsx",
-      "community": 10,
+      "community": 55,
       "norm_label": "layout.tsx"
     },
     {
@@ -2484,7 +2763,7 @@
       "source_file": "src/app/(app)/layout.tsx",
       "source_location": "L9",
       "id": "app_layout_applayout",
-      "community": 10,
+      "community": 55,
       "norm_label": "applayout()"
     },
     {
@@ -2529,7 +2808,7 @@
       "source_file": "src/app/(app)/settings/page.tsx",
       "source_location": "L1",
       "id": "src_app_app_settings_page_tsx",
-      "community": 10,
+      "community": 55,
       "norm_label": "page.tsx"
     },
     {
@@ -2538,7 +2817,7 @@
       "source_file": "src/app/(app)/settings/page.tsx",
       "source_location": "L6",
       "id": "settings_page_settingspage",
-      "community": 10,
+      "community": 55,
       "norm_label": "settingspage()"
     },
     {
@@ -2547,7 +2826,7 @@
       "source_file": "src/app/(app)/playlist/[id]/page.tsx",
       "source_location": "L1",
       "id": "src_app_app_playlist_id_page_tsx",
-      "community": 10,
+      "community": 52,
       "norm_label": "page.tsx"
     },
     {
@@ -2556,7 +2835,7 @@
       "source_file": "src/app/(app)/playlist/[id]/page.tsx",
       "source_location": "L10",
       "id": "id_page_params",
-      "community": 10,
+      "community": 52,
       "norm_label": "params"
     },
     {
@@ -2565,7 +2844,7 @@
       "source_file": "src/app/(app)/playlist/[id]/page.tsx",
       "source_location": "L12",
       "id": "id_page_playlistpage",
-      "community": 10,
+      "community": 52,
       "norm_label": "playlistpage()"
     },
     {
@@ -2610,7 +2889,7 @@
       "source_file": "src/app/(app)/search/SearchPageClient.tsx",
       "source_location": "L39",
       "id": "search_searchpageclient_searchpageclient",
-      "community": 10,
+      "community": 17,
       "norm_label": "searchpageclient()"
     },
     {
@@ -2628,7 +2907,7 @@
       "source_file": "src/app/(app)/search/page.tsx",
       "source_location": "L1",
       "id": "src_app_app_search_page_tsx",
-      "community": 10,
+      "community": 52,
       "norm_label": "page.tsx"
     },
     {
@@ -2637,7 +2916,7 @@
       "source_file": "src/app/(app)/search/page.tsx",
       "source_location": "L5",
       "id": "search_page_searchpage",
-      "community": 10,
+      "community": 52,
       "norm_label": "searchpage()"
     },
     {
@@ -2646,7 +2925,7 @@
       "source_file": "src/app/(app)/dashboard/page.tsx",
       "source_location": "L1",
       "id": "src_app_app_dashboard_page_tsx",
-      "community": 10,
+      "community": 52,
       "norm_label": "page.tsx"
     },
     {
@@ -2655,7 +2934,7 @@
       "source_file": "src/app/(app)/dashboard/page.tsx",
       "source_location": "L9",
       "id": "dashboard_page_spotifybanner",
-      "community": 10,
+      "community": 52,
       "norm_label": "spotifybanner"
     },
     {
@@ -2664,7 +2943,7 @@
       "source_file": "src/app/(app)/dashboard/page.tsx",
       "source_location": "L29",
       "id": "dashboard_page_dashboardpage",
-      "community": 10,
+      "community": 52,
       "norm_label": "dashboardpage()"
     },
     {
@@ -2934,7 +3213,7 @@
       "source_file": "src/app/api/auth/logout/route.ts",
       "source_location": "L1",
       "id": "src_app_api_auth_logout_route_ts",
-      "community": 2,
+      "community": 1,
       "norm_label": "route.ts"
     },
     {
@@ -2943,7 +3222,7 @@
       "source_file": "src/app/api/auth/logout/route.ts",
       "source_location": "L3",
       "id": "logout_route_post",
-      "community": 2,
+      "community": 1,
       "norm_label": "post()"
     },
     {
@@ -2988,7 +3267,7 @@
       "source_file": "src/app/api/auth/login/route.ts",
       "source_location": "L1",
       "id": "src_app_api_auth_login_route_ts",
-      "community": 2,
+      "community": 1,
       "norm_label": "route.ts"
     },
     {
@@ -2997,7 +3276,7 @@
       "source_file": "src/app/api/auth/login/route.ts",
       "source_location": "L5",
       "id": "login_route_safeequal",
-      "community": 2,
+      "community": 1,
       "norm_label": "safeequal()"
     },
     {
@@ -3006,7 +3285,7 @@
       "source_file": "src/app/api/auth/login/route.ts",
       "source_location": "L11",
       "id": "login_route_post",
-      "community": 2,
+      "community": 1,
       "norm_label": "post()"
     },
     {
@@ -3033,7 +3312,7 @@
       "source_file": "src/app/api/spotify/search/route.ts",
       "source_location": "L1",
       "id": "src_app_api_spotify_search_route_ts",
-      "community": 1,
+      "community": 4,
       "norm_label": "route.ts"
     },
     {
@@ -3042,7 +3321,7 @@
       "source_file": "src/app/api/youtube/search/route.ts",
       "source_location": "L9",
       "id": "search_route_get",
-      "community": 1,
+      "community": 4,
       "norm_label": "get()"
     },
     {
@@ -3051,7 +3330,7 @@
       "source_file": "src/app/api/spotify/search/route.ts",
       "source_location": "L22",
       "id": "search_route_spotifyerrorresponse",
-      "community": 1,
+      "community": 4,
       "norm_label": "spotifyerrorresponse()"
     },
     {
@@ -3096,7 +3375,7 @@
       "source_file": "src/app/api/spotify/callback/route.ts",
       "source_location": "L1",
       "id": "src_app_api_spotify_callback_route_ts",
-      "community": 4,
+      "community": 47,
       "norm_label": "route.ts"
     },
     {
@@ -3105,7 +3384,7 @@
       "source_file": "src/app/api/spotify/callback/route.ts",
       "source_location": "L17",
       "id": "callback_route_appurl",
-      "community": 4,
+      "community": 47,
       "norm_label": "appurl()"
     },
     {
@@ -3114,7 +3393,7 @@
       "source_file": "src/app/api/spotify/callback/route.ts",
       "source_location": "L25",
       "id": "callback_route_get",
-      "community": 4,
+      "community": 47,
       "norm_label": "get()"
     },
     {
@@ -3141,7 +3420,7 @@
       "source_file": "src/app/api/spotify/connect/route.ts",
       "source_location": "L1",
       "id": "src_app_api_spotify_connect_route_ts",
-      "community": 4,
+      "community": 47,
       "norm_label": "route.ts"
     },
     {
@@ -3150,7 +3429,7 @@
       "source_file": "src/app/api/spotify/connect/route.ts",
       "source_location": "L9",
       "id": "connect_route_get",
-      "community": 4,
+      "community": 47,
       "norm_label": "get()"
     },
     {
@@ -3186,7 +3465,7 @@
       "source_file": "src/app/api/youtube/override/route.ts",
       "source_location": "L1",
       "id": "src_app_api_youtube_override_route_ts",
-      "community": 11,
+      "community": 1,
       "norm_label": "route.ts"
     },
     {
@@ -3195,7 +3474,7 @@
       "source_file": "src/app/api/youtube/override/route.ts",
       "source_location": "L12",
       "id": "override_route_post",
-      "community": 11,
+      "community": 1,
       "norm_label": "post()"
     },
     {
@@ -3204,7 +3483,7 @@
       "source_file": "src/app/api/youtube/match/route.ts",
       "source_location": "L1",
       "id": "src_app_api_youtube_match_route_ts",
-      "community": 11,
+      "community": 1,
       "norm_label": "route.ts"
     },
     {
@@ -3213,7 +3492,7 @@
       "source_file": "src/app/api/youtube/match/route.ts",
       "source_location": "L8",
       "id": "match_route_post",
-      "community": 11,
+      "community": 1,
       "norm_label": "post()"
     },
     {
@@ -3222,7 +3501,7 @@
       "source_file": "src/app/api/youtube/match/route.ts",
       "source_location": "L60",
       "id": "match_route_youtubeerrorresponse",
-      "community": 11,
+      "community": 1,
       "norm_label": "youtubeerrorresponse()"
     },
     {
@@ -3292,7 +3571,7 @@
       "label": "Ctx",
       "file_type": "code",
       "source_file": "src/app/api/youtube/audio-status/[videoId]/route.ts",
-      "source_location": "L8",
+      "source_location": "L9",
       "id": "videoid_route_ctx",
       "community": 3,
       "norm_label": "ctx"
@@ -3301,7 +3580,7 @@
       "label": "STATUS_FOR_CODE",
       "file_type": "code",
       "source_file": "src/app/api/youtube/audio-status/[videoId]/route.ts",
-      "source_location": "L10",
+      "source_location": "L11",
       "id": "videoid_route_status_for_code",
       "community": 3,
       "norm_label": "status_for_code"
@@ -3310,7 +3589,7 @@
       "label": "FORWARD_RESPONSE_HEADERS",
       "file_type": "code",
       "source_file": "src/app/api/youtube/audio/[videoId]/route.ts",
-      "source_location": "L23",
+      "source_location": "L27",
       "id": "videoid_route_forward_response_headers",
       "community": 3,
       "norm_label": "forward_response_headers"
@@ -3319,16 +3598,25 @@
       "label": "errorResponse()",
       "file_type": "code",
       "source_file": "src/app/api/youtube/audio/[videoId]/route.ts",
-      "source_location": "L31",
+      "source_location": "L35",
       "id": "videoid_route_errorresponse",
       "community": 3,
       "norm_label": "errorresponse()"
     },
     {
+      "label": "servedStartOffset()",
+      "file_type": "code",
+      "source_file": "src/app/api/youtube/audio/[videoId]/route.ts",
+      "source_location": "L44",
+      "id": "videoid_route_servedstartoffset",
+      "community": 3,
+      "norm_label": "servedstartoffset()"
+    },
+    {
       "label": "fetchUpstream()",
       "file_type": "code",
       "source_file": "src/app/api/youtube/audio/[videoId]/route.ts",
-      "source_location": "L38",
+      "source_location": "L51",
       "id": "videoid_route_fetchupstream",
       "community": 3,
       "norm_label": "fetchupstream()"
@@ -3337,7 +3625,7 @@
       "label": "GET()",
       "file_type": "code",
       "source_file": "src/app/api/youtube/audio-status/[videoId]/route.ts",
-      "source_location": "L19",
+      "source_location": "L20",
       "id": "videoid_route_get",
       "community": 3,
       "norm_label": "get()"
@@ -3492,7 +3780,7 @@
       "source_file": "src/components/YouTubePlayer.tsx",
       "source_location": "L1",
       "id": "src_components_youtubeplayer_tsx",
-      "community": 47,
+      "community": 7,
       "norm_label": "youtubeplayer.tsx"
     },
     {
@@ -3501,7 +3789,7 @@
       "source_file": "src/components/YouTubePlayer.tsx",
       "source_location": "L5",
       "id": "components_youtubeplayer_props",
-      "community": 47,
+      "community": 7,
       "norm_label": "props"
     },
     {
@@ -3510,7 +3798,7 @@
       "source_file": "src/components/YouTubePlayer.tsx",
       "source_location": "L12",
       "id": "components_youtubeplayer_youtubeplayer",
-      "community": 47,
+      "community": 7,
       "norm_label": "youtubeplayer()"
     },
     {
@@ -3564,61 +3852,61 @@
       "source_file": "src/components/PlayerBar.tsx",
       "source_location": "L1",
       "id": "src_components_playerbar_tsx",
-      "community": 47,
+      "community": 7,
       "norm_label": "playerbar.tsx"
     },
     {
       "label": "AudioStatus",
       "file_type": "code",
       "source_file": "src/components/PlayerBar.tsx",
-      "source_location": "L9",
+      "source_location": "L10",
       "id": "components_playerbar_audiostatus",
-      "community": 47,
+      "community": 7,
       "norm_label": "audiostatus"
     },
     {
       "label": "AudioError",
       "file_type": "code",
       "source_file": "src/components/PlayerBar.tsx",
-      "source_location": "L10",
+      "source_location": "L11",
       "id": "components_playerbar_audioerror",
-      "community": 47,
+      "community": 7,
       "norm_label": "audioerror"
     },
     {
       "label": "preloadNext()",
       "file_type": "code",
       "source_file": "src/components/PlayerBar.tsx",
-      "source_location": "L16",
+      "source_location": "L17",
       "id": "components_playerbar_preloadnext",
-      "community": 47,
+      "community": 7,
       "norm_label": "preloadnext()"
     },
     {
       "label": "PlayerBar()",
       "file_type": "code",
       "source_file": "src/components/PlayerBar.tsx",
-      "source_location": "L28",
+      "source_location": "L29",
       "id": "components_playerbar_playerbar",
-      "community": 47,
+      "community": 7,
       "norm_label": "playerbar()"
     },
     {
       "label": "LyricsUiState",
       "file_type": "code",
       "source_file": "src/components/PlayerBar.tsx",
-      "source_location": "L318",
+      "source_location": "L353",
       "id": "components_playerbar_lyricsuistate",
-      "community": 47,
+      "community": 7,
       "norm_label": "lyricsuistate"
     },
     {
       "label": "LyricsPanel()",
       "file_type": "code",
       "source_file": "src/components/PlayerBar.tsx",
-      "source_location": "L329",
+      "source_location": "L364",
       "id": "components_playerbar_lyricspanel",
-      "community": 47,
+      "community": 7,
       "norm_label": "lyricspanel()"
     },
     {
@@ -3627,7 +3915,7 @@
       "source_file": "src/components/ImportPlaylistForm.tsx",
       "source_location": "L1",
       "id": "src_components_importplaylistform_tsx",
-      "community": 10,
+      "community": 51,
       "norm_label": "importplaylistform.tsx"
     },
     {
@@ -3636,7 +3924,7 @@
       "source_file": "src/components/ImportPlaylistForm.tsx",
       "source_location": "L9",
       "id": "components_importplaylistform_errorview",
-      "community": 10,
+      "community": 51,
       "norm_label": "errorview"
     },
     {
@@ -3645,7 +3933,7 @@
       "source_file": "src/components/ImportPlaylistForm.tsx",
       "source_location": "L14",
       "id": "components_importplaylistform_importplaylistform",
-      "community": 10,
+      "community": 51,
       "norm_label": "importplaylistform()"
     },
     {
@@ -3654,7 +3942,7 @@
       "source_file": "src/components/SettingsForm.tsx",
       "source_location": "L1",
       "id": "src_components_settingsform_tsx",
-      "community": 10,
+      "community": 55,
       "norm_label": "settingsform.tsx"
     },
     {
@@ -3663,7 +3951,7 @@
       "source_file": "src/components/SettingsForm.tsx",
       "source_location": "L7",
       "id": "components_settingsform_settings",
-      "community": 10,
+      "community": 55,
       "norm_label": "settings"
     },
     {
@@ -3672,7 +3960,7 @@
       "source_file": "src/components/SettingsForm.tsx",
       "source_location": "L9",
       "id": "components_settingsform_status",
-      "community": 10,
+      "community": 55,
       "norm_label": "status"
     },
     {
@@ -3681,7 +3969,7 @@
       "source_file": "src/components/SettingsForm.tsx",
       "source_location": "L11",
       "id": "components_settingsform_settingsform",
-      "community": 10,
+      "community": 55,
       "norm_label": "settingsform()"
     },
     {
@@ -3690,7 +3978,7 @@
       "source_file": "src/components/YouTubeAudioPlayer.tsx",
       "source_location": "L1",
       "id": "src_components_youtubeaudioplayer_tsx",
-      "community": 47,
+      "community": 7,
       "norm_label": "youtubeaudioplayer.tsx"
     },
     {
@@ -3699,7 +3987,7 @@
       "source_file": "src/components/YouTubeAudioPlayer.tsx",
       "source_location": "L3",
       "id": "components_youtubeaudioplayer_props",
-      "community": 47,
+      "community": 7,
       "norm_label": "props"
     },
     {
@@ -3708,7 +3996,7 @@
       "source_file": "src/components/YouTubeAudioPlayer.tsx",
       "source_location": "L10",
       "id": "components_youtubeaudioplayer_youtubeaudioplayer",
-      "community": 47,
+      "community": 7,
       "norm_label": "youtubeaudioplayer()"
     },
     {
@@ -3762,7 +4050,7 @@
       "source_file": "src/components/HeaderMenu.tsx",
       "source_location": "L1",
       "id": "src_components_headermenu_tsx",
-      "community": 10,
+      "community": 51,
       "norm_label": "headermenu.tsx"
     },
     {
@@ -3771,7 +4059,7 @@
       "source_file": "src/components/HeaderMenu.tsx",
       "source_location": "L7",
       "id": "components_headermenu_props",
-      "community": 10,
+      "community": 51,
       "norm_label": "props"
     },
     {
@@ -3780,7 +4068,7 @@
       "source_file": "src/components/HeaderMenu.tsx",
       "source_location": "L14",
       "id": "components_headermenu_headermenu",
-      "community": 10,
+      "community": 51,
       "norm_label": "headermenu()"
     },
     {
@@ -3843,7 +4131,7 @@
       "source_file": "src/components/SessionProvider.tsx",
       "source_location": "L1",
       "id": "src_components_sessionprovider_tsx",
-      "community": 10,
+      "community": 51,
       "norm_label": "sessionprovider.tsx"
     },
     {
@@ -3852,7 +4140,7 @@
       "source_file": "src/components/SessionProvider.tsx",
       "source_location": "L6",
       "id": "components_sessionprovider_sessioncontext",
-      "community": 10,
+      "community": 51,
       "norm_label": "sessioncontext"
     },
     {
@@ -3861,7 +4149,7 @@
       "source_file": "src/components/SessionProvider.tsx",
       "source_location": "L8",
       "id": "components_sessionprovider_sessionprovider",
-      "community": 10,
+      "community": 51,
       "norm_label": "sessionprovider()"
     },
     {
@@ -3870,7 +4158,7 @@
       "source_file": "src/components/SessionProvider.tsx",
       "source_location": "L18",
       "id": "components_sessionprovider_usesession",
-      "community": 10,
+      "community": 51,
       "norm_label": "usesession()"
     },
     {
@@ -3879,7 +4167,7 @@
       "source_file": "src/components/PlaylistList.tsx",
       "source_location": "L1",
       "id": "src_components_playlistlist_tsx",
-      "community": 10,
+      "community": 52,
       "norm_label": "playlistlist.tsx"
     },
     {
@@ -3888,7 +4176,7 @@
       "source_file": "src/components/PlaylistList.tsx",
       "source_location": "L4",
       "id": "components_playlistlist_props",
-      "community": 10,
+      "community": 52,
       "norm_label": "props"
     },
     {
@@ -3897,7 +4185,7 @@
       "source_file": "src/components/PlaylistList.tsx",
       "source_location": "L6",
       "id": "components_playlistlist_playlistlist",
-      "community": 10,
+      "community": 52,
       "norm_label": "playlistlist()"
     },
     {
@@ -4023,7 +4311,7 @@
       "source_file": "src/components/SongList.tsx",
       "source_location": "L200",
       "id": "components_songlist_songlist",
-      "community": 10,
+      "community": 13,
       "norm_label": "songlist()"
     },
     {
@@ -4086,7 +4374,7 @@
       "source_file": "src/components/SearchResults.tsx",
       "source_location": "L31",
       "id": "components_searchresults_resultrow",
-      "community": 9,
+      "community": 13,
       "norm_label": "resultrow()"
     },
     {
@@ -4221,7 +4509,7 @@
       "source_file": "src/components/Header.tsx",
       "source_location": "L1",
       "id": "src_components_header_tsx",
-      "community": 10,
+      "community": 51,
       "norm_label": "header.tsx"
     },
     {
@@ -4230,7 +4518,7 @@
       "source_file": "src/components/Header.tsx",
       "source_location": "L10",
       "id": "components_header_props",
-      "community": 10,
+      "community": 51,
       "norm_label": "props"
     },
     {
@@ -4239,7 +4527,7 @@
       "source_file": "src/components/Header.tsx",
       "source_location": "L18",
       "id": "components_header_header",
-      "community": 10,
+      "community": 51,
       "norm_label": "header()"
     },
     {
@@ -4347,7 +4635,7 @@
       "source_file": "src/components/UserSwitcher.tsx",
       "source_location": "L1",
       "id": "src_components_userswitcher_tsx",
-      "community": 10,
+      "community": 51,
       "norm_label": "userswitcher.tsx"
     },
     {
@@ -4356,7 +4644,7 @@
       "source_file": "src/components/UserSwitcher.tsx",
       "source_location": "L8",
       "id": "components_userswitcher_props",
-      "community": 10,
+      "community": 51,
       "norm_label": "props"
     },
     {
@@ -4365,7 +4653,7 @@
       "source_file": "src/components/UserSwitcher.tsx",
       "source_location": "L10",
       "id": "components_userswitcher_userswitcher",
-      "community": 10,
+      "community": 51,
       "norm_label": "userswitcher()"
     },
     {
@@ -4374,7 +4662,7 @@
       "source_file": "src/components/KeepAliveButton.tsx",
       "source_location": "L1",
       "id": "src_components_keepalivebutton_tsx",
-      "community": 10,
+      "community": 53,
       "norm_label": "keepalivebutton.tsx"
     },
     {
@@ -4383,7 +4671,7 @@
       "source_file": "src/components/KeepAliveButton.tsx",
       "source_location": "L13",
       "id": "components_keepalivebutton_stored",
-      "community": 10,
+      "community": 53,
       "norm_label": "stored"
     },
     {
@@ -4392,7 +4680,7 @@
       "source_file": "src/components/KeepAliveButton.tsx",
       "source_location": "L15",
       "id": "components_keepalivebutton_readstored",
-      "community": 10,
+      "community": 53,
       "norm_label": "readstored()"
     },
     {
@@ -4401,7 +4689,7 @@
       "source_file": "src/components/KeepAliveButton.tsx",
       "source_location": "L28",
       "id": "components_keepalivebutton_writestored",
-      "community": 10,
+      "community": 53,
       "norm_label": "writestored()"
     },
     {
@@ -4410,7 +4698,7 @@
       "source_file": "src/components/KeepAliveButton.tsx",
       "source_location": "L34",
       "id": "components_keepalivebutton_formatremaining",
-      "community": 10,
+      "community": 53,
       "norm_label": "formatremaining()"
     },
     {
@@ -4419,7 +4707,7 @@
       "source_file": "src/components/KeepAliveButton.tsx",
       "source_location": "L40",
       "id": "components_keepalivebutton_keepalivebutton",
-      "community": 10,
+      "community": 53,
       "norm_label": "keepalivebutton()"
     },
     {
@@ -4482,7 +4770,7 @@
       "source_file": "src/components/PlayerProvider.tsx",
       "source_location": "L190",
       "id": "components_playerprovider_usenowplaying",
-      "community": 17,
+      "community": 13,
       "norm_label": "usenowplaying()"
     },
     {
@@ -4563,7 +4851,7 @@
       "source_file": "src/lib/app-settings.ts",
       "source_location": "L1",
       "id": "src_lib_app_settings_ts",
-      "community": 10,
+      "community": 55,
       "norm_label": "app-settings.ts"
     },
     {
@@ -4572,7 +4860,7 @@
       "source_file": "src/lib/app-settings.ts",
       "source_location": "L3",
       "id": "lib_app_settings_appsettings",
-      "community": 10,
+      "community": 55,
       "norm_label": "appsettings"
     },
     {
@@ -4581,7 +4869,7 @@
       "source_file": "src/lib/app-settings.ts",
       "source_location": "L10",
       "id": "lib_app_settings_getappsettings",
-      "community": 10,
+      "community": 55,
       "norm_label": "getappsettings()"
     },
     {
@@ -4599,7 +4887,7 @@
       "source_file": "src/lib/keep-alive-schedule.ts",
       "source_location": "L1",
       "id": "src_lib_keep_alive_schedule_ts",
-      "community": 10,
+      "community": 53,
       "norm_label": "keep-alive-schedule.ts"
     },
     {
@@ -4608,7 +4896,7 @@
       "source_file": "src/lib/keep-alive-schedule.ts",
       "source_location": "L11",
       "id": "lib_keep_alive_schedule_nextpingdelay",
-      "community": 10,
+      "community": 53,
       "norm_label": "nextpingdelay()"
     },
     {
@@ -4617,7 +4905,7 @@
       "source_file": "src/lib/keep-alive-schedule.ts",
       "source_location": "L26",
       "id": "lib_keep_alive_schedule_retrydelay",
-      "community": 10,
+      "community": 53,
       "norm_label": "retrydelay()"
     },
     {
@@ -4671,7 +4959,7 @@
       "source_file": "src/lib/library-search.ts",
       "source_location": "L33",
       "id": "lib_library_search_tokensof",
-      "community": 1,
+      "community": 5,
       "norm_label": "tokensof()"
     },
     {
@@ -4698,7 +4986,7 @@
       "source_file": "src/lib/library-search.ts",
       "source_location": "L62",
       "id": "lib_library_search_ranksongs",
-      "community": 1,
+      "community": 5,
       "norm_label": "ranksongs()"
     },
     {
@@ -4707,7 +4995,7 @@
       "source_file": "src/lib/library-search.ts",
       "source_location": "L77",
       "id": "lib_library_search_rankplaylists",
-      "community": 1,
+      "community": 5,
       "norm_label": "rankplaylists()"
     },
     {
@@ -4869,7 +5157,7 @@
       "source_file": "src/lib/spotify.ts",
       "source_location": "L151",
       "id": "lib_spotify_searchtracks",
-      "community": 1,
+      "community": 4,
       "norm_label": "searchtracks()"
     },
     {
@@ -4977,7 +5265,7 @@
       "source_file": "src/lib/song-serialization.ts",
       "source_location": "L1",
       "id": "src_lib_song_serialization_ts",
-      "community": 11,
+      "community": 1,
       "norm_label": "song-serialization.ts"
     },
     {
@@ -4986,7 +5274,7 @@
       "source_file": "src/lib/song-serialization.ts",
       "source_location": "L11",
       "id": "lib_song_serialization_parsealtids",
-      "community": 11,
+      "community": 1,
       "norm_label": "parsealtids()"
     },
     {
@@ -4995,7 +5283,7 @@
       "source_file": "src/lib/song-serialization.ts",
       "source_location": "L22",
       "id": "lib_song_serialization_serializealtids",
-      "community": 11,
+      "community": 1,
       "norm_label": "serializealtids()"
     },
     {
@@ -5004,7 +5292,7 @@
       "source_file": "src/lib/song-serialization.ts",
       "source_location": "L31",
       "id": "lib_song_serialization_normalizesong",
-      "community": 11,
+      "community": 1,
       "norm_label": "normalizesong()"
     },
     {
@@ -5013,7 +5301,7 @@
       "source_file": "src/lib/song-serialization.ts",
       "source_location": "L43",
       "id": "lib_song_serialization_normalizeplaylistwithsongs",
-      "community": 11,
+      "community": 1,
       "norm_label": "normalizeplaylistwithsongs()"
     },
     {
@@ -5022,7 +5310,7 @@
       "source_file": "src/lib/song-permissions.ts",
       "source_location": "L1",
       "id": "src_lib_song_permissions_ts",
-      "community": 11,
+      "community": 1,
       "norm_label": "song-permissions.ts"
     },
     {
@@ -5031,7 +5319,7 @@
       "source_file": "src/lib/song-permissions.ts",
       "source_location": "L9",
       "id": "lib_song_permissions_canrepairsongmatch",
-      "community": 11,
+      "community": 1,
       "norm_label": "canrepairsongmatch()"
     },
     {
@@ -5040,7 +5328,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L1",
       "id": "src_lib_spotify_oauth_ts",
-      "community": 4,
+      "community": 47,
       "norm_label": "spotify-oauth.ts"
     },
     {
@@ -5049,7 +5337,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L23",
       "id": "lib_spotify_oauth_notconnectederror",
-      "community": 4,
+      "community": 47,
       "norm_label": "notconnectederror"
     },
     {
@@ -5058,7 +5346,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L24",
       "id": "lib_spotify_oauth_notconnectederror_constructor",
-      "community": 4,
+      "community": 47,
       "norm_label": ".constructor()"
     },
     {
@@ -5067,7 +5355,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L30",
       "id": "lib_spotify_oauth_reconnectrequirederror",
-      "community": 4,
+      "community": 47,
       "norm_label": "reconnectrequirederror"
     },
     {
@@ -5076,7 +5364,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L31",
       "id": "lib_spotify_oauth_reconnectrequirederror_constructor",
-      "community": 4,
+      "community": 47,
       "norm_label": ".constructor()"
     },
     {
@@ -5085,7 +5373,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L37",
       "id": "lib_spotify_oauth_usernotallowlistederror",
-      "community": 4,
+      "community": 47,
       "norm_label": "usernotallowlistederror"
     },
     {
@@ -5094,7 +5382,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L38",
       "id": "lib_spotify_oauth_usernotallowlistederror_constructor",
-      "community": 4,
+      "community": 47,
       "norm_label": ".constructor()"
     },
     {
@@ -5103,7 +5391,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L46",
       "id": "lib_spotify_oauth_tokenresponse",
-      "community": 4,
+      "community": 47,
       "norm_label": "tokenresponse"
     },
     {
@@ -5112,7 +5400,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L54",
       "id": "lib_spotify_oauth_getjwtsecret",
-      "community": 4,
+      "community": 47,
       "norm_label": "getjwtsecret()"
     },
     {
@@ -5121,7 +5409,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L60",
       "id": "lib_spotify_oauth_getoauthcreds",
-      "community": 4,
+      "community": 47,
       "norm_label": "getoauthcreds()"
     },
     {
@@ -5130,7 +5418,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L73",
       "id": "lib_spotify_oauth_signoauthstate",
-      "community": 4,
+      "community": 47,
       "norm_label": "signoauthstate()"
     },
     {
@@ -5139,7 +5427,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L83",
       "id": "lib_spotify_oauth_verifyoauthstatejwt",
-      "community": 4,
+      "community": 47,
       "norm_label": "verifyoauthstatejwt()"
     },
     {
@@ -5148,7 +5436,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L98",
       "id": "lib_spotify_oauth_setoauthstatecookie",
-      "community": 4,
+      "community": 47,
       "norm_label": "setoauthstatecookie()"
     },
     {
@@ -5157,7 +5445,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L109",
       "id": "lib_spotify_oauth_readoauthstatecookie",
-      "community": 4,
+      "community": 47,
       "norm_label": "readoauthstatecookie()"
     },
     {
@@ -5166,7 +5454,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L114",
       "id": "lib_spotify_oauth_clearoauthstatecookie",
-      "community": 4,
+      "community": 47,
       "norm_label": "clearoauthstatecookie()"
     },
     {
@@ -5175,7 +5463,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L125",
       "id": "lib_spotify_oauth_buildauthorizeurl",
-      "community": 4,
+      "community": 47,
       "norm_label": "buildauthorizeurl()"
     },
     {
@@ -5184,7 +5472,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L137",
       "id": "lib_spotify_oauth_posttokenendpoint",
-      "community": 4,
+      "community": 47,
       "norm_label": "posttokenendpoint()"
     },
     {
@@ -5193,7 +5481,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L173",
       "id": "lib_spotify_oauth_exchangecodefortoken",
-      "community": 4,
+      "community": 47,
       "norm_label": "exchangecodefortoken()"
     },
     {
@@ -5202,7 +5490,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L184",
       "id": "lib_spotify_oauth_refreshaccesstoken",
-      "community": 4,
+      "community": 47,
       "norm_label": "refreshaccesstoken()"
     },
     {
@@ -5211,7 +5499,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L195",
       "id": "lib_spotify_oauth_tryfetchspotifyuserid",
-      "community": 4,
+      "community": 47,
       "norm_label": "tryfetchspotifyuserid()"
     },
     {
@@ -5220,7 +5508,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L210",
       "id": "lib_spotify_oauth_upsertconnection",
-      "community": 4,
+      "community": 47,
       "norm_label": "upsertconnection()"
     },
     {
@@ -5229,7 +5517,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L242",
       "id": "lib_spotify_oauth_getvalidconnectiontoken",
-      "community": 4,
+      "community": 47,
       "norm_label": "getvalidconnectiontoken()"
     },
     {
@@ -5238,7 +5526,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L265",
       "id": "lib_spotify_oauth_spotifyconnectionfetch",
-      "community": 4,
+      "community": 47,
       "norm_label": "spotifyconnectionfetch()"
     },
     {
@@ -5247,7 +5535,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L299",
       "id": "lib_spotify_oauth_getplaylistasconnection",
-      "community": 4,
+      "community": 47,
       "norm_label": "getplaylistasconnection()"
     },
     {
@@ -5256,7 +5544,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L309",
       "id": "lib_spotify_oauth_getallplaylisttracksasconnection",
-      "community": 4,
+      "community": 47,
       "norm_label": "getallplaylisttracksasconnection()"
     },
     {
@@ -5265,7 +5553,7 @@
       "source_file": "src/lib/spotify-oauth.ts",
       "source_location": "L338",
       "id": "lib_spotify_oauth_isconnected",
-      "community": 4,
+      "community": 47,
       "norm_label": "isconnected()"
     },
     {
@@ -5400,7 +5688,7 @@
       "source_file": "src/lib/current-user.ts",
       "source_location": "L1",
       "id": "src_lib_current_user_ts",
-      "community": 10,
+      "community": 52,
       "norm_label": "current-user.ts"
     },
     {
@@ -5409,7 +5697,7 @@
       "source_file": "src/lib/current-user.ts",
       "source_location": "L5",
       "id": "lib_current_user_getrequiredsession",
-      "community": 10,
+      "community": 52,
       "norm_label": "getrequiredsession()"
     },
     {
@@ -5418,7 +5706,7 @@
       "source_file": "src/lib/current-user.ts",
       "source_location": "L11",
       "id": "lib_current_user_geteffectiveuseridornull",
-      "community": 10,
+      "community": 52,
       "norm_label": "geteffectiveuseridornull()"
     },
     {
@@ -5427,7 +5715,7 @@
       "source_file": "src/lib/youtube-search-cache.ts",
       "source_location": "L1",
       "id": "src_lib_youtube_search_cache_ts",
-      "community": 13,
+      "community": 11,
       "norm_label": "youtube-search-cache.ts"
     },
     {
@@ -5454,7 +5742,7 @@
       "source_file": "src/lib/youtube-search-cache.ts",
       "source_location": "L54",
       "id": "lib_youtube_search_cache_cachestore",
-      "community": 13,
+      "community": 11,
       "norm_label": "cachestore()"
     },
     {
@@ -5463,7 +5751,7 @@
       "source_file": "src/lib/youtube-search-cache.ts",
       "source_location": "L82",
       "id": "lib_youtube_search_cache_purgeoldrows",
-      "community": 13,
+      "community": 11,
       "norm_label": "purgeoldrows()"
     },
     {
@@ -5535,7 +5823,7 @@
       "source_file": "src/lib/player-queue.ts",
       "source_location": "L82",
       "id": "lib_player_queue_getnextplayableyoutubeid",
-      "community": 47,
+      "community": 7,
       "norm_label": "getnextplayableyoutubeid()"
     },
     {
@@ -5607,7 +5895,7 @@
       "source_file": "src/lib/session.ts",
       "source_location": "L1",
       "id": "src_lib_session_ts",
-      "community": 2,
+      "community": 1,
       "norm_label": "session.ts"
     },
     {
@@ -5616,7 +5904,7 @@
       "source_file": "src/lib/session.ts",
       "source_location": "L4",
       "id": "lib_session_session",
-      "community": 10,
+      "community": 51,
       "norm_label": "session"
     },
     {
@@ -5625,7 +5913,7 @@
       "source_file": "src/lib/session.ts",
       "source_location": "L11",
       "id": "lib_session_getsecret",
-      "community": 2,
+      "community": 1,
       "norm_label": "getsecret()"
     },
     {
@@ -5634,7 +5922,7 @@
       "source_file": "src/lib/session.ts",
       "source_location": "L19",
       "id": "lib_session_signsession",
-      "community": 2,
+      "community": 1,
       "norm_label": "signsession()"
     },
     {
@@ -5643,7 +5931,7 @@
       "source_file": "src/lib/session.ts",
       "source_location": "L27",
       "id": "lib_session_verifysessiontoken",
-      "community": 2,
+      "community": 1,
       "norm_label": "verifysessiontoken()"
     },
     {
@@ -5652,7 +5940,7 @@
       "source_file": "src/lib/session.ts",
       "source_location": "L42",
       "id": "lib_session_setsessioncookie",
-      "community": 2,
+      "community": 1,
       "norm_label": "setsessioncookie()"
     },
     {
@@ -5661,7 +5949,7 @@
       "source_file": "src/lib/session.ts",
       "source_location": "L54",
       "id": "lib_session_clearsessioncookie",
-      "community": 2,
+      "community": 1,
       "norm_label": "clearsessioncookie()"
     },
     {
@@ -5670,7 +5958,7 @@
       "source_file": "src/lib/session.ts",
       "source_location": "L65",
       "id": "lib_session_readsessioncookie",
-      "community": 2,
+      "community": 1,
       "norm_label": "readsessioncookie()"
     },
     {
@@ -5679,7 +5967,7 @@
       "source_file": "src/lib/session.ts",
       "source_location": "L72",
       "id": "lib_session_issession",
-      "community": 2,
+      "community": 1,
       "norm_label": "issession()"
     },
     {
@@ -5805,14 +6093,14 @@
       "source_file": "src/lib/youtube-match.ts",
       "source_location": "L35",
       "id": "lib_youtube_match_matchresult",
-      "community": 11,
+      "community": 5,
       "norm_label": "matchresult"
     },
     {
       "label": "SongMeta",
       "file_type": "code",
       "source_file": "src/lib/youtube-match.ts",
-      "source_location": "L45",
+      "source_location": "L47",
       "id": "lib_youtube_match_songmeta",
       "community": 5,
       "norm_label": "songmeta"
@@ -5821,7 +6109,7 @@
       "label": "NOISE_WORDS",
       "file_type": "code",
       "source_file": "src/lib/youtube-match.ts",
-      "source_location": "L52",
+      "source_location": "L54",
       "id": "lib_youtube_match_noise_words",
       "community": 5,
       "norm_label": "noise_words"
@@ -5830,7 +6118,7 @@
       "label": "normalize()",
       "file_type": "code",
       "source_file": "src/lib/youtube-match.ts",
-      "source_location": "L59",
+      "source_location": "L61",
       "id": "lib_youtube_match_normalize",
       "community": 5,
       "norm_label": "normalize()"
@@ -5839,7 +6127,7 @@
       "label": "contentTokens()",
       "file_type": "code",
       "source_file": "src/lib/youtube-match.ts",
-      "source_location": "L69",
+      "source_location": "L71",
       "id": "lib_youtube_match_contenttokens",
       "community": 5,
       "norm_label": "contenttokens()"
@@ -5848,7 +6136,7 @@
       "label": "coverage()",
       "file_type": "code",
       "source_file": "src/lib/youtube-match.ts",
-      "source_location": "L80",
+      "source_location": "L82",
       "id": "lib_youtube_match_coverage",
       "community": 5,
       "norm_label": "coverage()"
@@ -5857,7 +6145,7 @@
       "label": "intersects()",
       "file_type": "code",
       "source_file": "src/lib/youtube-match.ts",
-      "source_location": "L87",
+      "source_location": "L89",
       "id": "lib_youtube_match_intersects",
       "community": 5,
       "norm_label": "intersects()"
@@ -5866,7 +6154,7 @@
       "label": "REASON_PENALTIES",
       "file_type": "code",
       "source_file": "src/lib/youtube-match.ts",
-      "source_location": "L97",
+      "source_location": "L99",
       "id": "lib_youtube_match_reason_penalties",
       "community": 5,
       "norm_label": "reason_penalties"
@@ -5875,7 +6163,7 @@
       "label": "HARD_REJECT_PATTERNS",
       "file_type": "code",
       "source_file": "src/lib/youtube-match.ts",
-      "source_location": "L107",
+      "source_location": "L109",
       "id": "lib_youtube_match_hard_reject_patterns",
       "community": 5,
       "norm_label": "hard_reject_patterns"
@@ -5884,7 +6172,7 @@
       "label": "COVER_PATTERNS",
       "file_type": "code",
       "source_file": "src/lib/youtube-match.ts",
-      "source_location": "L119",
+      "source_location": "L121",
       "id": "lib_youtube_match_cover_patterns",
       "community": 5,
       "norm_label": "cover_patterns"
@@ -5893,7 +6181,7 @@
       "label": "detectReason()",
       "file_type": "code",
       "source_file": "src/lib/youtube-match.ts",
-      "source_location": "L129",
+      "source_location": "L131",
       "id": "lib_youtube_match_detectreason",
       "community": 5,
       "norm_label": "detectreason()"
@@ -5902,7 +6190,7 @@
       "label": "ScoreResult",
       "file_type": "code",
       "source_file": "src/lib/youtube-match.ts",
-      "source_location": "L157",
+      "source_location": "L159",
       "id": "lib_youtube_match_scoreresult",
       "community": 5,
       "norm_label": "scoreresult"
@@ -5911,7 +6199,7 @@
       "label": "scoreCandidate()",
       "file_type": "code",
       "source_file": "src/lib/youtube-match.ts",
-      "source_location": "L163",
+      "source_location": "L165",
       "id": "lib_youtube_match_scorecandidate",
       "community": 5,
       "norm_label": "scorecandidate()"
@@ -5920,7 +6208,7 @@
       "label": "ScoredCandidate",
       "file_type": "code",
       "source_file": "src/lib/youtube-match.ts",
-      "source_location": "L245",
+      "source_location": "L247",
       "id": "lib_youtube_match_scoredcandidate",
       "community": 5,
       "norm_label": "scoredcandidate"
@@ -5929,7 +6217,7 @@
       "label": "pickBestMatch()",
       "file_type": "code",
       "source_file": "src/lib/youtube-match.ts",
-      "source_location": "L247",
+      "source_location": "L249",
       "id": "lib_youtube_match_pickbestmatch",
       "community": 5,
       "norm_label": "pickbestmatch()"
@@ -5949,7 +6237,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L18",
       "id": "lib_youtube_youtubeerror",
-      "community": 11,
+      "community": 1,
       "norm_label": "youtubeerror"
     },
     {
@@ -5958,7 +6246,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L19",
       "id": "lib_youtube_youtubeerror_constructor",
-      "community": 11,
+      "community": 1,
       "norm_label": ".constructor()"
     },
     {
@@ -6003,7 +6291,7 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L93",
       "id": "lib_youtube_parseyoutuberef",
-      "community": 11,
+      "community": 1,
       "norm_label": "parseyoutuberef()"
     },
     {
@@ -6102,14 +6390,14 @@
       "source_file": "src/lib/youtube.ts",
       "source_location": "L280",
       "id": "lib_youtube_refiltersongmatch",
-      "community": 11,
+      "community": 1,
       "norm_label": "refiltersongmatch()"
     },
     {
       "label": "MatchOutcome",
       "file_type": "code",
       "source_file": "src/lib/youtube.ts",
-      "source_location": "L307",
+      "source_location": "L313",
       "id": "lib_youtube_matchoutcome",
       "community": 11,
       "norm_label": "matchoutcome"
@@ -6118,16 +6406,16 @@
       "label": "matchSongById()",
       "file_type": "code",
       "source_file": "src/lib/youtube.ts",
-      "source_location": "L311",
+      "source_location": "L317",
       "id": "lib_youtube_matchsongbyid",
-      "community": 11,
+      "community": 1,
       "norm_label": "matchsongbyid()"
     },
     {
       "label": "chain",
       "file_type": "code",
       "source_file": "src/lib/youtube.ts",
-      "source_location": "L366",
+      "source_location": "L373",
       "id": "lib_youtube_chain",
       "community": 11,
       "norm_label": "chain"
@@ -6136,7 +6424,7 @@
       "label": "triggerMatchInBackground()",
       "file_type": "code",
       "source_file": "src/lib/youtube.ts",
-      "source_location": "L374",
+      "source_location": "L381",
       "id": "lib_youtube_triggermatchinbackground",
       "community": 4,
       "norm_label": "triggermatchinbackground()"
@@ -6145,7 +6433,7 @@
       "label": "flushPendingMatches()",
       "file_type": "code",
       "source_file": "src/lib/youtube.ts",
-      "source_location": "L385",
+      "source_location": "L392",
       "id": "lib_youtube_flushpendingmatches",
       "community": 11,
       "norm_label": "flushpendingmatches()"
@@ -6154,7 +6442,7 @@
       "label": "_resetMatchChainForTests()",
       "file_type": "code",
       "source_file": "src/lib/youtube.ts",
-      "source_location": "L390",
+      "source_location": "L397",
       "id": "lib_youtube_resetmatchchainfortests",
       "community": 11,
       "norm_label": "_resetmatchchainfortests()"
@@ -6210,7 +6498,7 @@
       "source_file": "src/lib/youtube-id.ts",
       "source_location": "L1",
       "id": "src_lib_youtube_id_ts",
-      "community": 47,
+      "community": 7,
       "norm_label": "youtube-id.ts"
     },
     {
@@ -6219,7 +6507,7 @@
       "source_file": "src/lib/youtube-id.ts",
       "source_location": "L9",
       "id": "lib_youtube_id_isvalidyoutubeid",
-      "community": 11,
+      "community": 7,
       "norm_label": "isvalidyoutubeid()"
     },
     {
@@ -6592,6 +6880,78 @@
       "norm_label": "evictaudiocache()"
     },
     {
+      "label": "moov-probe.ts",
+      "file_type": "code",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L1",
+      "id": "src_lib_playback_moov_probe_ts",
+      "community": 49,
+      "norm_label": "moov-probe.ts"
+    },
+    {
+      "label": "MP4_AUDIO_TYPES",
+      "file_type": "code",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L19",
+      "id": "playback_moov_probe_mp4_audio_types",
+      "community": 49,
+      "norm_label": "mp4_audio_types"
+    },
+    {
+      "label": "isPatchDisabled()",
+      "file_type": "code",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L21",
+      "id": "playback_moov_probe_ispatchdisabled",
+      "community": 49,
+      "norm_label": "ispatchdisabled()"
+    },
+    {
+      "label": "isMp4Audio()",
+      "file_type": "code",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L25",
+      "id": "playback_moov_probe_ismp4audio",
+      "community": 49,
+      "norm_label": "ismp4audio()"
+    },
+    {
+      "label": "fetchHead()",
+      "file_type": "code",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L30",
+      "id": "playback_moov_probe_fetchhead",
+      "community": 49,
+      "norm_label": "fetchhead()"
+    },
+    {
+      "label": "probe()",
+      "file_type": "code",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L66",
+      "id": "playback_moov_probe_probe",
+      "community": 49,
+      "norm_label": "probe()"
+    },
+    {
+      "label": "ensureMoovPatch()",
+      "file_type": "code",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L98",
+      "id": "playback_moov_probe_ensuremoovpatch",
+      "community": 49,
+      "norm_label": "ensuremoovpatch()"
+    },
+    {
+      "label": "createMoovPatchTransform()",
+      "file_type": "code",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L139",
+      "id": "playback_moov_probe_createmoovpatchtransform",
+      "community": 3,
+      "norm_label": "createmoovpatchtransform()"
+    },
+    {
       "label": "types.ts",
       "file_type": "code",
       "source_file": "src/lib/playback/types.ts",
@@ -6610,10 +6970,19 @@
       "norm_label": "providername"
     },
     {
+      "label": "MoovPatchState",
+      "file_type": "code",
+      "source_file": "src/lib/playback/types.ts",
+      "source_location": "L7",
+      "id": "playback_types_moovpatchstate",
+      "community": 3,
+      "norm_label": "moovpatchstate"
+    },
+    {
       "label": "PlaybackStream",
       "file_type": "code",
       "source_file": "src/lib/playback/types.ts",
-      "source_location": "L3",
+      "source_location": "L11",
       "id": "playback_types_playbackstream",
       "community": 3,
       "norm_label": "playbackstream"
@@ -6622,7 +6991,7 @@
       "label": "ResolveErrorCode",
       "file_type": "code",
       "source_file": "src/lib/playback/types.ts",
-      "source_location": "L11",
+      "source_location": "L24",
       "id": "playback_types_resolveerrorcode",
       "community": 3,
       "norm_label": "resolveerrorcode"
@@ -6631,7 +7000,7 @@
       "label": "ResolveError",
       "file_type": "code",
       "source_file": "src/lib/playback/types.ts",
-      "source_location": "L19",
+      "source_location": "L32",
       "id": "playback_types_resolveerror",
       "community": 3,
       "norm_label": "resolveerror"
@@ -6640,7 +7009,7 @@
       "label": ".constructor()",
       "file_type": "code",
       "source_file": "src/lib/playback/types.ts",
-      "source_location": "L20",
+      "source_location": "L33",
       "id": "playback_types_resolveerror_constructor",
       "community": 3,
       "norm_label": ".constructor()"
@@ -6649,10 +7018,28 @@
       "label": "PlaybackProvider",
       "file_type": "code",
       "source_file": "src/lib/playback/types.ts",
-      "source_location": "L30",
+      "source_location": "L43",
       "id": "playback_types_playbackprovider",
       "community": 3,
       "norm_label": "playbackprovider"
+    },
+    {
+      "label": "duration-guard.ts",
+      "file_type": "code",
+      "source_file": "src/lib/playback/duration-guard.ts",
+      "source_location": "L1",
+      "id": "src_lib_playback_duration_guard_ts",
+      "community": 7,
+      "norm_label": "duration-guard.ts"
+    },
+    {
+      "label": "shouldForceEnd()",
+      "file_type": "code",
+      "source_file": "src/lib/playback/duration-guard.ts",
+      "source_location": "L18",
+      "id": "playback_duration_guard_shouldforceend",
+      "community": 7,
+      "norm_label": "shouldforceend()"
     },
     {
       "label": "cache.ts",
@@ -6707,6 +7094,87 @@
       "id": "playback_cache_resetfortests",
       "community": 3,
       "norm_label": "_resetfortests()"
+    },
+    {
+      "label": "moov-duration-patcher.ts",
+      "file_type": "code",
+      "source_file": "src/lib/playback/moov-duration-patcher.ts",
+      "source_location": "L1",
+      "id": "src_lib_playback_moov_duration_patcher_ts",
+      "community": 49,
+      "norm_label": "moov-duration-patcher.ts"
+    },
+    {
+      "label": "CONTAINERS",
+      "file_type": "code",
+      "source_file": "src/lib/playback/moov-duration-patcher.ts",
+      "source_location": "L21",
+      "id": "playback_moov_duration_patcher_containers",
+      "community": 49,
+      "norm_label": "containers"
+    },
+    {
+      "label": "u32()",
+      "file_type": "code",
+      "source_file": "src/lib/playback/moov-duration-patcher.ts",
+      "source_location": "L25",
+      "id": "playback_moov_duration_patcher_u32",
+      "community": 49,
+      "norm_label": "u32()"
+    },
+    {
+      "label": "boxType()",
+      "file_type": "code",
+      "source_file": "src/lib/playback/moov-duration-patcher.ts",
+      "source_location": "L30",
+      "id": "playback_moov_duration_patcher_boxtype",
+      "community": 49,
+      "norm_label": "boxtype()"
+    },
+    {
+      "label": "ver0DurationOffset()",
+      "file_type": "code",
+      "source_file": "src/lib/playback/moov-duration-patcher.ts",
+      "source_location": "L38",
+      "id": "playback_moov_duration_patcher_ver0durationoffset",
+      "community": 49,
+      "norm_label": "ver0durationoffset()"
+    },
+    {
+      "label": "topLevelBox()",
+      "file_type": "code",
+      "source_file": "src/lib/playback/moov-duration-patcher.ts",
+      "source_location": "L51",
+      "id": "playback_moov_duration_patcher_toplevelbox",
+      "community": 49,
+      "norm_label": "toplevelbox()"
+    },
+    {
+      "label": "durationFieldOffsets()",
+      "file_type": "code",
+      "source_file": "src/lib/playback/moov-duration-patcher.ts",
+      "source_location": "L74",
+      "id": "playback_moov_duration_patcher_durationfieldoffsets",
+      "community": 49,
+      "norm_label": "durationfieldoffsets()"
+    },
+    {
+      "label": "moovEndIfTruncated()",
+      "file_type": "code",
+      "source_file": "src/lib/playback/moov-duration-patcher.ts",
+      "source_location": "L138",
+      "id": "playback_moov_duration_patcher_moovendiftruncated",
+      "community": 49,
+      "norm_label": "moovendiftruncated()"
+    },
+    {
+      "label": "applyPatchToChunk()",
+      "file_type": "code",
+      "source_file": "src/lib/playback/moov-duration-patcher.ts",
+      "source_location": "L156",
+      "id": "playback_moov_duration_patcher_applypatchtochunk",
+      "community": 49,
+      "norm_label": "applypatchtochunk()"
     },
     {
       "label": "piped.ts",
@@ -6793,7 +7261,7 @@
       "label": "SpawnResult",
       "file_type": "code",
       "source_file": "src/lib/playback/providers/yt-dlp.ts",
-      "source_location": "L16",
+      "source_location": "L17",
       "id": "providers_yt_dlp_spawnresult",
       "community": 3,
       "norm_label": "spawnresult"
@@ -6802,7 +7270,7 @@
       "label": "ytDlp()",
       "file_type": "code",
       "source_file": "src/lib/playback/providers/yt-dlp.ts",
-      "source_location": "L20",
+      "source_location": "L21",
       "id": "providers_yt_dlp_ytdlp",
       "community": 3,
       "norm_label": "ytdlp()"
@@ -6811,7 +7279,7 @@
       "label": "mimeFromExt()",
       "file_type": "code",
       "source_file": "src/lib/playback/providers/yt-dlp.ts",
-      "source_location": "L67",
+      "source_location": "L68",
       "id": "providers_yt_dlp_mimefromext",
       "community": 3,
       "norm_label": "mimefromext()"
@@ -6820,7 +7288,7 @@
       "label": "ytDlpProvider",
       "file_type": "code",
       "source_file": "src/lib/playback/providers/yt-dlp.ts",
-      "source_location": "L73",
+      "source_location": "L74",
       "id": "providers_yt_dlp_ytdlpprovider",
       "community": 3,
       "norm_label": "ytdlpprovider"
@@ -8008,7 +8476,7 @@
       "label": "DONE",
       "file_type": "document",
       "source_file": "WEB_IOS_PARITY_MASTER_LIST.md",
-      "source_location": "L23",
+      "source_location": "L29",
       "id": "musica_ligera_42_web_ios_parity_master_list_done",
       "community": 48,
       "norm_label": "done"
@@ -8017,7 +8485,7 @@
       "label": "Side Bar: iOS-specific or lower-value for web",
       "file_type": "document",
       "source_file": "WEB_IOS_PARITY_MASTER_LIST.md",
-      "source_location": "L49",
+      "source_location": "L55",
       "id": "musica_ligera_42_web_ios_parity_master_list_side_bar_ios_specific_or_lower_value_for_web",
       "community": 48,
       "norm_label": "side bar: ios-specific or lower-value for web"
@@ -8045,7 +8513,7 @@
       "file_type": "code",
       "source_file": "src/components/KeepAliveButton.tsx",
       "source_location": "L32",
-      "community": 10,
+      "community": 53,
       "norm_label": "nextdelay()",
       "id": "components_keepalivebutton_nextdelay"
     },
@@ -8945,9 +9413,9 @@
       "source_file": "tests/library-search.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_library_search_test_ts",
-      "target": "tests_helpers_ts",
-      "confidence_score": 1.0
+      "target": "tests_helpers_ts"
     },
     {
       "relation": "imports_from",
@@ -8967,9 +9435,9 @@
       "source_file": "tests/search-history.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_search_history_test_ts",
-      "target": "tests_helpers_ts",
-      "confidence_score": 1.0
+      "target": "tests_helpers_ts"
     },
     {
       "relation": "imports_from",
@@ -9044,9 +9512,9 @@
       "source_file": "tests/keep-alive.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_keep_alive_test_ts",
-      "target": "tests_helpers_ts",
-      "confidence_score": 1.0
+      "target": "tests_helpers_ts"
     },
     {
       "relation": "imports",
@@ -9088,9 +9556,9 @@
       "source_file": "tests/library-search.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_library_search_test_ts",
-      "target": "tests_helpers_clearcookies",
-      "confidence_score": 1.0
+      "target": "tests_helpers_clearcookies"
     },
     {
       "relation": "imports",
@@ -9110,9 +9578,9 @@
       "source_file": "tests/search-history.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_search_history_test_ts",
-      "target": "tests_helpers_clearcookies",
-      "confidence_score": 1.0
+      "target": "tests_helpers_clearcookies"
     },
     {
       "relation": "imports",
@@ -9187,9 +9655,9 @@
       "source_file": "tests/keep-alive.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_keep_alive_test_ts",
-      "target": "tests_helpers_clearcookies",
-      "confidence_score": 1.0
+      "target": "tests_helpers_clearcookies"
     },
     {
       "relation": "calls",
@@ -9264,9 +9732,9 @@
       "source_file": "tests/library-search.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_library_search_test_ts",
-      "target": "tests_helpers_setownersession",
-      "confidence_score": 1.0
+      "target": "tests_helpers_setownersession"
     },
     {
       "relation": "imports",
@@ -9286,9 +9754,9 @@
       "source_file": "tests/search-history.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_search_history_test_ts",
-      "target": "tests_helpers_setownersession",
-      "confidence_score": 1.0
+      "target": "tests_helpers_setownersession"
     },
     {
       "relation": "imports",
@@ -9352,9 +9820,9 @@
       "source_file": "tests/library-search.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_library_search_test_ts",
-      "target": "tests_helpers_setowneractingsession",
-      "confidence_score": 1.0
+      "target": "tests_helpers_setowneractingsession"
     },
     {
       "relation": "imports",
@@ -9396,9 +9864,9 @@
       "source_file": "tests/library-search.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_library_search_test_ts",
-      "target": "tests_helpers_setusersession",
-      "confidence_score": 1.0
+      "target": "tests_helpers_setusersession"
     },
     {
       "relation": "imports",
@@ -9418,9 +9886,9 @@
       "source_file": "tests/search-history.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_search_history_test_ts",
-      "target": "tests_helpers_setusersession",
-      "confidence_score": 1.0
+      "target": "tests_helpers_setusersession"
     },
     {
       "relation": "imports",
@@ -9484,9 +9952,9 @@
       "source_file": "tests/keep-alive.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_keep_alive_test_ts",
-      "target": "tests_helpers_setusersession",
-      "confidence_score": 1.0
+      "target": "tests_helpers_setusersession"
     },
     {
       "relation": "calls",
@@ -9572,9 +10040,9 @@
       "source_file": "tests/library-search.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_library_search_test_ts",
-      "target": "tests_helpers_truncateall",
-      "confidence_score": 1.0
+      "target": "tests_helpers_truncateall"
     },
     {
       "relation": "imports",
@@ -9594,9 +10062,9 @@
       "source_file": "tests/search-history.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_search_history_test_ts",
-      "target": "tests_helpers_truncateall",
-      "confidence_score": 1.0
+      "target": "tests_helpers_truncateall"
     },
     {
       "relation": "imports",
@@ -9671,9 +10139,9 @@
       "source_file": "tests/keep-alive.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_keep_alive_test_ts",
-      "target": "tests_helpers_truncateall",
-      "confidence_score": 1.0
+      "target": "tests_helpers_truncateall"
     },
     {
       "relation": "imports",
@@ -9737,9 +10205,9 @@
       "source_file": "tests/search-history.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_search_history_test_ts",
-      "target": "tests_helpers_jsonrequest",
-      "confidence_score": 1.0
+      "target": "tests_helpers_jsonrequest"
     },
     {
       "relation": "imports",
@@ -9993,6 +10461,17 @@
       "confidence_score": 1.0,
       "source": "tests_youtube_test_ts",
       "target": "lib_youtube_parseyoutuberef"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/youtube.test.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "tests_youtube_test_ts",
+      "target": "lib_youtube_refiltersongmatch",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -10457,9 +10936,9 @@
       "source_file": "tests/library-search.test.ts",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_library_search_test_ts",
-      "target": "src_app_api_library_search_route_ts",
-      "confidence_score": 1.0
+      "target": "src_app_api_library_search_route_ts"
     },
     {
       "relation": "imports",
@@ -10468,9 +10947,9 @@
       "source_file": "tests/library-search.test.ts",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_library_search_test_ts",
-      "target": "search_route_get",
-      "confidence_score": 1.0
+      "target": "search_route_get"
     },
     {
       "relation": "imports_from",
@@ -10479,9 +10958,9 @@
       "source_file": "tests/library-search.test.ts",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_library_search_test_ts",
-      "target": "src_lib_library_search_ts",
-      "confidence_score": 1.0
+      "target": "src_lib_library_search_ts"
     },
     {
       "relation": "imports",
@@ -10490,9 +10969,9 @@
       "source_file": "tests/library-search.test.ts",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_library_search_test_ts",
-      "target": "lib_library_search_rankplaylists",
-      "confidence_score": 1.0
+      "target": "lib_library_search_rankplaylists"
     },
     {
       "relation": "imports",
@@ -10501,9 +10980,9 @@
       "source_file": "tests/library-search.test.ts",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_library_search_test_ts",
-      "target": "lib_library_search_ranksongs",
-      "confidence_score": 1.0
+      "target": "lib_library_search_ranksongs"
     },
     {
       "relation": "contains",
@@ -10511,9 +10990,9 @@
       "source_file": "tests/library-search.test.ts",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_library_search_test_ts",
-      "target": "tests_library_search_test_makeuser",
-      "confidence_score": 1.0
+      "target": "tests_library_search_test_makeuser"
     },
     {
       "relation": "contains",
@@ -10521,9 +11000,9 @@
       "source_file": "tests/library-search.test.ts",
       "source_location": "L22",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_library_search_test_ts",
-      "target": "tests_library_search_test_addsong",
-      "confidence_score": 1.0
+      "target": "tests_library_search_test_addsong"
     },
     {
       "relation": "contains",
@@ -10531,9 +11010,9 @@
       "source_file": "tests/library-search.test.ts",
       "source_location": "L44",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_library_search_test_ts",
-      "target": "tests_library_search_test_req",
-      "confidence_score": 1.0
+      "target": "tests_library_search_test_req"
     },
     {
       "relation": "contains",
@@ -10541,9 +11020,9 @@
       "source_file": "tests/library-search.test.ts",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_library_search_test_ts",
-      "target": "tests_library_search_test_songs",
-      "confidence_score": 1.0
+      "target": "tests_library_search_test_songs"
     },
     {
       "relation": "contains",
@@ -10551,8 +11030,40 @@
       "source_file": "tests/library-search.test.ts",
       "source_location": "L86",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_library_search_test_ts",
-      "target": "tests_library_search_test_ranked",
+      "target": "tests_library_search_test_ranked"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/duration-guard.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_duration_guard_test_ts",
+      "target": "src_lib_playback_duration_guard_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/duration-guard.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_duration_guard_test_ts",
+      "target": "playback_duration_guard_shouldforceend",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/duration-guard.test.ts",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "tests_duration_guard_test_ts",
+      "target": "tests_duration_guard_test_base",
       "confidence_score": 1.0
     },
     {
@@ -10953,9 +11464,9 @@
       "source_file": "tests/search-history.test.ts",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_search_history_test_ts",
-      "target": "src_app_api_search_history_route_ts",
-      "confidence_score": 1.0
+      "target": "src_app_api_search_history_route_ts"
     },
     {
       "relation": "imports",
@@ -10964,9 +11475,9 @@
       "source_file": "tests/search-history.test.ts",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_search_history_test_ts",
-      "target": "search_history_route_delete",
-      "confidence_score": 1.0
+      "target": "search_history_route_delete"
     },
     {
       "relation": "imports",
@@ -10975,9 +11486,9 @@
       "source_file": "tests/search-history.test.ts",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_search_history_test_ts",
-      "target": "search_history_route_get",
-      "confidence_score": 1.0
+      "target": "search_history_route_get"
     },
     {
       "relation": "imports",
@@ -10986,9 +11497,9 @@
       "source_file": "tests/search-history.test.ts",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_search_history_test_ts",
-      "target": "search_history_route_post",
-      "confidence_score": 1.0
+      "target": "search_history_route_post"
     },
     {
       "relation": "imports_from",
@@ -10997,9 +11508,9 @@
       "source_file": "tests/search-history.test.ts",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_search_history_test_ts",
-      "target": "src_lib_search_history_ts",
-      "confidence_score": 1.0
+      "target": "src_lib_search_history_ts"
     },
     {
       "relation": "imports",
@@ -11008,9 +11519,9 @@
       "source_file": "tests/search-history.test.ts",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_search_history_test_ts",
-      "target": "lib_search_history_clearhistory",
-      "confidence_score": 1.0
+      "target": "lib_search_history_clearhistory"
     },
     {
       "relation": "imports",
@@ -11019,9 +11530,9 @@
       "source_file": "tests/search-history.test.ts",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_search_history_test_ts",
-      "target": "lib_search_history_listrecent",
-      "confidence_score": 1.0
+      "target": "lib_search_history_listrecent"
     },
     {
       "relation": "imports",
@@ -11030,9 +11541,9 @@
       "source_file": "tests/search-history.test.ts",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_search_history_test_ts",
-      "target": "lib_search_history_recordsearch",
-      "confidence_score": 1.0
+      "target": "lib_search_history_recordsearch"
     },
     {
       "relation": "contains",
@@ -11040,8 +11551,18 @@
       "source_file": "tests/search-history.test.ts",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_search_history_test_ts",
-      "target": "tests_search_history_test_makeuser",
+      "target": "tests_search_history_test_makeuser"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/search-history.test.ts",
+      "source_location": "L33",
+      "weight": 1.0,
+      "source": "tests_search_history_test_ts",
+      "target": "tests_search_history_test_tick",
       "confidence_score": 1.0
     },
     {
@@ -12049,6 +12570,136 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L395",
+      "weight": 1.0,
+      "source": "tests_youtube_audio_test_ts",
+      "target": "tests_youtube_audio_test_be32",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L398",
+      "weight": 1.0,
+      "source": "tests_youtube_audio_test_ts",
+      "target": "tests_youtube_audio_test_mp4box",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L401",
+      "weight": 1.0,
+      "source": "tests_youtube_audio_test_ts",
+      "target": "tests_youtube_audio_test_duration_be",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L402",
+      "weight": 1.0,
+      "source": "tests_youtube_audio_test_ts",
+      "target": "tests_youtube_audio_test_fragmentedhead",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L412",
+      "weight": 1.0,
+      "source": "tests_youtube_audio_test_ts",
+      "target": "tests_youtube_audio_test_head",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L413",
+      "weight": 1.0,
+      "source": "tests_youtube_audio_test_ts",
+      "target": "tests_youtube_audio_test_head_offsets",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L415",
+      "weight": 1.0,
+      "source": "tests_youtube_audio_test_ts",
+      "target": "tests_youtube_audio_test_upstreamresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L429",
+      "weight": 1.0,
+      "source": "tests_youtube_audio_test_ts",
+      "target": "tests_youtube_audio_test_readu32",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L628",
+      "weight": 1.0,
+      "source": "tests_youtube_audio_test_ts",
+      "target": "tests_youtube_audio_test_got",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L460",
+      "weight": 1.0,
+      "source": "tests_youtube_audio_test_ts",
+      "target": "tests_youtube_audio_test_patched",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L480",
+      "weight": 1.0,
+      "source": "tests_youtube_audio_test_ts",
+      "target": "tests_youtube_audio_test_plain",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L512",
+      "weight": 1.0,
+      "source": "tests_youtube_audio_test_ts",
+      "target": "tests_youtube_audio_test_expected",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L528",
+      "weight": 1.0,
+      "source": "tests_youtube_audio_test_ts",
+      "target": "tests_youtube_audio_test_tail",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/youtube-audio.test.ts",
       "source_location": "L354",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -12064,6 +12715,39 @@
       "confidence_score": 1.0,
       "source": "tests_youtube_audio_test_ts",
       "target": "tests_youtube_audio_test_pipedaudiostreams"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L399",
+      "weight": 1.0,
+      "source": "tests_youtube_audio_test_mp4box",
+      "target": "tests_youtube_audio_test_be32",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L404",
+      "weight": 1.0,
+      "source": "tests_youtube_audio_test_fragmentedhead",
+      "target": "tests_youtube_audio_test_be32",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/youtube-audio.test.ts",
+      "source_location": "L404",
+      "weight": 1.0,
+      "source": "tests_youtube_audio_test_fragmentedhead",
+      "target": "tests_youtube_audio_test_mp4box",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -12412,6 +13096,377 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_ts",
+      "target": "src_lib_playback_moov_duration_patcher_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_ts",
+      "target": "playback_moov_duration_patcher_applypatchtochunk",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_ts",
+      "target": "playback_moov_duration_patcher_durationfieldoffsets",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_ts",
+      "target": "playback_moov_duration_patcher_moovendiftruncated",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_ts",
+      "target": "playback_moov_duration_patcher_u32",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_ts",
+      "target": "tests_moov_duration_patcher_test_be32",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_ts",
+      "target": "tests_moov_duration_patcher_test_box",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_ts",
+      "target": "tests_moov_duration_patcher_test_non_zero_duration",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_ts",
+      "target": "tests_moov_duration_patcher_test_zero4",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_ts",
+      "target": "tests_moov_duration_patcher_test_mvhd",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_ts",
+      "target": "tests_moov_duration_patcher_test_tkhd",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L47",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_ts",
+      "target": "tests_moov_duration_patcher_test_mdhd",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L57",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_ts",
+      "target": "tests_moov_duration_patcher_test_elst",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L61",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_ts",
+      "target": "tests_moov_duration_patcher_test_mvex",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L66",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_ts",
+      "target": "tests_moov_duration_patcher_test_buildheader",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L147",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_ts",
+      "target": "tests_moov_duration_patcher_test_head",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L130",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_ts",
+      "target": "tests_moov_duration_patcher_test_truncated",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L148",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_ts",
+      "target": "tests_moov_duration_patcher_test_offsets",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L165",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_ts",
+      "target": "tests_moov_duration_patcher_test_slice",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_box",
+      "target": "tests_moov_duration_patcher_test_be32",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L29",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_mvhd",
+      "target": "tests_moov_duration_patcher_test_be32",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_tkhd",
+      "target": "tests_moov_duration_patcher_test_be32",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L52",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_mdhd",
+      "target": "tests_moov_duration_patcher_test_be32",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L58",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_elst",
+      "target": "tests_moov_duration_patcher_test_be32",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_mvhd",
+      "target": "tests_moov_duration_patcher_test_box",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_tkhd",
+      "target": "tests_moov_duration_patcher_test_box",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L48",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_mdhd",
+      "target": "tests_moov_duration_patcher_test_box",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L58",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_elst",
+      "target": "tests_moov_duration_patcher_test_box",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L62",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_mvex",
+      "target": "tests_moov_duration_patcher_test_box",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L71",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_buildheader",
+      "target": "tests_moov_duration_patcher_test_box",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L74",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_buildheader",
+      "target": "tests_moov_duration_patcher_test_mvhd",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L72",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_buildheader",
+      "target": "tests_moov_duration_patcher_test_tkhd",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L72",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_buildheader",
+      "target": "tests_moov_duration_patcher_test_mdhd",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L72",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_buildheader",
+      "target": "tests_moov_duration_patcher_test_elst",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/moov-duration-patcher.test.ts",
+      "source_location": "L75",
+      "weight": 1.0,
+      "source": "tests_moov_duration_patcher_test_buildheader",
+      "target": "tests_moov_duration_patcher_test_mvex",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "tests/youtube-quota.test.ts",
       "source_location": "L12",
       "weight": 1.0,
@@ -12502,9 +13557,9 @@
       "source_file": "tests/keep-alive.test.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_keep_alive_test_ts",
-      "target": "src_app_api_keep_alive_route_ts",
-      "confidence_score": 1.0
+      "target": "src_app_api_keep_alive_route_ts"
     },
     {
       "relation": "imports",
@@ -12513,9 +13568,9 @@
       "source_file": "tests/keep-alive.test.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_keep_alive_test_ts",
-      "target": "keep_alive_route_get",
-      "confidence_score": 1.0
+      "target": "keep_alive_route_get"
     },
     {
       "relation": "imports_from",
@@ -12524,9 +13579,9 @@
       "source_file": "tests/keep-alive-schedule.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_keep_alive_schedule_test_ts",
-      "target": "src_lib_keep_alive_schedule_ts",
-      "confidence_score": 1.0
+      "target": "src_lib_keep_alive_schedule_ts"
     },
     {
       "relation": "imports",
@@ -12535,9 +13590,9 @@
       "source_file": "tests/keep-alive-schedule.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_keep_alive_schedule_test_ts",
-      "target": "lib_keep_alive_schedule_nextpingdelay",
-      "confidence_score": 1.0
+      "target": "lib_keep_alive_schedule_nextpingdelay"
     },
     {
       "relation": "imports",
@@ -12546,9 +13601,9 @@
       "source_file": "tests/keep-alive-schedule.test.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_keep_alive_schedule_test_ts",
-      "target": "lib_keep_alive_schedule_retrydelay",
-      "confidence_score": 1.0
+      "target": "lib_keep_alive_schedule_retrydelay"
     },
     {
       "relation": "contains",
@@ -12556,9 +13611,9 @@
       "source_file": "tests/keep-alive-schedule.test.ts",
       "source_location": "L22",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_keep_alive_schedule_test_ts",
-      "target": "tests_keep_alive_schedule_test_hi",
-      "confidence_score": 1.0
+      "target": "tests_keep_alive_schedule_test_hi"
     },
     {
       "relation": "contains",
@@ -12566,9 +13621,9 @@
       "source_file": "tests/keep-alive-schedule.test.ts",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_keep_alive_schedule_test_ts",
-      "target": "tests_keep_alive_schedule_test_d",
-      "confidence_score": 1.0
+      "target": "tests_keep_alive_schedule_test_d"
     },
     {
       "relation": "imports_from",
@@ -13154,9 +14209,9 @@
       "source_file": "src/types/api.ts",
       "source_location": "L104",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_types_api_ts",
-      "target": "types_api_libraryplaylistref",
-      "confidence_score": 1.0
+      "target": "types_api_libraryplaylistref"
     },
     {
       "relation": "contains",
@@ -13164,9 +14219,9 @@
       "source_file": "src/types/api.ts",
       "source_location": "L107",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_types_api_ts",
-      "target": "types_api_librarysearchresult",
-      "confidence_score": 1.0
+      "target": "types_api_librarysearchresult"
     },
     {
       "relation": "contains",
@@ -13174,9 +14229,9 @@
       "source_file": "src/types/api.ts",
       "source_location": "L109",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_types_api_ts",
-      "target": "types_api_librarysearchresponse",
-      "confidence_score": 1.0
+      "target": "types_api_librarysearchresponse"
     },
     {
       "relation": "contains",
@@ -13184,9 +14239,9 @@
       "source_file": "src/types/api.ts",
       "source_location": "L117",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_types_api_ts",
-      "target": "types_api_searchsurface",
-      "confidence_score": 1.0
+      "target": "types_api_searchsurface"
     },
     {
       "relation": "imports_from",
@@ -13206,9 +14261,9 @@
       "source_file": "src/app/api/library/search/route.ts",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_library_search_route_ts",
-      "target": "src_types_api_ts",
-      "confidence_score": 1.0
+      "target": "src_types_api_ts"
     },
     {
       "relation": "imports_from",
@@ -13283,9 +14338,9 @@
       "source_file": "src/components/LibrarySearchResults.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_librarysearchresults_tsx",
-      "target": "src_types_api_ts",
-      "confidence_score": 1.0
+      "target": "src_types_api_ts"
     },
     {
       "relation": "imports_from",
@@ -13316,9 +14371,9 @@
       "source_file": "src/components/RecentSearches.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_recentsearches_tsx",
-      "target": "src_types_api_ts",
-      "confidence_score": 1.0
+      "target": "src_types_api_ts"
     },
     {
       "relation": "imports_from",
@@ -13360,9 +14415,9 @@
       "source_file": "src/lib/search-history.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_search_history_ts",
-      "target": "src_types_api_ts",
-      "confidence_score": 1.0
+      "target": "src_types_api_ts"
     },
     {
       "relation": "imports_from",
@@ -13668,9 +14723,9 @@
       "source_file": "src/app/(app)/search/SearchPageClient.tsx",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_app_search_searchpageclient_tsx",
-      "target": "types_api_libraryplaylistref",
-      "confidence_score": 1.0
+      "target": "types_api_libraryplaylistref"
     },
     {
       "relation": "imports",
@@ -13679,9 +14734,9 @@
       "source_file": "src/app/api/library/search/route.ts",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_library_search_route_ts",
-      "target": "types_api_libraryplaylistref",
-      "confidence_score": 1.0
+      "target": "types_api_libraryplaylistref"
     },
     {
       "relation": "imports",
@@ -13690,9 +14745,9 @@
       "source_file": "src/components/LibrarySearchResults.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_librarysearchresults_tsx",
-      "target": "types_api_libraryplaylistref",
-      "confidence_score": 1.0
+      "target": "types_api_libraryplaylistref"
     },
     {
       "relation": "imports",
@@ -13701,9 +14756,9 @@
       "source_file": "src/app/(app)/search/SearchPageClient.tsx",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_app_search_searchpageclient_tsx",
-      "target": "types_api_librarysearchresult",
-      "confidence_score": 1.0
+      "target": "types_api_librarysearchresult"
     },
     {
       "relation": "imports",
@@ -13712,9 +14767,9 @@
       "source_file": "src/app/api/library/search/route.ts",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_library_search_route_ts",
-      "target": "types_api_librarysearchresult",
-      "confidence_score": 1.0
+      "target": "types_api_librarysearchresult"
     },
     {
       "relation": "imports",
@@ -13723,9 +14778,9 @@
       "source_file": "src/components/LibrarySearchResults.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_librarysearchresults_tsx",
-      "target": "types_api_librarysearchresult",
-      "confidence_score": 1.0
+      "target": "types_api_librarysearchresult"
     },
     {
       "relation": "imports",
@@ -13734,9 +14789,9 @@
       "source_file": "src/app/(app)/search/SearchPageClient.tsx",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_app_search_searchpageclient_tsx",
-      "target": "types_api_librarysearchresponse",
-      "confidence_score": 1.0
+      "target": "types_api_librarysearchresponse"
     },
     {
       "relation": "imports",
@@ -13745,9 +14800,9 @@
       "source_file": "src/app/api/library/search/route.ts",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_library_search_route_ts",
-      "target": "types_api_librarysearchresponse",
-      "confidence_score": 1.0
+      "target": "types_api_librarysearchresponse"
     },
     {
       "relation": "imports",
@@ -13756,9 +14811,9 @@
       "source_file": "src/app/(app)/search/SearchPageClient.tsx",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_app_search_searchpageclient_tsx",
-      "target": "types_api_searchsurface",
-      "confidence_score": 1.0
+      "target": "types_api_searchsurface"
     },
     {
       "relation": "imports",
@@ -13767,9 +14822,9 @@
       "source_file": "src/components/RecentSearches.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_recentsearches_tsx",
-      "target": "types_api_searchsurface",
-      "confidence_score": 1.0
+      "target": "types_api_searchsurface"
     },
     {
       "relation": "imports",
@@ -13778,9 +14833,9 @@
       "source_file": "src/lib/search-history.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_search_history_ts",
-      "target": "types_api_searchsurface",
-      "confidence_score": 1.0
+      "target": "types_api_searchsurface"
     },
     {
       "relation": "contains",
@@ -14372,9 +15427,9 @@
       "source_file": "src/app/(app)/search/SearchPageClient.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_app_search_searchpageclient_tsx",
-      "target": "src_components_librarysearchresults_tsx",
-      "confidence_score": 1.0
+      "target": "src_components_librarysearchresults_tsx"
     },
     {
       "relation": "imports",
@@ -14383,9 +15438,9 @@
       "source_file": "src/app/(app)/search/SearchPageClient.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_app_search_searchpageclient_tsx",
-      "target": "components_librarysearchresults_librarysearchresults",
-      "confidence_score": 1.0
+      "target": "components_librarysearchresults_librarysearchresults"
     },
     {
       "relation": "imports_from",
@@ -14394,9 +15449,9 @@
       "source_file": "src/app/(app)/search/SearchPageClient.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_app_search_searchpageclient_tsx",
-      "target": "src_components_recentsearches_tsx",
-      "confidence_score": 1.0
+      "target": "src_components_recentsearches_tsx"
     },
     {
       "relation": "imports",
@@ -14405,9 +15460,9 @@
       "source_file": "src/app/(app)/search/SearchPageClient.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_app_search_searchpageclient_tsx",
-      "target": "components_recentsearches_recentsearches",
-      "confidence_score": 1.0
+      "target": "components_recentsearches_recentsearches"
     },
     {
       "relation": "imports_from",
@@ -15327,9 +16382,9 @@
       "source_file": "src/app/api/search-history/route.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_search_history_route_ts",
-      "target": "src_lib_auth_ts",
-      "confidence_score": 1.0
+      "target": "src_lib_auth_ts"
     },
     {
       "relation": "imports",
@@ -15338,9 +16393,9 @@
       "source_file": "src/app/api/search-history/route.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_search_history_route_ts",
-      "target": "lib_auth_effectiveuserid",
-      "confidence_score": 1.0
+      "target": "lib_auth_effectiveuserid"
     },
     {
       "relation": "imports",
@@ -15349,9 +16404,9 @@
       "source_file": "src/app/api/search-history/route.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_search_history_route_ts",
-      "target": "lib_auth_forbidden",
-      "confidence_score": 1.0
+      "target": "lib_auth_forbidden"
     },
     {
       "relation": "imports",
@@ -15360,9 +16415,9 @@
       "source_file": "src/app/api/search-history/route.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_search_history_route_ts",
-      "target": "lib_auth_getsession",
-      "confidence_score": 1.0
+      "target": "lib_auth_getsession"
     },
     {
       "relation": "imports",
@@ -15371,9 +16426,9 @@
       "source_file": "src/app/api/search-history/route.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_search_history_route_ts",
-      "target": "lib_auth_unauthorized",
-      "confidence_score": 1.0
+      "target": "lib_auth_unauthorized"
     },
     {
       "relation": "imports_from",
@@ -15382,9 +16437,9 @@
       "source_file": "src/app/api/search-history/route.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_search_history_route_ts",
-      "target": "src_lib_search_history_ts",
-      "confidence_score": 1.0
+      "target": "src_lib_search_history_ts"
     },
     {
       "relation": "imports",
@@ -15393,9 +16448,9 @@
       "source_file": "src/app/api/search-history/route.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_search_history_route_ts",
-      "target": "lib_search_history_clearhistory",
-      "confidence_score": 1.0
+      "target": "lib_search_history_clearhistory"
     },
     {
       "relation": "imports",
@@ -15404,9 +16459,9 @@
       "source_file": "src/app/api/search-history/route.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_search_history_route_ts",
-      "target": "lib_search_history_deletesearch",
-      "confidence_score": 1.0
+      "target": "lib_search_history_deletesearch"
     },
     {
       "relation": "imports",
@@ -15415,9 +16470,9 @@
       "source_file": "src/app/api/search-history/route.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_search_history_route_ts",
-      "target": "lib_search_history_issearchsurface",
-      "confidence_score": 1.0
+      "target": "lib_search_history_issearchsurface"
     },
     {
       "relation": "imports",
@@ -15426,9 +16481,9 @@
       "source_file": "src/app/api/search-history/route.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_search_history_route_ts",
-      "target": "lib_search_history_listrecent",
-      "confidence_score": 1.0
+      "target": "lib_search_history_listrecent"
     },
     {
       "relation": "imports",
@@ -15437,9 +16492,9 @@
       "source_file": "src/app/api/search-history/route.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_search_history_route_ts",
-      "target": "lib_search_history_recordsearch",
-      "confidence_score": 1.0
+      "target": "lib_search_history_recordsearch"
     },
     {
       "relation": "contains",
@@ -15447,9 +16502,9 @@
       "source_file": "src/app/api/search-history/route.ts",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_search_history_route_ts",
-      "target": "search_history_route_requireeffectiveuser",
-      "confidence_score": 1.0
+      "target": "search_history_route_requireeffectiveuser"
     },
     {
       "relation": "contains",
@@ -15457,9 +16512,9 @@
       "source_file": "src/app/api/search-history/route.ts",
       "source_location": "L24",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_search_history_route_ts",
-      "target": "search_history_route_get",
-      "confidence_score": 1.0
+      "target": "search_history_route_get"
     },
     {
       "relation": "contains",
@@ -15467,9 +16522,9 @@
       "source_file": "src/app/api/search-history/route.ts",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_search_history_route_ts",
-      "target": "search_history_route_post",
-      "confidence_score": 1.0
+      "target": "search_history_route_post"
     },
     {
       "relation": "contains",
@@ -15477,9 +16532,9 @@
       "source_file": "src/app/api/search-history/route.ts",
       "source_location": "L58",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_search_history_route_ts",
-      "target": "search_history_route_delete",
-      "confidence_score": 1.0
+      "target": "search_history_route_delete"
     },
     {
       "relation": "calls",
@@ -15488,9 +16543,9 @@
       "source_file": "src/app/api/search-history/route.ts",
       "source_location": "L25",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "search_history_route_get",
-      "target": "search_history_route_requireeffectiveuser",
-      "confidence_score": 1.0
+      "target": "search_history_route_requireeffectiveuser"
     },
     {
       "relation": "calls",
@@ -15499,9 +16554,9 @@
       "source_file": "src/app/api/search-history/route.ts",
       "source_location": "L38",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "search_history_route_post",
-      "target": "search_history_route_requireeffectiveuser",
-      "confidence_score": 1.0
+      "target": "search_history_route_requireeffectiveuser"
     },
     {
       "relation": "calls",
@@ -15510,9 +16565,9 @@
       "source_file": "src/app/api/search-history/route.ts",
       "source_location": "L59",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "search_history_route_delete",
-      "target": "search_history_route_requireeffectiveuser",
-      "confidence_score": 1.0
+      "target": "search_history_route_requireeffectiveuser"
     },
     {
       "relation": "calls",
@@ -16975,9 +18030,9 @@
       "source_file": "src/app/api/library/search/route.ts",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_library_search_route_ts",
-      "target": "search_route_get",
-      "confidence_score": 1.0
+      "target": "search_route_get"
     },
     {
       "relation": "contains",
@@ -18022,9 +19077,9 @@
       "source_file": "src/app/api/library/search/route.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_library_search_route_ts",
-      "target": "src_lib_auth_ts",
-      "confidence_score": 1.0
+      "target": "src_lib_auth_ts"
     },
     {
       "relation": "imports",
@@ -18033,9 +19088,9 @@
       "source_file": "src/app/api/library/search/route.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_library_search_route_ts",
-      "target": "lib_auth_effectiveuserid",
-      "confidence_score": 1.0
+      "target": "lib_auth_effectiveuserid"
     },
     {
       "relation": "imports",
@@ -18044,9 +19099,9 @@
       "source_file": "src/app/api/library/search/route.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_library_search_route_ts",
-      "target": "lib_auth_forbidden",
-      "confidence_score": 1.0
+      "target": "lib_auth_forbidden"
     },
     {
       "relation": "imports",
@@ -18055,9 +19110,9 @@
       "source_file": "src/app/api/library/search/route.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_library_search_route_ts",
-      "target": "lib_auth_getsession",
-      "confidence_score": 1.0
+      "target": "lib_auth_getsession"
     },
     {
       "relation": "imports",
@@ -18066,9 +19121,9 @@
       "source_file": "src/app/api/library/search/route.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_library_search_route_ts",
-      "target": "lib_auth_unauthorized",
-      "confidence_score": 1.0
+      "target": "lib_auth_unauthorized"
     },
     {
       "relation": "imports_from",
@@ -18077,9 +19132,9 @@
       "source_file": "src/app/api/library/search/route.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_library_search_route_ts",
-      "target": "src_lib_library_search_ts",
-      "confidence_score": 1.0
+      "target": "src_lib_library_search_ts"
     },
     {
       "relation": "imports",
@@ -18088,9 +19143,9 @@
       "source_file": "src/app/api/library/search/route.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_library_search_route_ts",
-      "target": "lib_library_search_rankplaylists",
-      "confidence_score": 1.0
+      "target": "lib_library_search_rankplaylists"
     },
     {
       "relation": "imports",
@@ -18099,9 +19154,9 @@
       "source_file": "src/app/api/library/search/route.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_library_search_route_ts",
-      "target": "lib_library_search_ranksongs",
-      "confidence_score": 1.0
+      "target": "lib_library_search_ranksongs"
     },
     {
       "relation": "imports_from",
@@ -18110,9 +19165,9 @@
       "source_file": "src/app/api/library/search/route.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_library_search_route_ts",
-      "target": "src_lib_prisma_ts",
-      "confidence_score": 1.0
+      "target": "src_lib_prisma_ts"
     },
     {
       "relation": "imports_from",
@@ -18121,9 +19176,9 @@
       "source_file": "src/app/api/library/search/route.ts",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_library_search_route_ts",
-      "target": "src_lib_song_serialization_ts",
-      "confidence_score": 1.0
+      "target": "src_lib_song_serialization_ts"
     },
     {
       "relation": "imports",
@@ -18132,9 +19187,9 @@
       "source_file": "src/app/api/library/search/route.ts",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_api_library_search_route_ts",
-      "target": "lib_song_serialization_normalizesong",
-      "confidence_score": 1.0
+      "target": "lib_song_serialization_normalizesong"
     },
     {
       "relation": "imports_from",
@@ -19204,6 +20259,39 @@
       "source_file": "src/app/api/youtube/audio/[videoId]/route.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "source": "src_app_api_youtube_audio_videoid_route_ts",
+      "target": "src_lib_playback_moov_probe_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/youtube/audio/[videoId]/route.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_app_api_youtube_audio_videoid_route_ts",
+      "target": "playback_moov_probe_createmoovpatchtransform",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/youtube/audio/[videoId]/route.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_app_api_youtube_audio_videoid_route_ts",
+      "target": "playback_moov_probe_ensuremoovpatch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/youtube/audio/[videoId]/route.ts",
+      "source_location": "L3",
+      "weight": 1.0,
       "confidence_score": 1.0,
       "source": "src_app_api_youtube_audio_videoid_route_ts",
       "target": "src_lib_playback_resolver_ts"
@@ -19318,6 +20406,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/app/api/youtube/audio/[videoId]/route.ts",
+      "source_location": "L44",
+      "weight": 1.0,
+      "source": "src_app_api_youtube_audio_videoid_route_ts",
+      "target": "videoid_route_servedstartoffset",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/youtube/audio/[videoId]/route.ts",
       "source_location": "L38",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -19364,6 +20462,17 @@
       "confidence_score": 1.0,
       "source": "videoid_route_get",
       "target": "videoid_route_errorresponse"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/youtube/audio/[videoId]/route.ts",
+      "source_location": "L154",
+      "weight": 1.0,
+      "source": "videoid_route_get",
+      "target": "videoid_route_servedstartoffset",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -19442,6 +20551,28 @@
       "target": "playback_resolver_evictaudiocache"
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/app/api/youtube/audio/[videoId]/route.ts",
+      "source_location": "L152",
+      "weight": 1.0,
+      "source": "videoid_route_get",
+      "target": "playback_moov_probe_ensuremoovpatch"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/app/api/youtube/audio/[videoId]/route.ts",
+      "source_location": "L157",
+      "weight": 1.0,
+      "source": "videoid_route_get",
+      "target": "playback_moov_probe_createmoovpatchtransform"
+    },
+    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -19473,6 +20604,17 @@
       "confidence_score": 1.0,
       "source": "src_app_api_youtube_audio_status_videoid_route_ts",
       "target": "lib_auth_unauthorized"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/youtube/audio-status/[videoId]/route.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "src_app_api_youtube_audio_status_videoid_route_ts",
+      "target": "src_lib_prisma_ts",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -19831,9 +20973,9 @@
       "source_file": "src/components/LibrarySearchResults.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_librarysearchresults_tsx",
-      "target": "src_components_youtubeplayer_tsx",
-      "confidence_score": 1.0
+      "target": "src_components_youtubeplayer_tsx"
     },
     {
       "relation": "imports_from",
@@ -19974,6 +21116,28 @@
       "confidence_score": 1.0,
       "source": "src_components_playerbar_tsx",
       "target": "components_youtubeaudioplayer_youtubeaudioplayer"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/PlayerBar.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_components_playerbar_tsx",
+      "target": "src_lib_playback_duration_guard_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/PlayerBar.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_components_playerbar_tsx",
+      "target": "playback_duration_guard_shouldforceend",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -21068,9 +22232,9 @@
       "source_file": "src/components/LibrarySearchResults.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_librarysearchresults_tsx",
-      "target": "src_components_playerprovider_tsx",
-      "confidence_score": 1.0
+      "target": "src_components_playerprovider_tsx"
     },
     {
       "relation": "imports",
@@ -21079,9 +22243,9 @@
       "source_file": "src/components/LibrarySearchResults.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_librarysearchresults_tsx",
-      "target": "components_playerprovider_usenowplaying",
-      "confidence_score": 1.0
+      "target": "components_playerprovider_usenowplaying"
     },
     {
       "relation": "contains",
@@ -21089,9 +22253,9 @@
       "source_file": "src/components/LibrarySearchResults.tsx",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_librarysearchresults_tsx",
-      "target": "components_librarysearchresults_props",
-      "confidence_score": 1.0
+      "target": "components_librarysearchresults_props"
     },
     {
       "relation": "contains",
@@ -21099,9 +22263,9 @@
       "source_file": "src/components/LibrarySearchResults.tsx",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_librarysearchresults_tsx",
-      "target": "components_librarysearchresults_librarysearchresults",
-      "confidence_score": 1.0
+      "target": "components_librarysearchresults_librarysearchresults"
     },
     {
       "relation": "calls",
@@ -21479,9 +22643,9 @@
       "source_file": "src/components/RecentSearches.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_recentsearches_tsx",
-      "target": "src_lib_api_client_ts",
-      "confidence_score": 1.0
+      "target": "src_lib_api_client_ts"
     },
     {
       "relation": "imports",
@@ -21490,9 +22654,9 @@
       "source_file": "src/components/RecentSearches.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_recentsearches_tsx",
-      "target": "lib_api_client_apifetch",
-      "confidence_score": 1.0
+      "target": "lib_api_client_apifetch"
     },
     {
       "relation": "contains",
@@ -21500,9 +22664,9 @@
       "source_file": "src/components/RecentSearches.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_recentsearches_tsx",
-      "target": "components_recentsearches_props",
-      "confidence_score": 1.0
+      "target": "components_recentsearches_props"
     },
     {
       "relation": "contains",
@@ -21510,9 +22674,9 @@
       "source_file": "src/components/RecentSearches.tsx",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_recentsearches_tsx",
-      "target": "components_recentsearches_recentsearches",
-      "confidence_score": 1.0
+      "target": "components_recentsearches_recentsearches"
     },
     {
       "relation": "imports_from",
@@ -21660,9 +22824,9 @@
       "source_file": "src/components/KeepAliveButton.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_keepalivebutton_tsx",
-      "target": "src_lib_keep_alive_schedule_ts",
-      "confidence_score": 1.0
+      "target": "src_lib_keep_alive_schedule_ts"
     },
     {
       "relation": "imports",
@@ -21671,9 +22835,9 @@
       "source_file": "src/components/KeepAliveButton.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_keepalivebutton_tsx",
-      "target": "lib_keep_alive_schedule_nextpingdelay",
-      "confidence_score": 1.0
+      "target": "lib_keep_alive_schedule_nextpingdelay"
     },
     {
       "relation": "imports",
@@ -21682,9 +22846,9 @@
       "source_file": "src/components/KeepAliveButton.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_keepalivebutton_tsx",
-      "target": "lib_keep_alive_schedule_retrydelay",
-      "confidence_score": 1.0
+      "target": "lib_keep_alive_schedule_retrydelay"
     },
     {
       "relation": "contains",
@@ -21997,9 +23161,9 @@
       "source_file": "src/lib/search-history.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_search_history_ts",
-      "target": "src_lib_prisma_ts",
-      "confidence_score": 1.0
+      "target": "src_lib_prisma_ts"
     },
     {
       "relation": "imports_from",
@@ -22089,9 +23253,9 @@
       "source_file": "src/lib/keep-alive-schedule.ts",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_keep_alive_schedule_ts",
-      "target": "lib_keep_alive_schedule_nextpingdelay",
-      "confidence_score": 1.0
+      "target": "lib_keep_alive_schedule_nextpingdelay"
     },
     {
       "relation": "contains",
@@ -22099,9 +23263,9 @@
       "source_file": "src/lib/keep-alive-schedule.ts",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_keep_alive_schedule_ts",
-      "target": "lib_keep_alive_schedule_retrydelay",
-      "confidence_score": 1.0
+      "target": "lib_keep_alive_schedule_retrydelay"
     },
     {
       "relation": "imports_from",
@@ -22110,9 +23274,9 @@
       "source_file": "src/lib/library-search.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_library_search_ts",
-      "target": "src_lib_youtube_match_ts",
-      "confidence_score": 1.0
+      "target": "src_lib_youtube_match_ts"
     },
     {
       "relation": "imports",
@@ -22121,9 +23285,9 @@
       "source_file": "src/lib/library-search.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_library_search_ts",
-      "target": "lib_youtube_match_normalize",
-      "confidence_score": 1.0
+      "target": "lib_youtube_match_normalize"
     },
     {
       "relation": "contains",
@@ -22131,9 +23295,9 @@
       "source_file": "src/lib/library-search.ts",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_library_search_ts",
-      "target": "lib_library_search_rankablesong",
-      "confidence_score": 1.0
+      "target": "lib_library_search_rankablesong"
     },
     {
       "relation": "contains",
@@ -22141,9 +23305,9 @@
       "source_file": "src/lib/library-search.ts",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_library_search_ts",
-      "target": "lib_library_search_rankableplaylist",
-      "confidence_score": 1.0
+      "target": "lib_library_search_rankableplaylist"
     },
     {
       "relation": "contains",
@@ -22151,9 +23315,9 @@
       "source_file": "src/lib/library-search.ts",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_library_search_ts",
-      "target": "lib_library_search_tier",
-      "confidence_score": 1.0
+      "target": "lib_library_search_tier"
     },
     {
       "relation": "contains",
@@ -22161,9 +23325,9 @@
       "source_file": "src/lib/library-search.ts",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_library_search_ts",
-      "target": "lib_library_search_tokencoverage",
-      "confidence_score": 1.0
+      "target": "lib_library_search_tokencoverage"
     },
     {
       "relation": "contains",
@@ -22171,9 +23335,9 @@
       "source_file": "src/lib/library-search.ts",
       "source_location": "L33",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_library_search_ts",
-      "target": "lib_library_search_tokensof",
-      "confidence_score": 1.0
+      "target": "lib_library_search_tokensof"
     },
     {
       "relation": "contains",
@@ -22181,9 +23345,9 @@
       "source_file": "src/lib/library-search.ts",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_library_search_ts",
-      "target": "lib_library_search_scoresong",
-      "confidence_score": 1.0
+      "target": "lib_library_search_scoresong"
     },
     {
       "relation": "contains",
@@ -22191,9 +23355,9 @@
       "source_file": "src/lib/library-search.ts",
       "source_location": "L51",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_library_search_ts",
-      "target": "lib_library_search_scoreplaylist",
-      "confidence_score": 1.0
+      "target": "lib_library_search_scoreplaylist"
     },
     {
       "relation": "contains",
@@ -22201,9 +23365,9 @@
       "source_file": "src/lib/library-search.ts",
       "source_location": "L62",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_library_search_ts",
-      "target": "lib_library_search_ranksongs",
-      "confidence_score": 1.0
+      "target": "lib_library_search_ranksongs"
     },
     {
       "relation": "contains",
@@ -22211,9 +23375,9 @@
       "source_file": "src/lib/library-search.ts",
       "source_location": "L77",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_library_search_ts",
-      "target": "lib_library_search_rankplaylists",
-      "confidence_score": 1.0
+      "target": "lib_library_search_rankplaylists"
     },
     {
       "relation": "calls",
@@ -22222,9 +23386,9 @@
       "source_file": "src/lib/library-search.ts",
       "source_location": "L39",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_library_search_scoresong",
-      "target": "lib_library_search_tier",
-      "confidence_score": 1.0
+      "target": "lib_library_search_tier"
     },
     {
       "relation": "calls",
@@ -22233,9 +23397,9 @@
       "source_file": "src/lib/library-search.ts",
       "source_location": "L56",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_library_search_scoreplaylist",
-      "target": "lib_library_search_tier",
-      "confidence_score": 1.0
+      "target": "lib_library_search_tier"
     },
     {
       "relation": "calls",
@@ -22244,9 +23408,9 @@
       "source_file": "src/lib/library-search.ts",
       "source_location": "L42",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_library_search_scoresong",
-      "target": "lib_library_search_tokencoverage",
-      "confidence_score": 1.0
+      "target": "lib_library_search_tokencoverage"
     },
     {
       "relation": "calls",
@@ -22255,9 +23419,9 @@
       "source_file": "src/lib/library-search.ts",
       "source_location": "L57",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_library_search_scoreplaylist",
-      "target": "lib_library_search_tokencoverage",
-      "confidence_score": 1.0
+      "target": "lib_library_search_tokencoverage"
     },
     {
       "relation": "calls",
@@ -22266,9 +23430,9 @@
       "source_file": "src/lib/library-search.ts",
       "source_location": "L68",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_library_search_ranksongs",
-      "target": "lib_library_search_tokensof",
-      "confidence_score": 1.0
+      "target": "lib_library_search_tokensof"
     },
     {
       "relation": "calls",
@@ -22277,9 +23441,9 @@
       "source_file": "src/lib/library-search.ts",
       "source_location": "L83",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_library_search_rankplaylists",
-      "target": "lib_library_search_tokensof",
-      "confidence_score": 1.0
+      "target": "lib_library_search_tokensof"
     },
     {
       "relation": "contains",
@@ -23972,9 +25136,9 @@
       "source_file": "src/lib/search-history.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_search_history_ts",
-      "target": "src_lib_youtube_search_cache_ts",
-      "confidence_score": 1.0
+      "target": "src_lib_youtube_search_cache_ts"
     },
     {
       "relation": "calls",
@@ -24005,9 +25169,9 @@
       "source_file": "src/lib/search-history.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_search_history_ts",
-      "target": "lib_youtube_search_cache_normalizequery",
-      "confidence_score": 1.0
+      "target": "lib_youtube_search_cache_normalizequery"
     },
     {
       "relation": "calls",
@@ -24412,9 +25576,9 @@
       "source_file": "src/lib/search-history.ts",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_search_history_ts",
-      "target": "lib_search_history_search_surfaces",
-      "confidence_score": 1.0
+      "target": "lib_search_history_search_surfaces"
     },
     {
       "relation": "contains",
@@ -24422,9 +25586,9 @@
       "source_file": "src/lib/search-history.ts",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_search_history_ts",
-      "target": "lib_search_history_issearchsurface",
-      "confidence_score": 1.0
+      "target": "lib_search_history_issearchsurface"
     },
     {
       "relation": "contains",
@@ -24432,9 +25596,9 @@
       "source_file": "src/lib/search-history.ts",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_search_history_ts",
-      "target": "lib_search_history_recordsearch",
-      "confidence_score": 1.0
+      "target": "lib_search_history_recordsearch"
     },
     {
       "relation": "contains",
@@ -24442,9 +25606,9 @@
       "source_file": "src/lib/search-history.ts",
       "source_location": "L56",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_search_history_ts",
-      "target": "lib_search_history_listrecent",
-      "confidence_score": 1.0
+      "target": "lib_search_history_listrecent"
     },
     {
       "relation": "contains",
@@ -24452,9 +25616,9 @@
       "source_file": "src/lib/search-history.ts",
       "source_location": "L72",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_search_history_ts",
-      "target": "lib_search_history_deletesearch",
-      "confidence_score": 1.0
+      "target": "lib_search_history_deletesearch"
     },
     {
       "relation": "contains",
@@ -24462,9 +25626,9 @@
       "source_file": "src/lib/search-history.ts",
       "source_location": "L83",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_search_history_ts",
-      "target": "lib_search_history_clearhistory",
-      "confidence_score": 1.0
+      "target": "lib_search_history_clearhistory"
     },
     {
       "relation": "contains",
@@ -25969,6 +27133,219 @@
       "target": "providers_piped_createpipedprovider"
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_lib_playback_moov_probe_ts",
+      "target": "src_lib_playback_moov_duration_patcher_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_lib_playback_moov_probe_ts",
+      "target": "playback_moov_duration_patcher_applypatchtochunk",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_lib_playback_moov_probe_ts",
+      "target": "playback_moov_duration_patcher_durationfieldoffsets",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_lib_playback_moov_probe_ts",
+      "target": "playback_moov_duration_patcher_moovendiftruncated",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "src_lib_playback_moov_probe_ts",
+      "target": "src_lib_playback_types_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "src_lib_playback_moov_probe_ts",
+      "target": "playback_types_moovpatchstate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "src_lib_playback_moov_probe_ts",
+      "target": "playback_types_playbackstream",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "src_lib_playback_moov_probe_ts",
+      "target": "playback_moov_probe_mp4_audio_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "src_lib_playback_moov_probe_ts",
+      "target": "playback_moov_probe_ispatchdisabled",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "src_lib_playback_moov_probe_ts",
+      "target": "playback_moov_probe_ismp4audio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L30",
+      "weight": 1.0,
+      "source": "src_lib_playback_moov_probe_ts",
+      "target": "playback_moov_probe_fetchhead",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L66",
+      "weight": 1.0,
+      "source": "src_lib_playback_moov_probe_ts",
+      "target": "playback_moov_probe_probe",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L98",
+      "weight": 1.0,
+      "source": "src_lib_playback_moov_probe_ts",
+      "target": "playback_moov_probe_ensuremoovpatch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L139",
+      "weight": 1.0,
+      "source": "src_lib_playback_moov_probe_ts",
+      "target": "playback_moov_probe_createmoovpatchtransform",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L105",
+      "weight": 1.0,
+      "source": "playback_moov_probe_ensuremoovpatch",
+      "target": "playback_moov_probe_ispatchdisabled",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L110",
+      "weight": 1.0,
+      "source": "playback_moov_probe_ensuremoovpatch",
+      "target": "playback_moov_probe_ismp4audio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L67",
+      "weight": 1.0,
+      "source": "playback_moov_probe_probe",
+      "target": "playback_moov_probe_fetchhead",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L119",
+      "weight": 1.0,
+      "source": "playback_moov_probe_ensuremoovpatch",
+      "target": "playback_moov_probe_probe",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L70",
+      "weight": 1.0,
+      "source": "playback_moov_probe_probe",
+      "target": "playback_moov_duration_patcher_moovendiftruncated"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/lib/playback/moov-probe.ts",
+      "source_location": "L81",
+      "weight": 1.0,
+      "source": "playback_moov_probe_probe",
+      "target": "playback_moov_duration_patcher_durationfieldoffsets"
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/playback/types.ts",
@@ -25977,6 +27354,16 @@
       "confidence_score": 1.0,
       "source": "src_lib_playback_types_ts",
       "target": "playback_types_providername"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/types.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_lib_playback_types_ts",
+      "target": "playback_types_moovpatchstate",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -26141,6 +27528,16 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/duration-guard.ts",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "src_lib_playback_duration_guard_ts",
+      "target": "playback_duration_guard_shouldforceend",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "src/lib/playback/cache.ts",
       "source_location": "L3",
       "weight": 1.0,
@@ -26187,6 +27584,152 @@
       "confidence_score": 1.0,
       "source": "src_lib_playback_cache_ts",
       "target": "playback_cache_resetfortests"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-duration-patcher.ts",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "src_lib_playback_moov_duration_patcher_ts",
+      "target": "playback_moov_duration_patcher_containers",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-duration-patcher.ts",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "src_lib_playback_moov_duration_patcher_ts",
+      "target": "playback_moov_duration_patcher_u32",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-duration-patcher.ts",
+      "source_location": "L30",
+      "weight": 1.0,
+      "source": "src_lib_playback_moov_duration_patcher_ts",
+      "target": "playback_moov_duration_patcher_boxtype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-duration-patcher.ts",
+      "source_location": "L38",
+      "weight": 1.0,
+      "source": "src_lib_playback_moov_duration_patcher_ts",
+      "target": "playback_moov_duration_patcher_ver0durationoffset",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-duration-patcher.ts",
+      "source_location": "L51",
+      "weight": 1.0,
+      "source": "src_lib_playback_moov_duration_patcher_ts",
+      "target": "playback_moov_duration_patcher_toplevelbox",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-duration-patcher.ts",
+      "source_location": "L74",
+      "weight": 1.0,
+      "source": "src_lib_playback_moov_duration_patcher_ts",
+      "target": "playback_moov_duration_patcher_durationfieldoffsets",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-duration-patcher.ts",
+      "source_location": "L138",
+      "weight": 1.0,
+      "source": "src_lib_playback_moov_duration_patcher_ts",
+      "target": "playback_moov_duration_patcher_moovendiftruncated",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-duration-patcher.ts",
+      "source_location": "L156",
+      "weight": 1.0,
+      "source": "src_lib_playback_moov_duration_patcher_ts",
+      "target": "playback_moov_duration_patcher_applypatchtochunk",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-duration-patcher.ts",
+      "source_location": "L45",
+      "weight": 1.0,
+      "source": "playback_moov_duration_patcher_ver0durationoffset",
+      "target": "playback_moov_duration_patcher_u32",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-duration-patcher.ts",
+      "source_location": "L57",
+      "weight": 1.0,
+      "source": "playback_moov_duration_patcher_toplevelbox",
+      "target": "playback_moov_duration_patcher_u32",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-duration-patcher.ts",
+      "source_location": "L141",
+      "weight": 1.0,
+      "source": "playback_moov_duration_patcher_moovendiftruncated",
+      "target": "playback_moov_duration_patcher_u32",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-duration-patcher.ts",
+      "source_location": "L58",
+      "weight": 1.0,
+      "source": "playback_moov_duration_patcher_toplevelbox",
+      "target": "playback_moov_duration_patcher_boxtype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-duration-patcher.ts",
+      "source_location": "L143",
+      "weight": 1.0,
+      "source": "playback_moov_duration_patcher_moovendiftruncated",
+      "target": "playback_moov_duration_patcher_boxtype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/playback/moov-duration-patcher.ts",
+      "source_location": "L75",
+      "weight": 1.0,
+      "source": "playback_moov_duration_patcher_durationfieldoffsets",
+      "target": "playback_moov_duration_patcher_toplevelbox",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -26304,9 +27847,9 @@
       "source_file": "KEEP_AWAKE_SEARCH_TICKET.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "keep_awake_search_ticket_md",
-      "target": "musica_ligera_42_keep_awake_search_ticket_ticket_keep_awake_reliability_local_library_search_history",
-      "confidence_score": 1.0
+      "target": "musica_ligera_42_keep_awake_search_ticket_ticket_keep_awake_reliability_local_library_search_history"
     },
     {
       "relation": "contains",
@@ -26314,9 +27857,9 @@
       "source_file": "KEEP_AWAKE_SEARCH_TICKET.md",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "musica_ligera_42_keep_awake_search_ticket_ticket_keep_awake_reliability_local_library_search_history",
-      "target": "musica_ligera_42_keep_awake_search_ticket_context",
-      "confidence_score": 1.0
+      "target": "musica_ligera_42_keep_awake_search_ticket_context"
     },
     {
       "relation": "contains",
@@ -26324,9 +27867,9 @@
       "source_file": "KEEP_AWAKE_SEARCH_TICKET.md",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "musica_ligera_42_keep_awake_search_ticket_ticket_keep_awake_reliability_local_library_search_history",
-      "target": "musica_ligera_42_keep_awake_search_ticket_hard_guardrails",
-      "confidence_score": 1.0
+      "target": "musica_ligera_42_keep_awake_search_ticket_hard_guardrails"
     },
     {
       "relation": "contains",
@@ -26334,9 +27877,9 @@
       "source_file": "KEEP_AWAKE_SEARCH_TICKET.md",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "musica_ligera_42_keep_awake_search_ticket_ticket_keep_awake_reliability_local_library_search_history",
-      "target": "musica_ligera_42_keep_awake_search_ticket_phase_1_fix_keep_awake_reliability",
-      "confidence_score": 1.0
+      "target": "musica_ligera_42_keep_awake_search_ticket_phase_1_fix_keep_awake_reliability"
     },
     {
       "relation": "contains",
@@ -26344,9 +27887,9 @@
       "source_file": "KEEP_AWAKE_SEARCH_TICKET.md",
       "source_location": "L71",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "musica_ligera_42_keep_awake_search_ticket_ticket_keep_awake_reliability_local_library_search_history",
-      "target": "musica_ligera_42_keep_awake_search_ticket_phase_2_local_library_search",
-      "confidence_score": 1.0
+      "target": "musica_ligera_42_keep_awake_search_ticket_phase_2_local_library_search"
     },
     {
       "relation": "contains",
@@ -26354,9 +27897,9 @@
       "source_file": "KEEP_AWAKE_SEARCH_TICKET.md",
       "source_location": "L99",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "musica_ligera_42_keep_awake_search_ticket_ticket_keep_awake_reliability_local_library_search_history",
-      "target": "musica_ligera_42_keep_awake_search_ticket_phase_3_search_history",
-      "confidence_score": 1.0
+      "target": "musica_ligera_42_keep_awake_search_ticket_phase_3_search_history"
     },
     {
       "relation": "contains",
@@ -26364,9 +27907,9 @@
       "source_file": "KEEP_AWAKE_SEARCH_TICKET.md",
       "source_location": "L125",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "musica_ligera_42_keep_awake_search_ticket_ticket_keep_awake_reliability_local_library_search_history",
-      "target": "musica_ligera_42_keep_awake_search_ticket_final_verification",
-      "confidence_score": 1.0
+      "target": "musica_ligera_42_keep_awake_search_ticket_final_verification"
     },
     {
       "relation": "contains",
@@ -26374,9 +27917,9 @@
       "source_file": "KEEP_AWAKE_SEARCH_TICKET.md",
       "source_location": "L22",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "musica_ligera_42_keep_awake_search_ticket_phase_1_fix_keep_awake_reliability",
-      "target": "musica_ligera_42_keep_awake_search_ticket_existing_implementation_to_inspect",
-      "confidence_score": 1.0
+      "target": "musica_ligera_42_keep_awake_search_ticket_existing_implementation_to_inspect"
     },
     {
       "relation": "contains",
@@ -26384,9 +27927,9 @@
       "source_file": "KEEP_AWAKE_SEARCH_TICKET.md",
       "source_location": "L30",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "musica_ligera_42_keep_awake_search_ticket_phase_1_fix_keep_awake_reliability",
-      "target": "musica_ligera_42_keep_awake_search_ticket_research_diagnosis",
-      "confidence_score": 1.0
+      "target": "musica_ligera_42_keep_awake_search_ticket_research_diagnosis"
     },
     {
       "relation": "contains",
@@ -26394,9 +27937,9 @@
       "source_file": "KEEP_AWAKE_SEARCH_TICKET.md",
       "source_location": "L46",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "musica_ligera_42_keep_awake_search_ticket_phase_1_fix_keep_awake_reliability",
-      "target": "musica_ligera_42_keep_awake_search_ticket_expected_behavior",
-      "confidence_score": 1.0
+      "target": "musica_ligera_42_keep_awake_search_ticket_expected_behavior"
     },
     {
       "relation": "contains",
@@ -26404,9 +27947,9 @@
       "source_file": "KEEP_AWAKE_SEARCH_TICKET.md",
       "source_location": "L54",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "musica_ligera_42_keep_awake_search_ticket_phase_1_fix_keep_awake_reliability",
-      "target": "musica_ligera_42_keep_awake_search_ticket_implementation_ideas_to_evaluate",
-      "confidence_score": 1.0
+      "target": "musica_ligera_42_keep_awake_search_ticket_implementation_ideas_to_evaluate"
     },
     {
       "relation": "contains",
@@ -26414,9 +27957,9 @@
       "source_file": "KEEP_AWAKE_SEARCH_TICKET.md",
       "source_location": "L63",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "musica_ligera_42_keep_awake_search_ticket_phase_1_fix_keep_awake_reliability",
-      "target": "musica_ligera_42_keep_awake_search_ticket_verification",
-      "confidence_score": 1.0
+      "target": "musica_ligera_42_keep_awake_search_ticket_verification"
     },
     {
       "relation": "contains",
@@ -26424,9 +27967,9 @@
       "source_file": "KEEP_AWAKE_SEARCH_TICKET.md",
       "source_location": "L73",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "musica_ligera_42_keep_awake_search_ticket_phase_2_local_library_search",
-      "target": "musica_ligera_42_keep_awake_search_ticket_goal",
-      "confidence_score": 1.0
+      "target": "musica_ligera_42_keep_awake_search_ticket_goal"
     },
     {
       "relation": "contains",
@@ -26434,9 +27977,9 @@
       "source_file": "KEEP_AWAKE_SEARCH_TICKET.md",
       "source_location": "L77",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "musica_ligera_42_keep_awake_search_ticket_phase_2_local_library_search",
-      "target": "musica_ligera_42_keep_awake_search_ticket_scope",
-      "confidence_score": 1.0
+      "target": "musica_ligera_42_keep_awake_search_ticket_scope"
     },
     {
       "relation": "contains",
@@ -26444,9 +27987,9 @@
       "source_file": "KEEP_AWAKE_SEARCH_TICKET.md",
       "source_location": "L85",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "musica_ligera_42_keep_awake_search_ticket_phase_2_local_library_search",
-      "target": "musica_ligera_42_keep_awake_search_ticket_suggested_architecture",
-      "confidence_score": 1.0
+      "target": "musica_ligera_42_keep_awake_search_ticket_suggested_architecture"
     },
     {
       "relation": "contains",
@@ -26454,9 +27997,9 @@
       "source_file": "KEEP_AWAKE_SEARCH_TICKET.md",
       "source_location": "L94",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "musica_ligera_42_keep_awake_search_ticket_phase_2_local_library_search",
-      "target": "musica_ligera_42_keep_awake_search_ticket_verification_94",
-      "confidence_score": 1.0
+      "target": "musica_ligera_42_keep_awake_search_ticket_verification_94"
     },
     {
       "relation": "contains",
@@ -26464,9 +28007,9 @@
       "source_file": "KEEP_AWAKE_SEARCH_TICKET.md",
       "source_location": "L101",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "musica_ligera_42_keep_awake_search_ticket_phase_3_search_history",
-      "target": "musica_ligera_42_keep_awake_search_ticket_goal_101",
-      "confidence_score": 1.0
+      "target": "musica_ligera_42_keep_awake_search_ticket_goal_101"
     },
     {
       "relation": "contains",
@@ -26474,9 +28017,9 @@
       "source_file": "KEEP_AWAKE_SEARCH_TICKET.md",
       "source_location": "L105",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "musica_ligera_42_keep_awake_search_ticket_phase_3_search_history",
-      "target": "musica_ligera_42_keep_awake_search_ticket_scope_105",
-      "confidence_score": 1.0
+      "target": "musica_ligera_42_keep_awake_search_ticket_scope_105"
     },
     {
       "relation": "contains",
@@ -26484,9 +28027,9 @@
       "source_file": "KEEP_AWAKE_SEARCH_TICKET.md",
       "source_location": "L112",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "musica_ligera_42_keep_awake_search_ticket_phase_3_search_history",
-      "target": "musica_ligera_42_keep_awake_search_ticket_suggested_architecture_112",
-      "confidence_score": 1.0
+      "target": "musica_ligera_42_keep_awake_search_ticket_suggested_architecture_112"
     },
     {
       "relation": "contains",
@@ -26494,9 +28037,9 @@
       "source_file": "KEEP_AWAKE_SEARCH_TICKET.md",
       "source_location": "L119",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "musica_ligera_42_keep_awake_search_ticket_phase_3_search_history",
-      "target": "musica_ligera_42_keep_awake_search_ticket_verification_119",
-      "confidence_score": 1.0
+      "target": "musica_ligera_42_keep_awake_search_ticket_verification_119"
     },
     {
       "relation": "contains",
@@ -27580,5 +29123,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "2236a10067d4d55dd3ea66d0979bd3f4a78e81d5"
+  "built_at_commit": "ad1a579cc375e12099afb680f698b5706182ff05"
 }
