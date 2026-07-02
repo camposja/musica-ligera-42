@@ -13,6 +13,9 @@ import type { MoovPatchState, PlaybackStream } from "@/lib/playback/types";
 const HEAD_PROBE_BYTES = 65536;
 // Give up rather than re-fetch an absurdly large declared moov.
 const MOOV_REFETCH_CAP = 10 * 1024 * 1024;
+// Hard bound on each probe fetch (connect + body). The probe must NEVER be
+// able to hang the audio route — on timeout we serve unpatched.
+const PROBE_TIMEOUT_MS = 8000;
 
 // MP4 audio content types we patch (normalized, parameters stripped).
 // Anything else — webm/opus especially — is never probed or patched.
@@ -28,8 +31,14 @@ function isMp4Audio(contentType: string): boolean {
 }
 
 async function fetchHead(url: string, endInclusive: number): Promise<Uint8Array> {
+  // `cache: "no-store"` opts out of Next's fetch instrumentation — without it
+  // the patched route-handler fetch buffers/tees this second request to the
+  // same origin and deadlocks (observed as the audio route hanging forever).
+  // The timeout is the backstop: a slow/stuck probe degrades to "unpatched".
   const res = await fetch(url, {
     headers: { range: `bytes=0-${endInclusive}` },
+    cache: "no-store",
+    signal: AbortSignal.timeout(PROBE_TIMEOUT_MS),
   });
   if (!res.ok && res.status !== 206) {
     throw new Error(`head probe returned ${res.status}`);
