@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNowPlaying } from "@/components/PlayerProvider";
 import YouTubePlayer, { VIDEO_ID_RE } from "@/components/YouTubePlayer";
 import { YouTubeAudioPlayer } from "@/components/YouTubeAudioPlayer";
+import { shouldForceEnd } from "@/lib/playback/duration-guard";
 import { getNextPlayableYoutubeId } from "@/lib/player-queue";
 
 type AudioStatus = "probing" | "ready" | "error";
@@ -48,6 +49,11 @@ export function PlayerBar() {
   // triggers (immediate-on-song-start and 25s-remaining). Pair key is more
   // robust than just nextId across Prev/Next bouncing.
   const preloadedPairRef = useRef<string | null>(null);
+  // Authoritative YouTube duration from the audio-status probe (fresher than
+  // the Song row, which may predate the resolve-time self-heal).
+  const [statusDurationSec, setStatusDurationSec] = useState<number | null>(null);
+  // Song id the duration guard already fired for — strictly one shot per song.
+  const forcedEndRef = useRef<string | null>(null);
 
   // Lyrics panel (opt-in). Closed by default and only fetches while open. A bump
   // of lyricsRetry re-runs the fetch effect (used by the error-state retry).
@@ -71,7 +77,9 @@ export function PlayerBar() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setAudioError(null);
     setManualFallback(false);
+    setStatusDurationSec(null);
     preloadedPairRef.current = null;
+    forcedEndRef.current = null;
 
     if (!videoId) {
       setAudioStatus("error");
@@ -83,10 +91,13 @@ export function PlayerBar() {
     fetch(`/api/youtube/audio-status/${videoId}`, { signal: ac.signal })
       .then(async (res) => {
         const body = (await res.json().catch(() => null)) as
-          | { ok: true }
+          | { ok: true; durationSeconds?: number | null }
           | { ok: false; code: string; detail: string }
           | null;
         if (res.ok && body && body.ok) {
+          if (typeof body.durationSeconds === "number" && body.durationSeconds > 0) {
+            setStatusDurationSec(body.durationSeconds);
+          }
           setAudioStatus("ready");
         } else {
           setAudioError(
@@ -278,9 +289,33 @@ export function PlayerBar() {
             }}
             onEnded={() => reportPlaybackEnded()}
             onTimeUpdate={(currentTime, duration) => {
+              // Duration-mismatch guard (safety net behind the server-side
+              // moov patch): if the browser misread the duration as ~2x the
+              // authoritative YouTube duration, the real audio ends at the
+              // authoritative mark — advance there instead of playing the
+              // silent tail. One shot per song.
+              const authoritativeSec =
+                statusDurationSec ?? song.youtubeDurationSeconds ?? null;
+              if (
+                forcedEndRef.current !== song.id &&
+                shouldForceEnd({
+                  authoritativeSec,
+                  browserDurationSec: duration,
+                  currentTimeSec: currentTime,
+                })
+              ) {
+                forcedEndRef.current = song.id;
+                console.warn("[playback] duration guard fired", {
+                  songId: song.id,
+                  authoritativeSec,
+                  browserDurationSec: duration,
+                });
+                reportPlaybackEnded();
+                return;
+              }
               const remaining = duration - currentTime;
               if (remaining > PRELOAD_AT_REMAINING_SEC) return;
-              if (!song || !nextYoutubeId) return;
+              if (!nextYoutubeId) return;
               const pairKey = `${song.id}:${nextYoutubeId}`;
               preloadNext(pairKey, nextYoutubeId, preloadedPairRef);
             }}
