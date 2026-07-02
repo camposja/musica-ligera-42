@@ -28,12 +28,17 @@ async function makeUser(name: string) {
   return prisma.user.create({ data: { name, role: "USER", accessCode: "x" } });
 }
 
+// Recency ordering is by createdAt (ms precision): two records in the same
+// millisecond tie. Real searches are seconds apart; tests must space them out.
+const tick = () => new Promise((r) => setTimeout(r, 2));
+
 // --- helper (store logic) ---------------------------------------------------
 
 describe("search-history store", () => {
   it("records most-recent-first", async () => {
     const u = await makeUser("alice");
     await recordSearch(u.id, "library", "first");
+    await tick();
     await recordSearch(u.id, "library", "second");
     expect(await listRecent(u.id, "library")).toEqual(["second", "first"]);
   });
@@ -41,7 +46,9 @@ describe("search-history store", () => {
   it("dedupes on normalized query and moves it to the top (no duplicate row)", async () => {
     const u = await makeUser("alice");
     await recordSearch(u.id, "library", "Hello");
+    await tick();
     await recordSearch(u.id, "library", "world");
+    await tick();
     await recordSearch(u.id, "library", "  hello  "); // same normalized as "Hello"
     const recent = await listRecent(u.id, "library");
     expect(recent).toEqual(["hello", "world"]); // moved to top, casing refreshed
@@ -55,6 +62,7 @@ describe("search-history store", () => {
     const u = await makeUser("alice");
     for (let i = 0; i < MAX_HISTORY + 5; i++) {
       await recordSearch(u.id, "library", `q${i}`);
+      await tick();
     }
     const recent = await listRecent(u.id, "library");
     expect(recent).toHaveLength(MAX_HISTORY);
