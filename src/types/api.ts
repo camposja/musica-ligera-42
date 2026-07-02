@@ -26,6 +26,7 @@ export type Song = {
   youtubeMatchReason: string | null;
   youtubeMatchTitle: string | null;
   youtubeMatchChannel: string | null;
+  youtubeDurationSeconds: number | null;
   createdAt: Date | string;
 };
 

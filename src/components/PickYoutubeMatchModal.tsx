@@ -235,6 +235,7 @@ function CandidateRow({
       youtubeMatchReason: null,
       youtubeMatchTitle: null,
       youtubeMatchChannel: null,
+      youtubeDurationSeconds: candidate.durationSec > 0 ? candidate.durationSec : null,
       createdAt: new Date(),
     };
     playSong(transient);

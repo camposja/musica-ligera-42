@@ -127,6 +127,7 @@ export async function POST(request: Request) {
       youtubeMatchReason: "manual",
       youtubeMatchTitle: d.title || null,
       youtubeMatchChannel: d.channel || null,
+      youtubeDurationSeconds: d.durationSec > 0 ? Math.round(d.durationSec) : null,
     },
   });
   return Response.json({ song: normalizeSong(updated) });

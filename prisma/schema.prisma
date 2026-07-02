@@ -50,6 +50,12 @@ model Song {
   youtubeMatchTitle   String?  // YouTube result title at match time
   youtubeMatchChannel String?  // YouTube channel name at match time
 
+  // Authoritative YouTube duration in seconds, written at match/override time
+  // and self-healed at resolve time (audio-status). Null on legacy rows and
+  // whenever youtubeId changes without a known duration — it must never
+  // describe a different video. Drives the client duration-mismatch guard.
+  youtubeDurationSeconds Int?
+
   createdAt      DateTime       @default(now())
 
   playlistSongs  PlaylistSong[]

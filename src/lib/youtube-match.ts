@@ -40,6 +40,8 @@ export type MatchResult = {
   score: number;
   title: string;
   channel: string;
+  // Authoritative duration of `best` in seconds (0 when YouTube omitted it).
+  durationSec: number;
 };
 
 export type SongMeta = {
@@ -270,5 +272,6 @@ export function pickBestMatch(
     score: best.score,
     title: best.title,
     channel: best.channel,
+    durationSec: best.durationSec,
   };
 }

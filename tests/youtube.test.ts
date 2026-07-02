@@ -18,6 +18,7 @@ import {
   isValidYoutubeId,
   matchSongById,
   parseYoutubeRef,
+  refilterSongMatch,
   searchCandidates,
   triggerMatchInBackground,
   YoutubeError,
@@ -330,6 +331,8 @@ describe("matchSongById", () => {
     expect(updated.youtubeMatchReason).toBe("exact");
     expect(updated.youtubeMatchTitle).toContain("Hello");
     expect(updated.youtubeMatchChannel).toBe("AdeleVEVO");
+    // Authoritative duration persisted from the matched candidate.
+    expect(updated.youtubeDurationSeconds).toBe(240);
   });
 
   it("records loose match metadata when only loose candidates exist", async () => {
@@ -405,6 +408,56 @@ describe("matchSongById", () => {
       name: "YoutubeError",
       httpStatus: 403,
     });
+  });
+});
+
+// === refilterSongMatch =====================================================
+
+describe("refilterSongMatch", () => {
+  it("nulls youtubeDurationSeconds when swapping to an alt (unknown duration)", async () => {
+    const s = await prisma.song.create({
+      data: {
+        title: "Hello",
+        artist: "Adele",
+        youtubeId: PAD("a"),
+        youtubeAltIdsJson: JSON.stringify([PAD("b")]),
+        youtubeDurationSeconds: 240,
+      },
+    });
+    // Current best no longer embeddable; the alt is → swap to the alt.
+    mockFetchSequence([
+      videosResp([
+        { id: PAD("a"), embeddable: false },
+        { id: PAD("b"), embeddable: true },
+      ]),
+    ]);
+    const out = await refilterSongMatch(s.id);
+    expect(out).toEqual({ changed: true, nowUnplayable: false });
+    const updated = await prisma.song.findUniqueOrThrow({ where: { id: s.id } });
+    expect(updated.youtubeId).toBe(PAD("b"));
+    expect(updated.youtubeDurationSeconds).toBeNull();
+  });
+
+  it("keeps youtubeDurationSeconds when the best id is unchanged", async () => {
+    const s = await prisma.song.create({
+      data: {
+        title: "Hello",
+        artist: "Adele",
+        youtubeId: PAD("a"),
+        youtubeAltIdsJson: JSON.stringify([PAD("b")]),
+        youtubeDurationSeconds: 240,
+      },
+    });
+    mockFetchSequence([
+      videosResp([
+        { id: PAD("a"), embeddable: true },
+        { id: PAD("b"), embeddable: true },
+      ]),
+    ]);
+    const out = await refilterSongMatch(s.id);
+    expect(out).toEqual({ changed: false, nowUnplayable: false });
+    const updated = await prisma.song.findUniqueOrThrow({ where: { id: s.id } });
+    expect(updated.youtubeDurationSeconds).toBe(240);
   });
 });
 

@@ -333,6 +333,13 @@ describe("pickBestMatch", () => {
     expect(result).toBeNull();
   });
 
+  it("carries the best candidate's durationSec into the result", () => {
+    const result = pickBestMatch(song, [
+      cand({ title: "Adele - Hello", channel: "AdeleVEVO", durationSec: 296 }),
+    ]);
+    expect(result?.durationSec).toBe(296);
+  });
+
   it("returns null when no candidate clears LOOSE threshold", () => {
     const result = pickBestMatch(song, [
       cand({ title: "Top 10 Cooking Tips", channel: "CookingTV" }),

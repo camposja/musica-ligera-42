@@ -11,6 +11,7 @@ type YtDlpJson = {
   acodec?: string;
   filesize?: number | null;
   filesize_approx?: number | null;
+  duration?: number | null;
 };
 
 type SpawnResult = { stdout: string; stderr: string };
@@ -118,6 +119,10 @@ export const ytDlpProvider: PlaybackProvider = {
       url: json.url,
       contentType: mimeFromExt(json.ext),
       contentLength: json.filesize ?? json.filesize_approx ?? undefined,
+      durationSeconds:
+        typeof json.duration === "number" && json.duration > 0
+          ? Math.round(json.duration)
+          : undefined,
       expiresAt: Date.now() + CACHE_TTL_MS,
       provider: "yt-dlp",
     };

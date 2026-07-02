@@ -299,7 +299,13 @@ export async function refilterSongMatch(
   const newAlts = embeddable.slice(1);
   await prisma.song.update({
     where: { id: songId },
-    data: { youtubeId: newBest, youtubeAltIdsJson: serializeAltIds(newAlts) },
+    data: {
+      youtubeId: newBest,
+      youtubeAltIdsJson: serializeAltIds(newAlts),
+      // The swapped-in alt's duration is unknown here; never let the stored
+      // duration describe a different video. Self-heals on next play.
+      youtubeDurationSeconds: null,
+    },
   });
   return { changed: true, nowUnplayable: false };
 }
@@ -355,6 +361,7 @@ export async function matchSongById(
       youtubeMatchReason: match.reason,
       youtubeMatchTitle: match.title,
       youtubeMatchChannel: match.channel,
+      youtubeDurationSeconds: match.durationSec > 0 ? Math.round(match.durationSec) : null,
     },
   });
 

@@ -79,11 +79,14 @@ function mockSpawnOnce(opts: FakeChildOpts) {
   });
 }
 
-function ytDlpJson(opts: { url?: string; ext?: string; filesize?: number } = {}) {
+function ytDlpJson(
+  opts: { url?: string; ext?: string; filesize?: number; duration?: number } = {},
+) {
   return JSON.stringify({
     url: opts.url ?? "https://cdn.example/audio.m4a",
     ext: opts.ext ?? "m4a",
     filesize: opts.filesize ?? 1234567,
+    duration: opts.duration,
     acodec: "mp4a.40.2",
   });
 }
@@ -204,6 +207,43 @@ describe("GET /api/youtube/audio-status/[videoId]", () => {
       contentLength: 42,
       provider: "yt-dlp",
     });
+  });
+
+  it("returns durationSeconds and self-heals the Song row", async () => {
+    await makeUserSession();
+    const song = await prisma.song.create({
+      data: { title: "T", artist: "A", youtubeId: VID },
+    });
+    mockSpawnOnce({ stdout: ytDlpJson({ ext: "m4a", duration: 213 }) });
+    const res = await audioStatusGET(statusReq(VID), ctx({ videoId: VID }));
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.durationSeconds).toBe(213);
+    const updated = await prisma.song.findUniqueOrThrow({ where: { id: song.id } });
+    expect(updated.youtubeDurationSeconds).toBe(213);
+  });
+
+  it("durationSeconds is null when the resolver reports none; no DB write", async () => {
+    await makeUserSession();
+    const song = await prisma.song.create({
+      data: { title: "T", artist: "A", youtubeId: VID, youtubeDurationSeconds: 99 },
+    });
+    mockSpawnOnce({ stdout: ytDlpJson({ ext: "m4a" }) }); // no duration field
+    const res = await audioStatusGET(statusReq(VID), ctx({ videoId: VID }));
+    const body = await res.json();
+    expect(body.durationSeconds).toBeNull();
+    const updated = await prisma.song.findUniqueOrThrow({ where: { id: song.id } });
+    expect(updated.youtubeDurationSeconds).toBe(99); // untouched
+  });
+
+  it("a failed self-heal write does not fail the status response", async () => {
+    await makeUserSession();
+    mockSpawnOnce({ stdout: ytDlpJson({ ext: "m4a", duration: 213 }) });
+    vi.spyOn(prisma.song, "updateMany").mockRejectedValueOnce(new Error("db down"));
+    const res = await audioStatusGET(statusReq(VID), ctx({ videoId: VID }));
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body).toMatchObject({ ok: true, durationSeconds: 213 });
   });
 
   it("ok:false code:yt_dlp_missing when binary missing", async () => {

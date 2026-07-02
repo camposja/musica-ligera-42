@@ -335,6 +335,8 @@ describe("POST /api/youtube/override", () => {
     expect(body.song.youtubeId).toBe(VALID);
     expect(body.song.youtubeMatchType).toBe("loose");
     expect(body.song.youtubeMatchReason).toBe("manual");
+    // Duration persisted from the validation call (PT3M30S → 210s).
+    expect(body.song.youtubeDurationSeconds).toBe(210);
   });
 
   it("USER cannot override a song only in ANOTHER user's playlist (403)", async () => {
