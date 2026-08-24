@@ -114,10 +114,16 @@ export async function GET(request: Request, ctx: Ctx) {
       );
     }
     if (upstream.status === 403) {
-      console.error("[playback] upstream 403 after retry", { videoId });
+      // Record what we asked for and what came back. A `range=bytes=0-` paired
+      // with no content-range means the CDN refused an unbounded read — the
+      // signature of a stale yt-dlp handing out token-restricted URLs.
+      const context = `range=${range ?? "none"} content-range=${
+        upstream.headers.get("content-range") ?? "none"
+      }`;
+      console.error("[playback] upstream 403 after retry", { videoId, context });
       return errorResponse(
         "stream_403",
-        "upstream returned 403 even after re-resolve",
+        `upstream returned 403 even after re-resolve (${context})`,
         videoId,
       );
     }

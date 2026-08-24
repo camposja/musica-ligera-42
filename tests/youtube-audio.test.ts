@@ -117,6 +117,53 @@ describe("resolveAudio", () => {
     expect(stream.provider).toBe("yt-dlp");
   });
 
+  // Regression guard for the Aug 2026 outage: the pinned yt-dlp had no JS
+  // runtime, so it handed out token-restricted URLs that 403'd past ~1 MiB,
+  // and `--no-warnings` hid the deprecation notice that said so.
+  it("spawns yt-dlp with a JS runtime and without --no-warnings", async () => {
+    mockSpawnOnce({ stdout: ytDlpJson() });
+    await resolveAudio(VID);
+    const args = spawnMock.mock.calls[0][1] as string[];
+    expect(args).toContain("--js-runtimes");
+    expect(args[args.indexOf("--js-runtimes") + 1]).toBe("node");
+    expect(args).toContain("--no-update");
+    expect(args).not.toContain("--no-warnings");
+  });
+
+  it("logs stderr when yt-dlp exits 0 with warnings, and still resolves", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    mockSpawnOnce({
+      stdout: ytDlpJson(),
+      stderr: "WARNING: [youtube] some formats may be missing",
+      exitCode: 0,
+    });
+    const stream = await resolveAudio(VID);
+    expect(stream.provider).toBe("yt-dlp");
+    expect(warn).toHaveBeenCalledWith(
+      "[playback/yt-dlp] stderr",
+      expect.objectContaining({
+        videoId: VID,
+        stderr: expect.stringContaining("some formats may be missing"),
+      }),
+    );
+    warn.mockRestore();
+  });
+
+  it("redacts signed URLs out of logged stderr", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    mockSpawnOnce({
+      stdout: ytDlpJson(),
+      stderr: "WARNING: failed on https://rr4---sn-abc.googlevideo.com/v?pot=SECRET&sig=SHH",
+      exitCode: 0,
+    });
+    await resolveAudio(VID);
+    const logged = (warn.mock.calls[0][1] as { stderr: string }).stderr;
+    expect(logged).not.toContain("SECRET");
+    expect(logged).not.toContain("googlevideo.com");
+    expect(logged).toContain("[url]");
+    warn.mockRestore();
+  });
+
   it("maps webm/opus ext to audio/webm content type", async () => {
     mockSpawnOnce({ stdout: ytDlpJson({ ext: "webm" }) });
     const stream = await resolveAudio(VID);
@@ -350,10 +397,16 @@ describe("GET /api/youtube/audio/[videoId]", () => {
     vi.spyOn(globalThis, "fetch")
       .mockResolvedValueOnce(new Response("forbidden", { status: 403 }))
       .mockResolvedValueOnce(new Response("forbidden", { status: 403 }));
-    const res = await audioGET(audioReq(VID), ctx({ videoId: VID }));
+    const res = await audioGET(
+      audioReq(VID, { headers: { range: "bytes=0-" } }),
+      ctx({ videoId: VID }),
+    );
     expect(res.status).toBe(502);
     const body = await res.json();
     expect(body).toMatchObject({ error: "stream_403" });
+    // The range context is what makes the 1 MiB-ceiling failure legible in logs.
+    expect(body.detail).toContain("range=bytes=0-");
+    expect(body.detail).toContain("content-range=none");
   });
 
   it("502 yt_dlp_missing when binary not on PATH", async () => {

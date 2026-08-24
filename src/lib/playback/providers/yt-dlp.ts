@@ -59,10 +59,19 @@ function ytDlp(args: string[]): Promise<SpawnResult> {
       if (code === 0) {
         resolve({ stdout, stderr });
       } else {
-        reject(new Error(`yt-dlp exited ${code}: ${stderr.trim().slice(0, 500)}`));
+        reject(
+          new Error(`yt-dlp exited ${code}: ${redactUrls(stderr).trim().slice(0, 500)}`),
+        );
       }
     });
   });
+}
+
+// Resolved googlevideo URLs carry signed `pot`/`sig` query parameters. yt-dlp
+// echoes URLs into stderr on some errors, and stderr is logged now — so strip
+// anything URL-shaped before it can reach the logs.
+function redactUrls(text: string): string {
+  return text.replace(/https?:\/\/\S+/g, "[url]");
 }
 
 function mimeFromExt(ext?: string): string {
@@ -81,8 +90,15 @@ export const ytDlpProvider: PlaybackProvider = {
         "-f", FORMAT,
         "--dump-json",
         "--no-playlist",
-        "--no-warnings",
         "--no-progress",
+        // yt-dlp only auto-enables Deno. Without a JS runtime it can't solve
+        // YouTube's nsig challenge, and the formats it does return are
+        // token-restricted (~1 MiB of each file, then 403). Node is on PATH in
+        // the container (node:22 base) and on typical dev machines.
+        "--js-runtimes", "node",
+        // Keeps the "your version is older than 90 days" banner out of the
+        // stderr we now log, so what remains is signal.
+        "--no-update",
         url,
       ]);
     } catch (err) {
@@ -95,9 +111,21 @@ export const ytDlpProvider: PlaybackProvider = {
           err,
         );
       }
-      const message = (err as Error).message;
+      const message = redactUrls((err as Error).message);
       console.error("[playback/yt-dlp] extract failed", { videoId, message });
       throw new ResolveError("extract_failed", message, err);
+    }
+
+    // Exited 0 but wrote to stderr — almost always a deprecation notice or a
+    // "some formats may be missing" warning. Swallowing these (via the
+    // `--no-warnings` that used to live above) is what let an extractor break
+    // run silently for months. Truncated and URL-redacted.
+    const stderr = redactUrls(result.stderr).trim();
+    if (stderr) {
+      console.warn("[playback/yt-dlp] stderr", {
+        videoId,
+        stderr: stderr.slice(0, 500),
+      });
     }
 
     let json: YtDlpJson;
