@@ -5,7 +5,12 @@ import {
   authenticateCredentials,
   identityKeyFor,
 } from "@/lib/login-credentials";
-import { clientIpFrom, recordAttempt, throttled } from "@/lib/throttle";
+import {
+  clearIdentityOnSuccess,
+  clientIpFrom,
+  recordAttempt,
+  throttled,
+} from "@/lib/throttle";
 
 export const dynamic = "force-dynamic";
 
@@ -24,10 +29,8 @@ export async function POST(request: Request) {
     return iosError("Invalid JSON", 400);
   }
 
-  const gate = recordAttempt({
-    ip: clientIpFrom(request),
-    identity: identityKeyFor(body),
-  });
+  const identity = identityKeyFor(body);
+  const gate = recordAttempt({ ip: clientIpFrom(request), identity });
   if (!gate.allowed) return throttled(gate.retryAfterSeconds);
 
   const result = await authenticateCredentials(body);
@@ -43,6 +46,7 @@ export async function POST(request: Request) {
     return iosError("Invalid credentials", 401);
   }
 
+  clearIdentityOnSuccess(identity);
   const { token, expiresAt } = await signIosToken(result.session);
 
   return iosJson({

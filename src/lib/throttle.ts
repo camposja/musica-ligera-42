@@ -77,6 +77,19 @@ export function recordAttempt(opts: {
   return { allowed: true };
 }
 
+/// Clears an identity's bucket after a SUCCESSFUL authentication.
+///
+/// Without this the throttle counts successes too, so a legitimate user signing
+/// in a sixth time within the window — several devices, a cleared cookie jar, a
+/// re-install — would be locked out for no reason. Resetting on success costs
+/// nothing defensively: an attacker who has already guessed the right secret
+/// has won regardless of what the counter says. The IP bucket is deliberately
+/// NOT cleared, so one host cannot launder unlimited attempts across many
+/// identities by getting one of them right.
+export function clearIdentityOnSuccess(identity: string | null): void {
+  if (identity) buckets.delete(`id:${identity}`);
+}
+
 export function throttled(retryAfterSeconds: number): Response {
   return Response.json(
     { error: "Too many attempts", code: "throttled" },

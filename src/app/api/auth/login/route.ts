@@ -3,7 +3,12 @@ import {
   identityKeyFor,
 } from "@/lib/login-credentials";
 import { setSessionCookie } from "@/lib/session";
-import { clientIpFrom, recordAttempt, throttled } from "@/lib/throttle";
+import {
+  clearIdentityOnSuccess,
+  clientIpFrom,
+  recordAttempt,
+  throttled,
+} from "@/lib/throttle";
 
 export async function POST(request: Request) {
   let body: unknown;
@@ -13,10 +18,8 @@ export async function POST(request: Request) {
     return Response.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const gate = recordAttempt({
-    ip: clientIpFrom(request),
-    identity: identityKeyFor(body),
-  });
+  const identity = identityKeyFor(body);
+  const gate = recordAttempt({ ip: clientIpFrom(request), identity });
   if (!gate.allowed) return throttled(gate.retryAfterSeconds);
 
   const result = await authenticateCredentials(body);
@@ -34,6 +37,7 @@ export async function POST(request: Request) {
     }
   }
 
+  clearIdentityOnSuccess(identity);
   await setSessionCookie(result.session);
 
   if (result.session.role === "OWNER") return Response.json({ role: "OWNER" });

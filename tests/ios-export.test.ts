@@ -133,6 +133,28 @@ describe("auth route", () => {
     expect((await last!.json()).code).toBe("throttled");
   });
 
+  it("a successful login clears the identity bucket so real users are not locked out", async () => {
+    await seedUser("Ana", "right-code");
+    // Burn almost the whole identity allowance with failures.
+    for (let i = 0; i < IDENTITY_LIMIT - 1; i++) {
+      await iosAuth(jsonRequest(AUTH_URL, { type: "USER", name: "ana", accessCode: "wrong" }));
+    }
+    const good = await iosAuth(
+      jsonRequest(AUTH_URL, { type: "USER", name: "ana", accessCode: "right-code" }),
+    );
+    expect(good.status).toBe(200);
+
+    // Without the reset, the very next attempt would be throttled. A legitimate
+    // user signing in repeatedly (several devices, cleared cookies) must not be
+    // locked out by their own successes.
+    for (let i = 0; i < IDENTITY_LIMIT - 1; i++) {
+      const again = await iosAuth(
+        jsonRequest(AUTH_URL, { type: "USER", name: "ana", accessCode: "right-code" }),
+      );
+      expect(again.status).toBe(200);
+    }
+  });
+
   it("OWNER tokens expire in 24h and USER tokens in 7d", async () => {
     const user = await seedUser("Ana");
     const owner = await signIosToken({ role: "OWNER" });
