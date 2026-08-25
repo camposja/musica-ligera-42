@@ -375,6 +375,19 @@ describe("export payload", () => {
 });
 
 describe("membership limit", () => {
+  it("keeps the byte cap and the membership cap mutually consistent", async () => {
+    // Measured 370 B/membership on the real library. If the byte cap ever drops
+    // back to 2 MB, a full 5,000-membership export (~1.76 MB) would sit at 88%
+    // of it and the byte check would start firing before the membership check —
+    // rejecting exports that are nominally within limits.
+    const { limitsAreConsistent, MAX_SONG_MEMBERSHIPS, ESTIMATED_BYTES_PER_MEMBERSHIP, MAX_ENCODED_RESPONSE_BYTES } =
+      await import("@/lib/ios-export-limits");
+    expect(limitsAreConsistent()).toBe(true);
+    expect(MAX_SONG_MEMBERSHIPS * ESTIMATED_BYTES_PER_MEMBERSHIP).toBeLessThanOrEqual(
+      MAX_ENCODED_RESPONSE_BYTES,
+    );
+  });
+
   it("rejects an export whose membership count exceeds the cap", async () => {
     const { checkMembershipCount, MAX_SONG_MEMBERSHIPS } = await import(
       "@/lib/ios-export-limits"

@@ -36,8 +36,16 @@ export const WEB_AUDIENCE = "web";
 /// session. Dropped once the 7-day cookie TTL rolls over (dated follow-up
 /// ticket, not just this comment).
 ///
-/// This is an ADDITION to jose's own verification, never a replacement: signature,
-/// expiry, algorithm and audience checks all still run in `jwtVerify`.
+/// This is an ADDITION to jose's own verification, never a replacement. The two
+/// paths verify different amounts in jose, which is deliberate:
+///   - iOS bearer tokens: jose checks signature, expiry, algorithm AND audience,
+///     then this exact-string check runs on top.
+///   - Web cookies (transition): jose checks signature, expiry and algorithm
+///     only. The `audience` option is deliberately NOT passed, because legacy
+///     cookies carry no `aud` and jose would reject them outright; this helper
+///     then accepts only a missing audience or the exact string "web".
+/// Once the transition window closes, the cookie path should also pass
+/// `audience: WEB_AUDIENCE` to jose and drop `allowMissing`.
 export function assertExactAudience(
   payload: unknown,
   expected: string,
